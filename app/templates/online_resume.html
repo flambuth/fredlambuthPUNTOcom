@@ -1,0 +1,476 @@
+{% include 'base.html' %}
+{% block content %}
+<head>
+    <title>The Long Resume</title>
+
+    <style>
+
+        .testimonial-image {
+            position: relative;
+            width: 100px; /* Set the desired width */
+            height: 100px; /* Set the same height to make it a perfect circle */
+            border-radius: 50%; /* Makes the image circular */
+            object-fit: cover; /* Keeps the image inside the circle */
+        }
+
+        .testimonial-image::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: beige;
+            mix-blend-mode: multiply;
+        }
+
+    </style>
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/about_me.css') }}">
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/ionicons.min.css') }}">
+
+</head>
+    
+    <div class='timeline-block section-block' >
+        <div class='container' >
+        
+            <ul class='timeline' >
+                
+                <li class='timeline-header' >
+                    <h4>Experience</h4>
+                </li>
+                
+                
+                <li>
+                    
+                    <div class='timeline-desc' >
+                        
+                        <h5>AUG 2022 - SEP 2023</h5>
+                        <span>Atlanta, GA (remote)</span>
+
+                        <p>
+                            <ul>
+                                <li>Wrote GraphQL queries to extract sale data from Shopfiy API into a S3 bucket. AWS Glue jobs were schedulled to check for change data capture of API endpoints.</li>
+                                <li>Provisioned the Python environment on an on-premises Windows server. Created Python scripts for extracting data from SQL Server, checking for anomolous Medicare claims, and published findings to production database, with emailed reports. </li>
+                                <li>Modeled data transformation from scattered Teradata stored procedures into PySpark notebooks in Azure Synapse. Developed adjustable data quality PySpark module for integration testing for SLA, or single entity troubleshooting.</li>
+                            </ul>
+                        </p>
+                        
+                    </div>
+                    
+                    <div class='timeline-content' >
+                        
+                        <h4>Data Consultant</h4>
+                        <span>@Aspirent</span>
+                        
+                        <p>
+                            Worked as a consultant attending to the needs of medium scale companies looking for expertise when starting a new data warehouse or large companies looking to migrate an existing data warehouse to a cloud provider. The medium scale contracts were done by me individually, where I would work with the client daily and regularly report to a contract manager with my company. The larger contracts were led formally by a data architect who dictated the pacing of sprints among a few data engineers.
+                        </p>
+                        
+                    </div>
+                    
+                </li>
+                
+                <li>
+                    
+                    <div class='timeline-desc' >
+                        
+                        <h5>SEP 2021 - AUG 2022</h5>
+                        <span>Reston, VA (remote)</span>
+
+                        <p>
+                            <ul>
+                                <li>Transformed Data Quality Program from a few monolithic SQL scripts into several unit-tested PySpark modules for each step of the data quality inspection lifecycle.</li>
+                                <li>Deployed Python Wheel into Databricks workspace. Library contained functions most commonly asked by analysts creating data quality reports.</li>
+                                <li>Introduced Delta Table time-travel functions to add retroactive looks at past data quality reports.</li>
+                            </ul>
+                        </p>
+                        
+                    </div>
+                    
+                    <div class='timeline-content' >
+                        
+                        <h4>Senior Data Analyst</h4>
+                        <span>@KYM Advisors-USCIS</span>
+                        
+                        <p>
+                            KYM Advisors acquired the contract to provide technical expertise to the Data Management section of the Office of the Chief Data Officer for DHS. The OCDO was responsible for publishing a few very-wide tables. I was tasked with applying the data quality rules rules for the table holding active citizenship applications. I rewrote the existing SQL procedures into classes or functions applying PySpark regex methods or joins to lookup tables.
+                        </p>
+                        
+                    </div>
+                    
+                </li>
+                
+                <li>
+                    
+                    <div class='timeline-desc' >
+                        
+                        <h5>JAN 2020 - SEP 2021</h5>
+                        <span>San Antonio, TX</span>
+                        
+                        <p>
+                            <ul>
+                                <li>Automated the daily contact center employee survey reports from a semi-manual SAS query and Excel macro into a single Pandas script sharable with colleagues.</li>
+                                <li>Deployed a Tableau dashboard and published data source to Tableau Server of data imputed from contact center leadership logging external events (mostly COVID related) that had anomalous effects on customer or employee data. Users inputted data into a SharePoint site that had a semi-daily SSIS job processing user entries.</li>
+                                <li>Developed Python script to parse legacy thousand line SQL scripts that no longer matched schema names of data warehouse.</li>
+                            </ul>
+                        </p>
+
+                    </div>
+                    
+                    <div class='timeline-content' >
+                        
+                        <h4>Analytics Consultant</h4>
+                        <span>@Wells Fargo</span>
+                        
+                        <p>
+                            Worked for a newly minted tiny analytics team analyzing contact center metrics in a SQL Server data warehouse, with additional access to customer data held in a separate Teradata system. The initial tasks were automating any existing Excel, SAS, or SQL procedure as much as possible and ad-hoc reporting for contact center leaders looking for answers not found in existing BI reports. Towards the latter half of my time here I was engineering data marts for more focused analysis from regional managers or managers wanting to see customer journeys contacting the bank through all possible mediums.
+                        </p>
+                        
+                    </div>
+
+                    
+                </li>
+
+                <li>
+                    
+                    <div class='timeline-desc' >
+                        
+                        <h5>FEB 2018 - JAN 2020</h5>
+                        <span>Norfolk, VA</span>
+
+                        <p>
+                            <ul>
+                                <li>Collected all regular processes into testable BASH or Python scripts prior to execution on schedulled days. Scripts were collected into directory shared by other admins.</li>
+                                <li>Reintroduced retired Cobol app into compliance with current software environment by writing new user interface that maps to new services.</li>
+                                <li>Adjusted colleagues' Linux user accounts to include aliases for common requested procedures or queries to reduce trouble ticket submissions.</li>
+                            </ul>
+                        </p>
+                        
+                    </div>
+                    
+                    <div class='timeline-content' >
+                        
+                        <h4>System Administrator</h4>
+                        <span>@CACI, Inc.</span>
+                        
+                        <p>
+                            Administered a few hundred VMs and containers (Solaris calls them LDOMs or Zones) that held the development and testing environment for several services that make up a Service-Oriented architecture of Java and Cobal apps for keeping track of inventory in the Department of the Navy’s shipyard repair facilities. Software updates were coordinated with the developers and database administrators for deployments occurring on a weekly basis. Corrective action for issues above the support desk from developers, testers, or users were issued wtih ServiceNow.
+                        </p>
+                        
+                    </div>
+
+                    
+                </li>
+
+                <li>
+                    
+                    <div class='timeline-desc' >
+                        
+                        <h5>FEB 2012 - FEB 2018</h5>
+                        <span>Norfolk, VA</span>
+                        
+                        <p>
+                            <ul>
+                                <li>Scored in the 99th percentile in the examination for advancing to E5, and 95th for E6.</li>
+                                <li>Developed ship's handbook for all maintenance operators involved in trouble calls for LINK transmission or receiving process.</li>
+                                <li>Organized the sole physical record of Combat System's office supply requests into Excel workbook with macros for sending regular emails.</li>
+                            </ul>
+                        </p>
+
+                    </div>
+                    
+                    <div class='timeline-content' >
+                        
+                        <h4>Electronic Technician</h4>
+                        <span>@US NAVY</span>
+                        
+                        <p>
+                            For one year I was trained in basic digital and analog circuits, radio telecommunication, and radar, followed by one year of machine specific training on the LINK system made to share radar telemetry between network participants. The remaining four years I was assigned to the USS Ford, a new class of aircraft carrier that was still in construction when arriving. Before being seaworthy I installed small Windows networks hooked up to unclassified DoD IP networks. My final year I supervised the work center that contained my LINK equipment. I monitored and inspected the maintenance performed by my colleagues and withstood grueling inspection of the paper and digital reports.
+                        </p>
+                        
+                    </div>
+
+                    
+                </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+
+    <div class='hobbies-block section-block' >
+        <div class='container' >
+            
+            <div class='section-header text-center' >
+                <h2 class='animate text-over-block' >Skills</h2>
+                <!--divider-->
+
+                <!--/divider-->
+            </div>
+            
+            <div class='row' >
+                
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fab fa-python' ></i>
+                        </div>
+                        
+                        <h4>Python</h4>
+                        <p>My preferred language to do just about everything. The bulk of my professional Python work involves using Pandas or Pyspark for data pipelines. I have extensive experience with several visual plotting libraries, Plotly being my prefered. As well I have used Django and Flask to prop up websites or REST APIs.</p>
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fas fa-database'></i>
+                        </div>
+                        
+                        <h4>Database</h4>
+                        <p>I have experience configuring Oracle databases for maximizing hardware efficiency, and inspecting the master files of SQL Server and Teradata to recreate data lineage. In the cloud I prefer Databricks as an on-prem database replacement.</p>
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fa fa-cloud'></i>
+                        </div>
+                        
+                        <h4>Cloud</h4>
+                        <p>Databricks is my favorite cloud environment for most data solutions. My favorite stack for most data solutions is any cloud offering using Spark. I have more experience with Azure, especially since MS has made their UI very similar to their on-prem products. I have also used AWS serverless features.</p>
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fab fa-linux'></i>
+                        </div>
+                        
+                        <h4>Unix</h4>
+                        <p>My understanding of the infrastructure behind my data pipelines comes from my experience deploying Unix-like VMs or containers running data intensive applications. Thas had made more comfortable with a command line than a GUI, and all the protocols for using HTTP to send/receive data.</p>
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fas fa-check-circle'></i>
+                        </div>
+                        
+                        <h4>Data Quality</h4>
+                        <p>A lesson I had learned in my experience with data science projects has shown that the first step is dealing with poor data quality. I make sure to impement quality checks between the modules of my pipelines.</p>
+                    </div>
+                    
+                </div>
+
+                <div class='col-md-2 col-sm-4 col-xs-6' >
+                    
+                    <div class='hobby' >
+                        
+                        <div class='icon' >
+                            <i class='fas fa-bolt' ></i>
+                        </div>
+                        
+                        <h4>Spark</h4>
+                        <p>A few years ago I knew I would have to learn a method to handle 'big data' and I found PySpark's documentation to be the easiest to read. Since then I have become certified in Spark. I find a great deal of satisfaction refactoring queries to reach max cluster efficiency.</p>
+                        
+                    </div>
+                    
+                </div>
+
+
+            </div>
+            
+        </div>
+    </div>
+
+    <div class='pricing-block section-block' >
+        <div class='container' >
+            
+            <div class='section-header text-center' >
+                <h2>Awards & Projects</h2>
+                <!--divider-->
+                <div class='divider-draft center' ></div>
+                <!--/divider-->
+            </div>
+            
+            <div class='row' >
+                
+                <div class='col-md-3' >
+                    
+                    <div class='process' >
+                        
+                        <div class='number' >
+                            <span>JAN 2019</span>
+                        </div>
+                        
+                        <div class='content' >
+                            
+                            <h4>Reddit Code Scraper</h4>
+                            
+                            <p>
+                                I wrote a Python script that scraped the forum pages I expected to have Steam video game codes published occasionally in giveaways. This script made regular checks scanning for string patterns that matched Steam code patterns, then redeemed immediately  online whenever valid codes were found. 
+                            </p>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-3' >
+                    
+                    <div class='process' >
+                        
+                        <div class='number' >
+                            <span>JAN 2020</span>
+                        </div>
+                        
+                        <div class='content' >
+                            
+                            <h4>Conference Survey Text Mining</h4>
+                            
+                            <p>
+                                As a capstone project for a 20-week Python-data science bootcamp, Rosenthal Media requested consultation on analysis of thousands of pages of open-ended survey responses toward preferences in conference amenities. Using NLP libraries available in Python, topics were modeled based on word correlations and audience demands.
+                            </p>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-3' >
+                    
+                    <div class='process' >
+                        
+                        <div class='number' >
+                            <span>JULY 2020</span>
+                        </div>
+                        
+                        <div class='content' >
+                            
+                            <h4>Civtech-San Antonio Datathon 2nd Place</h4>
+                            
+                            <p>
+                                Participated in a group that created slide deck and infographic with data points procured from publicly available data about city bus ridership demographics. I extracted the data into a Tableau Public dashboard that pointed colleagues to geospatial data and visualizations of targeted data.
+                            </p>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-3' >
+                    
+                    <div class='process last' >
+                        
+                        <div class='number' >
+                            <span>DEC 2020</span>
+                        </div>
+                        
+                        <div class='content' >
+                            
+                            <h4>Wells Fargo Invention of The Year</h4>
+                            
+                            <p>
+                                The director of the bank’s contact center wanted a more stable view of devastating external events to operations, usually on a regional or state level. I rapidly developed a SharePoint site that I could process with Pandas, which eventually grew into a SQL Server Integration Service job from SharePoint to populate a database feeding Tableau dashboards. The patent application number is 17/124074.                            </p>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                
+                
+            </div>
+            
+        </div>
+    </div>
+
+    <div class='hobbies-block bg-lightgray section-block' >
+        <div class='container' >
+            
+            <div class='section-header text-center' >
+                <h2 class='animate text-over-block' >Testimonials</h2>
+                <!--divider-->
+                <div class='divider-draft center' ></div>
+                <!--/divider-->
+            </div>
+            
+            <div class='row' >
+                
+                <div class='col-md-4 text-center'>
+                    
+                    <div class='testimonial' >
+                        <p>
+                            Fred and his team did a great job completing a data science consulting project to help improve Codeup's marketing pipeline. Their use of NLP on customer surveys, construction of customer profiles, and summary report helped us zero in our marketing. Fred did a fantastic job!                            
+                        </p>
+                        
+                        <div class='author' >
+                            <h4>Jason Straughan</h4>
+                            <p>CEO at Codeup</p>
+                        </div>
+                        <img src="{{url_for('static', filename='img/codeup.jpg')}}" style="object-fit:scale-down;" alt='Jason Straughan' class='testimonial-image'>
+                    </div>
+                </div>
+                
+                <div class='col-md-4 text-center' >
+                    
+                    <div class='testimonial' >
+                        <p>
+                            Fred was part of a data science team that performed a high-level analysis—both quantitative and qualitative—of data critical to my company. The analysis was immensely helpful. Also, I was pleasantly surprised at how the data science team was able break a highly complex analysis into small pieces intelligible to a general audience. I highly recommend Fred to future employers.                                
+                        </p>
+                        
+                        <div class='author' >
+                            <h4>Louis Rosenfeld</h4>
+                            <p>Publisher at Rosenfeld Media</p>
+                        </div>
+                        <img src="{{url_for('static', filename='img/rosenfeld.jpeg')}}" style="object-fit:scale-down;" alt='Louis Rosenfeld' class='testimonial-image'>
+                    </div>
+                    
+                </div>
+                
+                <div class='col-md-4 text-center' >
+                    
+                    <div class='testimonial' >
+                        <p>
+                            Fred has been a fantastic peer and contributor to get to know. He is self motivated, dedicated to quality, tenacious, and always wanting to learn more. I have witnessed Fred bring alive entire worlds of data that our business uses to make critical decisions. He's particularly effective with Python amongst his many talents                                
+                        </p>
+                        
+                        <div class='author' >
+                            <h4>Dustin Hernandez</h4>
+                            <p>Senior Lead Analytics Consultant at Wells Fargo</p>
+                        </div>
+                        <img src="{{url_for('static', filename='img/wellsfargo.jpeg')}}" alt='Louis Rosenfeld' class='testimonial-image'>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+
+        
+    </div>
+{% endblock %}

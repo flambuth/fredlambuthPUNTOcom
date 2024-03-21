@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<title>Yesterday</title>
+
+{% include 'spotify/spotify_header.html' %}
+
+<style>
+    .outer-row {
+    background-color: #1a865d;
+    border-radius: 2%;
+    border: 2px solid #073a33;
+     /* Add this line to reset the right margin to 0 */
+}
+
+    .subtitle {
+    display: block;
+    margin-top: 15px; /* Adjust the margin to create space between h2 and small */
+}
+
+</style>
+
+<div class="container align-items-center">
+    <div class="row align-items-center mx-auto" style="width: 44%;">
+        <div class="col-12 text-center">
+            <h2 class="font-weight-bold mb-3">Yesterday</h2>
+            <p class="subtitle">My Troubles Seemed So Far Away</p>
+        </div>
+    </div>
+
+    <div class="row align-items-center">
+        <div class="col-6 d-flex align-items-center">
+            <h2>Total Songs:</h2>
+        </div>
+        <div class="col-6 d-flex align-items-center">
+            <h2 class="white-pill text-center">{{ yesterday_song_count }}</h2>
+        </div>
+    </div>
+
+    <div class="row align-items-center">
+        <div class="col-6 d-flex align-items-center">
+            <h2>Distinct Artists:</h2>
+        </div>
+        <div class="col-6 d-flex align-items-center">
+            <h2 class="white-pill text-center">{{ distinct_arts }}</h2>
+        </div>
+    </div>
+
+    <div class="row align-items-center">  
+        <div class="col-6">
+            <h2>New Artist Names: {{ unknown|length }}</h2>
+            <div class="grid-container">
+                {% for art_name in unknown %}
+                    <div class="grid-item">{{ art_name }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-6">
+            <h2>Familiar Ones: {{ known|length }}</h2>
+            <div class="grid-container">
+                {% for master_genre, cats in known_cats|groupby('master_genre') %}
+                    <div class="genre-group {{ master_genre|lower }}-border">
+                        <h2>{{ master_genre }}</h2>
+                        <div class="grid-container">
+                            {% for cat in cats %}
+                                <div class="grid-item">{{ cat.art_name }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

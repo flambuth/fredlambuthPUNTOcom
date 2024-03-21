@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<title>{% if user_comments %}{{ user_comments[0].user.username }} Homepage{% else %}Homepage{% endif %}</title>
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<style>
+    .outer-row {
+    background-image: linear-gradient(to bottom, #045335, #073a33);
+    border-radius: 2%;
+    border: 2px solid #073a33;
+}
+</style>
+
+<div class="container">
+    <h2>{{ current_user_username }}</h2>
+    <div class="row">
+        <div class="col">
+            <a href="{{ url_for('user_accounts.comment_activity') }}" class="btn btn-primary">See All Comments</a>
+            <a href="{{ url_for('user_accounts.all_users_page') }}" class="btn btn-secondary">See All Users</a>
+            <a href="{{ url_for('user_accounts.logout') }}" class="btn btn-warning">Logout</a>
+            <br><br>
+        </div>
+    </div>
+    
+    <hr>
+
+    <div class="row">
+        <div class="col">
+            <img src="{{ url_for('static', filename='img/user_pics/' + current_user_username + '.jpg') }}" title="{{ current_user_username }}">
+            <a href="{{ url_for('user_accounts.change_profile_picture') }}" class="btn btn-info">Change Profile Picture</a>
+        </div>
+    </div>
+    <hr>
+
+    {% for post_id, group in user_comments|groupby('post.id') %}
+    <div style="background-color: #296c6e; padding: 10px; margin-bottom: 19px;">
+        <div class="row outer-row">
+            <a href="{{ url_for('blog.blog_single', post_id=post_id) }}">
+            <img src="{{url_for('static', filename='img/blog_pics/pic_' + post_id|string + '.jpg')}}" width="80" title="Link to blog post" class="circular-image"></a>
+            <h3 > {{ post_id }} : {{ group[0].post.title }}</h3>
+        </div>
+            
+        {% for comment in group %}                
+            <div class="w3-row" style="padding: 10px; margin-bottom: 10px; background-color: #387f88; margin-left: 19px;">
+                <p>{{ comment.content }}</p>
+                <small>{{ comment.user.username }} - <span class="white-pill">{{ comment.comment_date.strftime('%Y-%m-%d %H:%M') }}</span></small>
+            </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+{% endblock %}

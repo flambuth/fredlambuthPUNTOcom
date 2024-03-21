@@ -1,0 +1,50 @@
+body {
+  background-color: #192a30;
+}
+
+div.row.align-items-center {
+  /* Add inner box shadow to the div */
+  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 255, 128, 0.06); /* Reduce opacity of the background color */
+}
+
+.container {
+  max-width: 59%;
+}
+
+.circle {
+    width: 40px; /* Adjust the size of the circle as needed */
+    height: 40px; /* Same as width for a perfect circle */
+    background: linear-gradient(to bottom, #00770a, #66ffa6); /* Gradient background */
+    border-radius: 50%; /* Makes it a circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: wheat; /* Set the text color inside the circle */
+    font-weight: bold; /* Optional: Make the text bold */
+    font-size: 20px; /* Optional: Set the text size */
+    border: 2px solid wheat;
+    position: relative; /* Add this to make positioning the pseudo-element relative to the circle */
+    overflow: hidden; /* Hide overflowing content of pseudo-element */
+  }
+
+  .list-group {
+    flex-grow: 1; /* Allow the list-group to grow and take up the remaining space */
+  }
+
+.custom-width {
+    width: 150px; /* Adjust the width as needed to match the calendar's width */
+  }
+
+.image-container {
+    /* Ensure the container expands to accommodate the image */
+    width: 84%;
+    height: 90px;
+    text-align: center; /* Optionally center the image horizontally */
+    overflow: hidden;
+    }
+
+.with-border {
+          border: 2px solid #238a6b;
+        }
+

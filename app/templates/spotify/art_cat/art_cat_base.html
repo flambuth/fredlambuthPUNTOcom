@@ -1,0 +1,96 @@
+{% include 'base.html' %}
+
+{% set genres = ['electronic', 'pop', 'country', 'funk', 'punk', 'indie', 'rock', 'old', 'other'] %}
+{% set alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] %}
+{% set non_alphas = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '$', '%', '&', '*', '!', '?', '+', '-', '['] %}
+<head>
+<style>
+  ul#menu li {
+    display:inline;
+  }
+        /* Genre List Styles */
+.genre-list {
+  background-color: antiquewhite;
+  border-radius: 62%;
+  border-bottom: 2px solid brown;
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove default padding */
+}
+
+.genre-pill {
+  background-color: rgb(38, 80, 21); /* Background color for the pill */
+  color: lightgray; /* Text color for the pill */
+  border-radius: 20px; /* Adjust the border-radius to control the pill shape */
+  display: inline-block; /* Display items horizontally */
+  padding: 5px 10px; /* Adjust padding for spacing inside the pill */
+  margin: 2px; /* Add margin to separate pills */
+  text-decoration: none; /* Remove underline from links */
+  font-weight: bold;
+}
+
+.genre-pill:hover {
+  box-shadow: 0 0 19px rgba(0, 0, 0, 0.5); /* Add drop shadow on hover */
+}
+
+/* Alpha List Styles (similar to genre list) */
+.alpha-list {
+  background-color: antiquewhite;
+  border-radius: 62%;
+  border-bottom: 2px solid brown;
+  list-style-type: none;
+  padding: 0;
+}
+
+.alpha-pill {
+  background-color: rgb(71, 146, 71);
+  color: lightgray;
+  border-radius: 20px;
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 2px;
+  text-decoration: none;
+}
+
+.alpha-pill:hover {
+  box-shadow: 0 0 19px rgba(0, 0, 0, 0.5); /* Add drop shadow on hover */
+}
+
+    </style>
+    
+    <title>Fred's Record Collection</title>
+
+    </head>
+
+{% include 'spotify/spotify_header.html' %}
+
+<div class="container-fluid text-center">
+  <div class="myDiv">
+    <!-- Genre List -->
+    <ul id="genre_list" class="genre-list">
+      {% for genre in genres %}
+        <a href="{{ url_for( 'spotify.index_by_genre', master_genre=genre) }}">
+          <li class="genre-pill">{{ genre }}</li>
+        </a>
+      {% endfor %}
+    </ul>
+    
+    <!-- Alpha List -->
+    <ul id="alpha_list" class="alpha-list">
+      {% for char in alpha %}
+        <a href="{{ url_for( 'spotify.index_by_letter', letter=char) }}">
+          <li class="alpha-pill">{{ char }}</li>
+        </a>
+      {% endfor %}
+    </ul>
+
+    <form method="POST">
+      <p style="color: antiquewhite;">
+        {{ form.search_term.label }}
+        {{ form.search_term(size=20) }}
+      </p>
+    </form>
+  </div>
+</div>
+    
+
+{% block content %} {% endblock %}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+<style>
+.navbar-toggler-icon {
+background-color: #fff; 
+border: 1px solid #62f39a; 
+}
+
+
+.navbar-toggler-icon::before {
+content: '\2261'; /* Unicode character for three horizontal lines */
+color: #000;
+font-size: 24px; 
+}
+</style>
+      
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Open Graph meta tags for link previews -->
+    <meta property="og:title" content="Fred Lambuth on The Internet">
+    <meta property="og:description" content="The place where I publish my musings and people can look into my digital binder of music CDs.">
+    <meta property="og:image" content="{{ url_for('static', filename='img/sailor.jpg') }}">
+    <meta property="og:url" content="{{ url_for('homepage') }}">
+    <meta property="og:type" content="website">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+    crossorigin="anonymous">
+    
+    <link rel="icon" type="image/png" sizes="16x16" href="{{url_for('static',filename='favicon-16x16.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{url_for('static',filename='favicon-32x32.png')}}">
+
+</head>
+  
+<body>
+<header>
+
+    <nav class="navbar navbar-expand-lg navbar-dark-bg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('homepage') }}" id="homeDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <img src="{{ url_for('static', filename='favicon.ico') }}" alt="Favicon" class="navbar-favicon" title="Howdy!">
+                <span class="pill-text">FREDLAMBUTH</span>.com
+            </a>
+    
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('spotify.spotify_landing_page') }}"><i class="fab fa-spotify"></i> Spotify</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog.blog_landing_page') }}"><i class="fas fa-book-open"></i> Blog</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('contact') }}"><i class="fas fa-bullhorn"></i> Contact</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <!-- User is logged in, show link to user page -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('user_accounts.user_page') }}"><i class="fas fa-user"></i> Account</a>
+                        </li>
+                    {% else %}
+                        <!-- User is not logged in, show link to register page -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('user_accounts.account') }}"><i class="fas fa-user-plus"></i> Account</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div >
+    {% block content %} {% endblock %}
+</div>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

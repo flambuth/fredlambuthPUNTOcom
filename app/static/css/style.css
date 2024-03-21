@@ -1,0 +1,169 @@
+.white-pill {
+  background-color: white;
+  color: #333; /* You can adjust the text color as needed */
+  padding: 5px 10px; /* Adjust padding as needed */
+  border-radius: 20px; /* Adjust border radius as needed */
+  display: inline-block; /* Ensures the pill only takes up as much width as necessary */
+  margin-bottom: 5px; /* Add margin to separate pills */
+}
+
+.navbar {
+  border-bottom: 4px solid #238a6b;
+  z-index: 3;
+}
+
+.navbar-dark-bg {
+    background-color: #1c0829; /* Use the hex color code for black */
+    }
+
+.navbar-brand {
+color: white; /* Set the text color to white */
+text-shadow: -4px -4px 0 blue, 4px 4px 0 red;
+}
+
+/* Custom styles for the pill shape */
+.pill-text {
+background-color: white;
+padding: 5px 15px; /* Adjust padding as needed for the desired shape */
+border-radius: 25px; /* Adjust the border radius for the pill shape */
+color: black; /* Set the text color to black */
+text-shadow: -2px -2px 0 rgb(121, 204, 252), 2px 2px 0 rgb(238, 124, 190);
+}
+
+
+/* Apply the hover effect to the favicon */
+.navbar-favicon:hover {
+    filter: invert(100%);
+}
+
+.navbar-nav .nav-link {
+color: wheat; /* Set the text color to white */
+}       
+
+:root {
+  --pop-color: rgb(253, 136, 224);
+  --electronic-color: rgb(91, 233, 243);
+  --rock-color: rgb(214, 75, 11);
+  --punk-color: rgb(158, 247, 85);
+  --funk-color: rgb(92, 117, 75);
+  --indie-color: rgb(123, 85, 145);
+  --old-color: rgb(189, 184, 118);
+  --country-color: rgb(214, 214, 205);
+}
+
+.pop-border {
+  border: solid 2px var(--pop-color);
+  padding: 14px;
+}
+
+.pop-border h2 {
+  background-color: var(--pop-color);
+  color: #17241f;
+}
+
+.electronic-border {
+  border: solid 2px var(--electronic-color);
+  padding: 14px;
+}
+
+.electronic-border h2 {
+  background-color: var(--electronic-color);
+  color: #17241f;
+}
+
+.rock-border {
+  border: solid 2px var(--rock-color);
+  padding: 14px;
+}
+
+.rock-border h2 {
+  background-color: var(--rock-color);
+  color: #17241f;
+}
+
+.punk-border {
+  border: solid 2px var(--punk-color);
+  padding: 14px;
+}
+
+.punk-border h2 {
+  background-color: var(--punk-color);
+  color: #17241f;
+}
+
+.funk-border {
+  border: solid 2px var(--funk-color);
+  padding: 14px;
+}
+
+.funk-border h2 {
+  background-color: var(--funk-color);
+  color: #17241f;
+}
+
+.indie-border {
+  border: solid 2px var(--indie-color);
+  padding: 14px;
+}
+
+.indie-border h2 {
+  background-color: var(--indie-color);
+  color: #17241f;
+}
+
+.old-border {
+  border: solid 2px var(--old-color);
+  padding: 14px;
+}
+
+.old-border h2 {
+  background-color: var(--old-color);
+  color: #17241f;
+}
+
+.country-border {
+  border: solid 2px var(--country-color);
+  padding: 14px;
+}
+
+.country-border h2 {
+  background-color: var(--country-color);
+  color: #17241f;
+}
+
+
+.pop {
+  background-color: var(--pop-color);
+}
+.electronic {
+  background-color: var(--electronic-color);
+}
+.rock {
+  background-color: var(--rock-color);
+}
+.punk {
+  background-color: var(--punk-color);
+}
+.funk {
+  background-color: var(--funk-color);
+}
+.indie {
+  background-color: var(--indie-color);
+}
+.old {
+  background-color: var(--old-color);
+}
+.country {
+  background-color: var(--country-color);
+}
+
+
+.dash-div {
+  border: 2px solid teal;  /* Solid 2px border */
+  border-radius: 5px; /* 15% border radius */
+  color:palegreen;
+  background-color: #17241f;
+  
+}
+
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');

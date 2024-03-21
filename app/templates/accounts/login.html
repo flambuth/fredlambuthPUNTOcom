@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+
+<title>Untold Blog Pleasures Await You</title>
+
+<body class="w3-black">
+
+<div class="container">
+    <h1>Sign In</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        
+        {% if form.errors %}
+            <p style="color: red;">Invalid username or password. Please try again.</p>
+        {% endif %}
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="image-div">
+                <img src="{{ url_for('static', filename='img/magic_word.jpg') }}" alt="Your Image">
+            </div>
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+            {% if form.username.errors %}
+                <span style="color: red;">{{ form.username.errors[0] }}</span><br>
+            {% endif %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+            {% if form.password.errors %}
+                <span style="color: red;">{{ form.password.errors[0] }}</span><br>
+            {% endif %}
+        </p>
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+</div>
+{% endblock %}

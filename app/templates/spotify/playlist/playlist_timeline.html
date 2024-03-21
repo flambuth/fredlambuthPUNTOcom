@@ -1,0 +1,140 @@
+{% include 'base.html' %}
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+
+<title>Playlist Timeline</title>
+
+{% include 'spotify/spotify_header.html' %}
+
+<style>
+    ul.timeline {
+        list-style-type: none;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+    /* Timeline vertical line */
+    ul.timeline:before {
+        content: ' ';
+        background: #926161;
+        display: inline-block;
+        position: absolute;
+        left: 16px;
+        width: 4px;
+        height: 100%;
+        z-index: 400;
+        border-radius: 1rem;
+    }
+
+    li.timeline-item {
+        margin: 20px 0;
+    }
+
+    /* Timeline item arrow */
+    .timeline-arrow {
+        border-top: 0.5rem solid transparent;
+        border-right: 0.5rem solid #fff;
+        border-bottom: 0.5rem solid transparent;
+        display: block;
+        position: absolute;
+        left: 2rem;
+    }
+
+    /* Timeline item circle marker */
+    li.timeline-item::before {
+        content: ' ';
+        background: #012b25;
+        display: inline-block;
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        left: 11px;
+        width: 14px;
+        height: 14px;
+        z-index: 400;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .background-image-container {
+        position: relative;
+        width: 100%;
+        height: 200px; /* Adjust the height as needed */
+        overflow: hidden;
+    }
+
+    .background-image {
+        width: 100%;
+        height: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .content-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 1;
+        padding: 50px; /* Adjust as needed */
+        width: 66%;
+        text-align: center;
+    }
+
+    .content-container h1,
+    .content-container p {
+        font-size: 1em; /* Adjust the font size as needed */
+        background-color: rgba(19, 73, 66, 0.35);
+        display: inline-block;
+        width: 66%;
+    }
+
+</style>
+
+<div class="background-image-container">
+    <img src="{{ url_for('static', filename='img/playlist_pics/' + tracks[0][0].playlist_id + '.jpg') }}" class="background-image">
+    <div class="row text-center mb-5">
+        <div class="col-lg-8 mx-auto content-container">
+                <h1 class="display-4">{{ tracks[0][0].playlist_name }}</h1>
+                <p class="lead mb-0">
+                    {{ tracks[0][0].added_at.strftime("%Y-%m-%d") }} - {{ tracks[-1][0].added_at.strftime("%Y-%m-%d") }}
+                </p>               
+        </div>
+    </div>
+</div>
+
+
+<div class="container py-5">
+
+    <div class="row">
+        <div class="col-lg-7 mx-auto">
+            {% for track in tracks %}
+            <!-- Timeline -->
+            <ul class="timeline">
+                <li class="timeline-item rounded ml-3 p-4 shadow {{ track[2] }}">
+                    <div class="timeline-arrow"></div>
+                    <div class="row" style="background-color: #012b25;">
+                        <!-- Left column for text items -->
+                        <div class="col-md-9 ">
+                            <h2 class="h5 mb-0">{{ track[0].track_name }}</h2>
+                            <span class="small text-gray"><i class="fa fa-clock-o mr-1"></i>{{ track[0].added_at }}</span>
+                            
+                        </div>
+                        <!-- Right column for the image -->
+                        <div class="col-md-3 text-right">
+                            <img src="https://i.scdn.co/image/{{ track[1] }}" alt="Track Image" class="circular-image img-fluid" />
+                            <p class="text-small mt-2 font-weight-light">{{ track[0].art_name }}</p>
+                        </div>
+                    </div>
+                </li>
+            </ul><!-- End -->
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+    
+{% endblock %}

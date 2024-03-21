@@ -1,0 +1,27 @@
+{% set alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'] %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/sidebar.css') }}">
+
+<style>
+</style>
+
+<aside>
+    <a href="{{ url_for('spotify.spotify_landing_page')  }}">
+      <i class="fa fa-home" aria-hidden="true"></i>
+      Spotify Home
+    </a>
+
+    <a href="{{ url_for('spotify.art_cat_landing_page')  }}">
+        <i class="fa fa-list" aria-hidden="true"></i>
+        Artist Catalog
+    </a>
+
+    <a href="{{ url_for('spotify.track_cat_landing_page')  }}">
+        <i class="fa fa-sign" aria-hidden="true"></i>
+        Track Catalog
+    </a>
+
+    {% for letter in alpha %}
+        <a href="{{ url_for('spotify.index_tracks_by_letter', letter=letter) }}">{{ letter }}</a>
+    {% endfor %}
+</aside>

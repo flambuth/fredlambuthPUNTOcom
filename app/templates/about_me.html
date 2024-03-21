@@ -1,0 +1,352 @@
+{% include 'base.html' %}
+{% block content %}
+
+<head>
+    <title>Getting To Know Me!</title>
+    <style>
+        html, body {
+            height: 100%; /* Make sure the body and HTML element occupy the full viewport height */
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+
+        body {
+        background-color: black;
+        color: white; /* Set text color to white */
+        }
+
+        figcaption {
+        font-size: 11px; /* Adjust the font size as needed */
+        text-align: center; /* Center-align the captions */
+        color: #999; /* Adjust the text color for the captions */
+        /* You can add more CSS properties as needed */
+    }
+
+        .section-header.text-center {
+            background-color: rgb(251, 253, 252);
+            border-radius: 7%;
+            color: #333;
+            border: 5px solid  #238a6b;
+            padding: 5px;
+        }
+
+        .section-header h2{
+            font-size:32px;
+            letter-spacing:6px;
+            color:#333;
+            margin-top:0;
+            margin-bottom:35px;
+            font-weight:300;
+        }
+        .section-header p{
+            margin-top:30px;
+            line-height:1.7em;
+            color:#464242;
+            font-size:16px;
+        }
+
+        .basic-info{
+            padding-top:100px;
+            padding-bottom:100px;
+            position:relative;
+            border-bottom:solid 1px #F0F0F0;
+        }
+        .basic-info .section-header{
+            margin-bottom:80px;
+        }
+
+        .about-info > p{
+            line-height:1.8em;
+            margin-top:-.4em;
+        }
+
+        .about-person-img{
+            text-align:center;
+        }
+        .about-person-img > img{
+            max-width:100%;
+        }
+
+        .card-body-with-image {
+            position: center;
+        }
+
+        .rounded-image {
+            border-radius: 98px; 
+            border: 3px solid #238a6b;
+        }
+
+        .custom-list {
+    list-style: none;
+    padding-left: 0;
+    }
+
+        .custom-list li {
+            margin-bottom: 10px; /* Adjust the spacing between list items */
+            text-align: center; /* Center-align the text within each list item */
+        }
+
+        .background-wrapper {
+    background-image: url("{{url_for('static', filename='img/bg5.jpg')}}");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 100vh;
+    position: relative; /* Add relative positioning to create a stacking context */
+}
+
+        .background-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(18, 24, 21, 0.8);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+
+
+        .container,
+        .footer {
+            position: relative;
+            z-index: 2; /* Higher value for elements that should be on top */
+        }
+    </style>
+
+</head>
+<div class="background-wrapper"> 
+<div class="container">
+<div class='basic-info section-block style="padding: 30px;'>
+    <div class='section-header text-center' >
+        <center>
+            <h2>About me</h2>
+            <a href="{{ url_for('serve_resume_pdf') }}" class='symp-btn link-btn'><i class='ion-ios-download'></i>Resume(PDF)</a> | <a href="{{ url_for('online_resume') }}" class='symp-btn link-btn'><i class='ion-ios-download'></i>Online Resume(HTML)</a>
+            </center>
+            <hr>
+            <div class="row">
+                <div class='col-md-4'>
+                    <div class='about-person-img'>
+                        <img src="{{url_for('static', filename='img/about_me/man2.jpg')}}" alt='Photo of Fred' class="rounded-image">
+                    </div>
+                </div>
+        
+                <div class='col-md-8 about-info'>
+                    <ul class="custom-list">
+                        <li>
+                            <div class='inner'>
+                                <h4>Name:</h4>
+                                <p>Fredrick William Lambuth Hernandez</p>
+                            </div>
+                        </li>
+            
+                        <li>
+                            <div class='inner'>
+                                <h4>Hometown:</h4>
+                                <p>Houston, TX and/or CDMX</p>
+                            </div>
+                        </li>
+            
+                        <li>
+                            <div class='inner'>
+                                <h4>Currently Located:</h4>
+                                <p>San Antonio, TX</p>
+                            </div>
+                        </li>
+        
+                        <li>
+                            <div class='inner'>
+                                <h4>Languages:</h4>
+                                <p>English, Spanish, French</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        
+                <br>
+                <p>
+                    I like working with computers! I don’t mean just development of new code, or managing the compute resources to deploy code. I mean computers, any which way they come. I think they are a handy tool that I try to learn more about all the time so I can use them better. This started with my family PC, which was a 486 with 4 mb of RAM, 500 mb HDD. What did I want to do with that? Play video games, as many as I could, as cheap as possible, and online whenever I could. Getting PC games to work as best as it could on my limited hardware and on dial-up networks-or sometimes setting up a local area network- was my first education in getting computers to bend to my will.
+                </p>
+                   
+                <div class="row">
+                    <div class='col'>
+                        <p>
+                            However, that was as far as I wanted to take my interest in computers, or computer science, or whatever you can call my interest. In high school I spent a lot of time and money building my own gaming PCs for myself or friends who wanted one built. I did not see a future using what knowledge I had about how computers operate or how they are connected via the Internet. By the time I got to college my only thoughts about my future involved a classical liberal arts education done with book learning, lecture attending, essay writing, and test taking.                
+                        </p>
+                    </div>
+                    <div class='col-md-4'>
+                        <div class='about-person-img'>
+                            <figure>
+                                <img src="{{url_for('static', filename='img/about_me/me0.jpg')}}" alt="Your Image" class="rounded-image">
+                                <figcaption>The earlist photo I have of myself as an adult.</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    After five years (the five was because I was just having too much fun!) of Texas A&M University’s curriculum in Political Science, I thrust my young self out into the 2009 job market, which just got hit with what would be called ‘The Great Recession’. With not much luck finding any work in my native USA, I found a ESL teaching grant in Spain. I had the honor of teaching English as a second language in the big flat round spot of plains south of Madrid called La Mancha. My travels were a bit bold compared to my colleagues. I wanted the full foreigner experience while I had the chance. I found that with the right attitude, prep work about the language and history, and a willingness to try anything the locals do will open a lot of doors whenever you’re a stranger in a strange land.
+                </p>
+
+
+                <div class="row">
+                    <div class='col-md-2'>
+                        <div class='about-person-img'>
+                            <img src="{{url_for('static', filename='img/about_me/me1.jpg')}}" alt="Your Image" class="rounded-image">
+                        </div>
+                    </div>
+                    <div class='col'>
+                        <p>
+                            The teaching grant did not last forever. Spain was feeling economic pressure and ended the ESL program. Or at least the payment part of it. I found this to be a sign to return to my homeland and try getting a grownup’s job now that I can say I have ‘professional experience’ under my belt. I use the word ‘grownup’ because I did feel I was living my life to the fullest in my twenties. However I knew being the same person into your thirties is not cool. I knew I needed something more ‘grown up’ but I still did not really know what that was.                <p>
+                        </p>
+                    </div>
+                </div>
+
+                <p>
+                    Working in landscaping by day and bartending by night. Any job I thought I might be good at that required a college degree was not impressed with my credentials. Seeking work as a public school teacher entered my sights because of the attainability of the job. To do so required a lot of more ‘schooling’ and money  which I did not have. I was feeling a little desperate. Trapt in a life that was fun at the moment, but burdened with a lack of ideas about where I was going to be in five or ten years                
+                </p>
+                
+                <p>
+                    Back against the corner of my impending end of youth, I did something drastic and joined the US Navy. It had been a wild hair I’ve always had rooted in from growing up in a family rife with sailors and marines. The surface reason for why I joined was to learn a trade- computers. The subtext was I had a curiosity about what military life was like. They also promised I’d get to see the world!
+                </p>
+                
+                <p>
+                    The Navy had me for six years. The first two were classroom instruction  that reminded me of college, but with uniforms and stricter enforcement of rules.  I was taught the fundamentals of electronic engineering and the instruments needed to diagnose what is wrong with electronic components, and at the end a focused class on the actual piece of equipment I would be responsible for at sea. The following four years were ‘the fleet’. However, my ship in the fleet was a yet to be built new class of aircraft carrier that was not set to be seaworthy until years after I arrived. The job I had been taught to perform was on hold until my ship was ready to get underway.
+                </p>
+
+                <p>
+                    For a year or two before the ship finally went to sea I kinda had the ‘grown up’ adult job facilitating the IT and office management needed for my department’s offices in the shipyard. More and more leadership was showing up all the time needing a PC to connect to classified and unclassified networks, and they needed an office to use the PC. My chain of command noticed I was capable of installing a Windows office network and jumping through the administrative hoops to officially order the office equipment requested by departmental leadership.
+                </p>
+
+                <div class="row">
+                    <div class='col'>
+                        <p>
+                            The last two years we were finally making cruises for weeks at a time. I did not get to see the world outside the Chesapeake Bay area and the middle of the Atlantic. No port calls. Only testing. My equipment, CDLMS, Common Data Link Management System, was a very active part of the operations of an at-sea carrier performing flight ops. Our ship’s particular hardware installation was a custom configuration made out of convenience of the shipbuilding process, meaning the official documentation I was prescribed to do my job did not match that of my equipment. At the moment, this was a nightmarish work environment. In retrospect it was one of the moments my dad said would ‘build character’.
+                        </p>
+                    </div>
+                    <div class='col-md-3'>
+                        <div class='about-person-img'>
+                            <img src="{{url_for('static', filename='img/about_me/me2.jpg')}}" alt="Your Image" class="rounded-image">
+                            <figcaption>Remember, you're here forever.</figcaption>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    I did find Unix/Linux knowhow because the CLIs were something I could find that made sense in that frankenstein hodge-podge of archaic computers working together to share radar telemetry with other ships. The fostering of relationships with all the other maintenance techs that are involved with LINK transmission also showed me how to get a cranky employee to help you with your problem. The spottiness of offship email and the frequency of unknown faults also taught me how to write very concise yet info dense emails.
+                </p>
+
+                <p>
+                    Taking this comfort I had working with less than modern computers that can only be interacted with at the command line found me work as a Systems Administrator for a company holding a longstanding contract to maintain software used by the Department of the Navy. A lot of the apps involved in this contract were ‘legacy’ that required Solaris as the operating system. 
+                </p>
+
+                <p>
+                    I was hired to be the first ‘junior’ admin for the development and test environment. For many years the position was just one admin passing down what they knew from one to the next, with actually only a few in the twenty year lifespan of the development and test environment. This boss was a command line wizard that resolved every trouble ticket with VIM.
+                </p>
+
+                <div >
+                    <img src="{{url_for('static', filename='img/about_me/me5.jpg')}}" alt="Your Image" class="rounded-image" style="height: 300px;">
+                    <figcaption>I still love to put together hardware.</figcaption>
+                </div>
+
+                <p>
+                    Even though he was the best Solaris admin there was in town, he wasn’t untouchable. He got fired and I got shoehorned into his position. I wasn’t pleased with it, but once again I heard the whisper of my dad telling me this would once again, ‘build character’. It was not a total disaster. The release cycle for software coming out of the environment I managed came out on time. The people that had regular needs among the servers I managed found  me to be much more agreeable than the Unix wizard before me. So much so that they brought lots of new ideas forward because they were no longer afraid to deal with IT.
+                </p>
+
+                <p>
+                    Behind the scenes of my day job, I was learning Python as a language for software development. This began back in my time in the Navy when I had a hunch knowing the in’s and out’s of one programming language would be helpful in a career in IT, even though it does not require that kind of knowledge. I found opportunities to use Python for quick problem solving at my job and replaced some of my Bash scripts with Python ones. This foray into Python whetted my appetite for something in development. A place where I could build something from the ground up rather than police the work of others.
+                </p>
+
+                <div class="row">
+                    <div class='col-md-2'>
+                        <div class='about-person-img'>
+                            <img src="{{url_for('static', filename='img/about_me/me3.jpg')}}" alt="Your Image" class="rounded-image">
+                        </div>
+                    </div>
+                    <div class='col'>
+                        <p>
+                            Cashing in a quarter of the GI Bill I received in exchange for years of military service, I attended a 20-week course in Data Science, brought to you by Codeup in San Antonio, TX. I made the selection because the curriculum was for Python. At the time my personal learning path had been toward web development. There were no non-data science boot camps taught in Python that I could find. I took that as a sign that data science could be my calling because I did not want to put aside what I had invested in learning Python.
+                        </p>
+                    </div>
+                </div>
+
+
+                <p>
+                    My first job after receiving this thorough instruction in Python and predictive models built using data science and machine learning libraries was promised to use both Python and data science. What I did find was old fashioned business intelligence and SQL. There was indeed one working forecasting model (that has not changed much since its creation in the 90s), and I did get to be a part of auditing this model so I did get to say I was doing ‘data science’. The great bulk of my work was automating what was before done manually. For a while I indeed get to use Python to do my work on my laptop. Any solution that needed to scale up and get scheduled needed to be reworked into SQL
+                </p>
+
+                <p>
+                    After building a lot of data architecture and then orchestrating the pipelines between them using SQL I came to discover just what ‘data engineering’ just might be. Ever since I saw that term I drew to it much more than ‘data science’ or ‘system administrator’. I think I for once can see what ‘value’ I bring to an organization that has a lot of data on their hands but don’t know what to do with it.
+                </p>
+
+                <div class="row">
+                    <div class='col'>
+                        <p>
+                            I know I like Python, I know I like automating things, and I know I’ve got the vocabulary to talk about data to people who want things from it, but don't know how to say it in tech terms.
+                        </p>
+                    </div>
+                    <div class='col-md-2'>
+                        <div class='about-person-img'>
+                            <img src="{{url_for('static', filename='img/about_me/me4.jpg')}}" alt="Your Image" class="rounded-image">
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+        
+    </div>
+    
+</div>
+
+    <div class='divider-draft center'></div>
+        <br>
+        <div class='section-header text-center'>
+            <h2>About this site</h2>
+            <!--divider-->
+            <p>
+                The evolution of the app hosted on fredlambuth.com mirrors my own professional journey, reflecting my growth in Python programming, back-end/front-end development, and software design patterns.
+            </p>
+
+            <p>
+                A decade ago, with only a basic grasp of Linux shell scripting, I crafted a simple three-page static WordPress site from a free YouTube course. I  think it had a big graphic homepage with some of my artwork, a resume and a contact page. My primary goal at the time was to understand the intricacies of the LAMP stack for server deployment- with an online resume being a byproduct of learning how to manage a website from the metal up.            
+            </p>
+            
+            <p>
+                When I felt I knew enough Python to try Django about five years ago, this website was rebooted into the answer to the question: "What do you listen to?" I used to be quite the hipster in my youthful years. That question was axiomatic among my crowd in those days.
+            </p>
+
+            <p>
+                The header beneath the navigation bar serves as my shorthand answer, a current look at my musical preferences, sampling from data made in 2020 to the present. Had John Cusack’s character in High Fidelity known how to write code, I imagine he would have done similar. Especially the genre indexing stuff.            </p>
+            </p>
+
+            <p>
+                In late 2020 I wrote some Python scripts that made regular requests to Spotify’s REST API on the same cloud server I was hosting my simple Django site. I built some dimensional tables from the info I found in the daily dumps. This CLI only back-end went on for a few months. It was great data, but what was I supposed to do with it? I wanted to publish this stuff and a website was the best way to do it. I’m not gonna email out excel files to my friends.
+            </p>
+
+            <p>
+                In early 2021, I developed a section of my Django application that presented listening data through a set of basic HTML pages. It was a read-only app with minimal dynamism but included features like search functionality and robust indexing linked to the URL schema. While I attempted to integrate Plotly dashboards to achieve interactivity, Django posed certain integration challenges.            
+            </p>
+
+            <p>
+                Fast forward to early 2023 when I decided to revamp the front-end using Flask, appreciating its flexibility and adaptability compared to the more structured Django. What I've learned from maintaining and continually updating this web app is the invaluable experience of working within constraints. Instead of creating entirely new codebases for each new lesson or technology, I now approach learning with a focus on integration into my existing tech stack, aligning more closely with the challenges faced in my professional career.
+            </p>
+            
+            <p>
+                The addition of the Blog section marked the start of the Flask era. The Spotify section is data I present with my own CSS templates. The Dashboard section uses Plotly, which smuggles in Javascript to do some snazzy dynamic stuff without me having to implement it myself.            </p>
+            <br>
+            <div class='divider-draft center'></div>
+            <!--/divider-->
+            <br>
+            
+        </div>
+    </div>
+    <br>
+</div>
+
+{% endblock %}
