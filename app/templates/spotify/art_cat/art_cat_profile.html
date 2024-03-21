@@ -1,0 +1,155 @@
+{% extends 'spotify/art_cat/art_cat_base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+
+<section>
+    <div class="container py-5">
+  
+      <div class="row">
+
+        <div class="col-lg-4">
+          <div class="card mb-4">
+              <div class="card-body text-center">
+                <img src="https://i.scdn.co/image/{{ img_url_mid }}" alt="avatar" class="rounded-circle img-fluid with-border" style="width: 150px;">
+                  <h5 class="my-3">{{ art_name }}</h5>
+                  {% if genre1 %}
+                      <p class="white-pill mb-0">
+                          <a href="{{ url_for('spotify.index_by_genre', master_genre=genre1) }}">
+                              {{ genre1 }}
+                          </a>
+                      </p>
+                  {% endif %}
+                  {% if genre2 %}
+                      <p class="white-pill mb-0">
+                          <a href="{{ url_for('spotify.index_by_genre', master_genre=genre2) }}">
+                              {{ genre2 }}
+                          </a>
+                      </p>
+                  {% endif %}
+                  {% if genre3 %}
+                      <p class="white-pill mb-0">
+                          <a href="{{ url_for('spotify.index_by_genre', master_genre=genre3) }}">
+                              {{ genre3 }}
+                          </a>
+                      </p>
+                  {% endif %}
+                  
+                  <hr>
+                  <div class="spotify-icon-container" style="margin-bottom: 10px; margin-right: 15px;">
+                    <a href="https://open.spotify.com/artist/{{ art_id }}" target="_blank" rel="noopener noreferrer" title="Link to hear on Spotify">
+                        <i class="fab fa-spotify fa-3x"></i>
+                    </a>
+                    
+                  </div>
+                  <p class="mb-0 ms-2">Spotify Artist URL</p>
+                  <div class="spotify-icon-container" style="margin-right: 5px;">
+                    <!-- <a href="http://127.0.0.1:5000/spotify/art_cat/artist/dash/{{ art_id }}" target="_blank" rel="noopener noreferrer"> -->
+                    <a href="https://fredlambuth.com/spotify/art_cat/artist/dash/{{ art_id }}" target="_blank" rel="noopener noreferrer">
+                      <i class="fas fa-chart-line fa-3x"></i>
+                    </a>
+                    
+                  </div>
+                  <p class="mb-0 ms-2">Artist Dashboard</p>
+              </div>
+            </div>
+      </div>
+
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Spotify Followers</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="mb-0" style="color: wheat;">{{ followers }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Total Days on Charts</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="mb-0" style="color: wheat;">{{ total_days_on_charts }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">First Chart Appearance</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="mb-0" style="color: wheat;">{{ first_appearance }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Last Chart Appearance</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="mb-0" style="color: wheat;">{{ last_appearance }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-md-6">
+                <div class="card mb-4 mb-md-0">
+                    <div class="card-body">
+                        <p class="mb-4"><span class="text me-1">Listening Streaks</span></p>
+            
+                        {% if streaks %}
+                            <ul class="list-group">
+                                {% for date, length in streaks.items() %}
+                                    <li class="list-group-item d-flex justify-content-between streak-item" style="color: darkslategray;">
+                                        <span>{{ date }}</span>
+                                        <span>{{ length }} days</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No listening streaks available.</p>
+                        {% endif %}
+            
+                    </div>
+                </div>
+            </div>
+            
+
+            {% if notable_tracks %}
+            <div class="col-md-6">
+              <div class="card mb-4 mb-md-0">
+                <div class="card-body">
+                  <p class="mb-4"><span class="text me-1">Favorite Tracks</span> 
+                  </p>
+
+                  <ul class="list-group">
+                    {% for track in notable_tracks %}
+                      <li class="list-group-item d-flex justify-content-between" style="color: darkslategray;">
+                        <span><a href="https://open.spotify.com/track/{{ track[1] }}" style="text-decoration: none; color: inherit;">{{ track[0] }}</a></span>
+                      </li>
+                    {% endfor %}
+                </ul>
+                  
+
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+          </div>
+
+        </div>
+        
+      </div>
+    </div>
+</section>
+{% endblock %}

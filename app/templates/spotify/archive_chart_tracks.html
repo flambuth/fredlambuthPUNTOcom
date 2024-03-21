@@ -1,0 +1,108 @@
+{% include 'base.html' %}
+
+{% block content %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/sidebar.css') }}">
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+{% include 'spotify/spotify_header.html' %}
+
+<title>{{ chart_type}} Archives</title>
+
+<style>
+
+
+
+</style>
+
+<div class="container" style="max-width: 59%;">
+
+    <h1 class="text-center">Daily Tracks Archives</h1>
+
+    
+    <div class="row justify-content-center">
+
+        <div class="col-2 text-center">
+            <a href="{{ url_for('spotify.tracks_prev',year=date_back_1month.year, month=date_back_1month.strftime('%m'), day=date_back_1month.strftime('%d')) }}" class="btn btn-secondary"><<</a>
+        </div>
+
+        <div class="col-2 text-center">
+            <a href="{{ url_for('spotify.tracks_prev',year=date_back_1day.year, month=date_back_1day.strftime('%m'), day=date_back_1day.strftime('%d')) }}" class="btn btn-secondary">&lt;</a>
+        </div>
+
+        <div class="col-4 text-center">
+            <h4>{{ date_obj.isoformat() }}</h4>
+        </div>
+
+        <div class="col-2 text-center">
+            <a href="{{ url_for('spotify.tracks_prev',year=date_fwd_1day.year, month=date_fwd_1day.strftime('%m'), day=date_fwd_1day.strftime('%d')) }}" class="btn btn-secondary">&gt;</a>
+        </div>
+
+        <div class="col-2 text-center">
+            <a href="{{ url_for('spotify.tracks_prev',year=date_fwd_1month.year, month=date_fwd_1month.strftime('%m'), day=date_fwd_1month.strftime('%d')) }}" class="btn btn-secondary">>></a>
+        </div>
+    </div>
+
+    <div class="list-group">
+        {% for record in records %}
+        
+        <div class="row align-items-center">
+            <div class="col-1">
+                <div class="circle">
+                    <p>{{ record[0].position }}</p>
+                </div>
+            </div>
+            
+            <div class="col-2">
+            <img src="https://i.scdn.co/image/{{ record.img_url_sml }}" title="Que culazo!" class="with-border image-container">
+            </div>
+            
+            {% if record.master_genre == 'rock' %}
+            <div class="col-4 rock">
+        {% elif record.master_genre == 'pop' %}
+            <div class="col-4 pop">
+        {% elif record.master_genre == 'electronic' %}
+            <div class="col-4 electronic">
+        {% elif record.master_genre == 'punk' %}
+            <div class="col-4 punk">
+        {% elif record.master_genre == 'funk' %}
+            <div class="col-4 funk">
+        {% elif record.master_genre == 'indie' %}
+            <div class="col-4 indie">
+        {% elif record.master_genre == 'old' %}
+            <div class="col-4 old">
+        {% elif record.master_genre == 'country' %}
+            <div class="col-4 country">
+        {% else %}
+            <div class="col-4">
+        {% endif %}
+
+        {% if chart_type == 'Tracks' %}
+            <a href="https://open.spotify.com/track/{{ record[0].song_id }}" class="list-group-item list-group-item-action">
+                {{ record[0].song_name }}
+                <p>by <b>{{ record[0].art_name }}</p></b>
+            </a>
+            </div>
+
+            <div class="col-5 white-pill">
+                {{ record.genre }} {% if record.genre2 is not none %}, {{ record.genre2 }}{% endif %}
+            </div>
+
+        {% elif chart_type == 'Artists' %}
+            <a href="https://open.spotify.com/artist/{{ record[0].art_id }}" class="list-group-item list-group-item-action">
+                <p><b>{{ record[0].art_name }}</p></b>
+            </a>
+            </div>
+
+            <div class="col-5 white-pill">
+                {{ record.genre }} {% if record.genre2 is not none %}, {{ record.genre2 }}{% endif %}
+            </div>
+
+        {% endif %}
+
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

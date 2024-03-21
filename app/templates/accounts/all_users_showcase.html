@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<title>The Gang So Far</title>
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<style>
+    .outer-row {
+    
+    border-radius: 2%;
+    border: 2px solid #073a33;
+    background-image: linear-gradient(to bottom, #045335, #073a33);
+}
+
+    .white-pill {
+        /* Add any styling you want for your white-pill class */
+        margin: 0 5px; /* Adjust the margin as needed */
+    }
+</style>
+
+<div class="container">
+    <hr>
+    {% for user in user_stats %}
+    <div style="background-color: #296c6e; padding: 10px; margin-bottom: 19px;">
+        <div class="row outer-row">
+            <div class="col-3">
+                <img src="{{ url_for('static', filename='img/user_pics/' + user[0] + '.jpg') }}" alt="One of our lovely Fredlambuth.com users!" class="circular-image">
+                <h3>{{ user[0] }}</h3>  <!-- Display username underneath the image -->
+            </div>
+            <div class="col-9">
+                <p>Total Comments: {{ user[1][0] }}</p>  <!-- Heading for total comments -->
+                <p>Member Since: {{ user[1][1] }}</p>  <!-- Heading for member since -->
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

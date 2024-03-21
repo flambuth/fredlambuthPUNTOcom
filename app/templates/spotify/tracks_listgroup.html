@@ -1,0 +1,40 @@
+<div class="row align-items-center">
+            <div class="col-1">
+                <div class="circle">
+                    <p>{{ track[0].position }}</p>
+                </div>
+            </div>
+            
+            <div class="col-2">
+            <img src="https://i.scdn.co/image/{{ track.img_url_sml }}" title="Que culazo!" class="with-border image-container">
+            </div>
+            
+            {% if track.master_genre == 'rock' %}
+            <div class="col-4 rock">
+        {% elif track.master_genre == 'pop' %}
+            <div class="col-4 pop">
+        {% elif track.master_genre == 'electronic' %}
+            <div class="col-4 electronic">
+        {% elif track.master_genre == 'punk' %}
+            <div class="col-4 punk">
+        {% elif track.master_genre == 'funk' %}
+            <div class="col-4 funk">
+        {% elif track.master_genre == 'indie' %}
+            <div class="col-4 indie">
+        {% elif track.master_genre == 'old' %}
+            <div class="col-4 old">
+        {% elif track.master_genre == 'country' %}
+            <div class="col-4 country">
+        {% else %}
+            <div class="col-4">
+        {% endif %}
+            <a href="https://open.spotify.com/track/{{ track[0].song_id }}" class="list-group-item list-group-item-action" title="Link to hear on Spotify">
+                {{ track[0].song_name }}
+                <p>by <b>{{ track[0].art_name }}</p></b>
+            </a>
+            </div>
+
+            <div class="col-5 white-pill">
+                {{ track.genre }}{% if track.genre2 %}, {{ track.genre2 }}{% endif %}
+            </div>
+        </div>

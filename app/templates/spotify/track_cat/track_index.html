@@ -1,0 +1,35 @@
+{% include 'base.html' %}
+
+{% block content %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+{% include 'spotify/track_cat/track_header.html' %}
+
+<title>{{ letter }} Tracks</title>
+
+<style>
+    .container {
+  max-width: 76%;
+}
+</style>
+
+<div class="container text-center">
+
+    {% if track_index is not defined or track_index|length == 0 %}
+    <p>The variable is empty or undefined.</p>
+    {% else %}
+        {% if letter is defined %}
+        <p>{{ track_index|length }} tracks when indexed by {{ letter }}</p>
+        {% endif %}
+    {% endif %}
+
+    <div class="row">
+        {% for track in track_index %}
+
+        {% include 'spotify/track_cat/track_record_card.html' %}
+        
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

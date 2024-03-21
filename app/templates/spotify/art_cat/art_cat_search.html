@@ -1,0 +1,25 @@
+{% include 'spotify/art_cat/art_cat_base.html' %}
+
+{% block content %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+
+<div class="container text-center">
+    <span class="title"><h1> Spotify Artists Search Results</h1></span>
+    <h4>All artists that contain your search terms(s).</h4>
+    <hr>
+        {% if like_arts %}
+        <div class="row">
+            {% for item in like_arts %}
+    
+            {% include 'spotify/art_cat/art_cat_index_cards.html' %}
+            
+            {% endfor %}
+        </div>
+        {% else%}
+        <p>No Artist Matches</p>
+        {% endif %}
+
+</div>
+
+{% endblock %}

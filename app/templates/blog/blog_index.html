@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+<head>
+
+    <title>Fred's Blog</title>
+
+<style>
+
+</style>
+</head>
+
+<body class="w3-black">
+
+
+{% include 'blog/blog_header.html' %}
+<br>
+<div class="container">
+    {% for post in posts %}
+    <div class="w3-card-4 w3-margin w3-pale-green" >
+                
+        <div class="row w3-teal" style="border-bottom: 3px solid palegreen;">
+            <div class="col-left">
+                <a href="{{ url_for( 'blog.blog_single', post_id=post.id) }}">
+                <img src="{{url_for('static', filename='img/blog_pics/pic_' + post.id|string + '.jpg')}}" width="80" title="Rando off the street." class="circular-image">
+                
+            </div>
+            <div class="col-right">
+                <h3><b>{{ post.title }}</b></h3></a>
+                <h5><span class="w3-opacity date-pill">{{ post.post_date }}</span></h5>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="w3-container center-text">
+            <p>{% autoescape false %} {{ post.content | replace('\n', '<br>') | truncate(300)}} {% endautoescape %}</p>
+        </div>
+    </div>
+    <hr>
+{% endfor %}
+</div>
+
+
+
+{% endblock %}

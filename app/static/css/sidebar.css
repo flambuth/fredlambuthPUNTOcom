@@ -1,0 +1,76 @@
+aside {
+    color: #fff;
+    width: 220px;
+    padding-left: 20px;
+    height: 100%;
+    background-image: linear-gradient(30deg, #17241f, #255743);
+    border-top-right-radius: 40px;
+    left: 0; /* Stick the sidebar to the left */
+    position: fixed;
+    overflow-y: auto;
+  }
+  
+  aside a {
+    font-size: 12px;
+    color: wheat;
+    display: block;
+    padding: 12px;
+    padding-left: 30px;
+    text-decoration: none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  
+  aside a:hover {
+    color: #1a8678;
+    background: #fff;
+    outline: none;
+    position: relative;
+    background-color: #fff;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+  }
+  
+  aside a i {
+    margin-right: 5px;
+  }
+  
+  aside a:hover::after {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    bottom: 100%;
+    right: 0;
+    height: 35px;
+    width: 35px;
+    border-bottom-right-radius: 18px;
+    box-shadow: 0 20px 0 0 #fff;
+  }
+  
+  aside a:hover::before {
+    content: "";
+    position: absolute;
+    background-color: transparent;
+    top: 38px;
+    right: 0;
+    height: 35px;
+    width: 35px;
+    border-top-right-radius: 18px;
+    box-shadow: 0 -20px 0 0 #fff;
+  }
+  
+  aside p {
+    margin: 0;
+    padding: 40px 0;
+  }
+
+  #toggle-btn {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+  }
+

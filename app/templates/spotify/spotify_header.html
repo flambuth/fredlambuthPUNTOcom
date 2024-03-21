@@ -1,0 +1,125 @@
+<style>
+    .myDiv {
+      color: #fff;
+      background-image: linear-gradient(30deg, #17241f, #255743);
+      padding: 10px;
+      border-radius: 22%;
+        background-color: rgb(43, 116, 92);
+        border-bottom: 5px solid rgb(22, 59, 47);
+        border-top: 3px solid rgb(80, 206, 164);
+        }
+  
+    .myDiv h3 {
+      margin-bottom: 20px;
+    }
+  
+    .myDiv-nav {
+        display: flex;
+        justify-content: center; /* Center justify the navigation links */
+    }
+
+    .myDiv-nav a {
+      font-size: 12px;
+      color: wheat;
+      text-decoration: none;
+      padding: 12px;
+      margin-right: 20px;
+
+    }
+  
+    .myDiv-nav a:hover {
+      color: #1a8678;
+      background: #fff;
+      border-radius: 20px;
+
+    }
+  
+    .myDiv-nav .dropdown-menu {
+        background-color: rgb(43, 116, 92);
+    }
+
+    .myDiv-nav .dropdown-item {
+        color: wheat;
+        padding: 12px; /* Adjust padding as needed */
+        margin-right: 20px; /* Adjust margin as needed */
+    }
+
+    .myDiv-nav .dropdown-item:hover {
+        color: #1a8678;
+        background: #fff;
+        border-radius: 20px;
+    }
+
+</style>
+
+<div class="container-fluid text-center">
+    <div class="myDiv">
+      <a href="{{ url_for('spotify.spotify_landing_page') }}">
+        <h3 style="color: wheat;">Fred's Spotify Data</h3>
+      </a>
+
+        <!-- Navigation Links -->
+        <ul class="myDiv-nav nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('spotify.right_now') }}">
+                    <i class="fa fa-bolt" aria-hidden="true"></i>
+                    Right Now
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('spotify.yesterday') }}">
+                    <i class="fa fa-clock" aria-hidden="true"></i>
+                    Yesterday
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="https://fredlambuth.com/spotify/big_dash/">
+                    <i class="fa fa-chart-line" aria-hidden="true"></i>
+                    Weekly
+                </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="https://fredlambuth.com/spotify/monthly/{{ g.current_year}}/{{ g.current_month - 1 }}">
+                  <i class="fa fa-calendar" aria-hidden="true"></i>
+                  Monthly
+              </a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="catalogDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fa fa-list" aria-hidden="true"></i>
+                  Catalog
+              </a>
+          
+              <!-- Dropdown Menu -->
+              <div class="dropdown-menu" aria-labelledby="catalogDropdown" style="width: 120px;">
+                  <a class="dropdown-item" href="{{ url_for('spotify.art_cat_landing_page') }}">Artists</a>
+                  <a class="dropdown-item" href="{{ url_for('spotify.track_cat_landing_page') }}">Tracks</a>
+              </div>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="todayDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-archive" aria-hidden="true"></i>
+                    Archives
+                </a>
+
+                <!-- Dropdown Menu -->
+                <div class="dropdown-menu" aria-labelledby="todayDropdown" style="width: 120px;">
+                    <a class="dropdown-item" href="{{ url_for('spotify.latest_daily_tracks') }}">Tracks</a>
+                    <a class="dropdown-item" href="{{ url_for('spotify.latest_daily_artists') }}">Artists</a>
+                </div>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="https://fredlambuth.com/spotify/global/">
+                    <i class="fa fa-globe" aria-hidden="true"></i>
+                    Global Stats
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>

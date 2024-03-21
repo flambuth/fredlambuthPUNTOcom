@@ -1,0 +1,31 @@
+{% extends 'spotify/art_cat/art_cat_base.html' %}
+
+{% block content %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<style>
+
+</style>
+
+<div class="container text-center">
+
+    {% if art_cat_index is not defined or art_cat_index|length == 0 %}
+    <p>The variable is empty or undefined.</p>
+    {% else %}
+    {% if letter is defined %}
+    <p>{{ art_cat_index|length }} artists when indexed by {{ letter }}</p>
+    {% elif genre is defined %}
+    <p>{{ art_cat_index|length }} artists when indexed by {{ genre }}</p>
+    {% endif %}
+    {% endif %}
+
+    <div class="row">
+        {% for item in art_cat_index %}
+
+        {% include 'spotify/art_cat/art_cat_index_cards.html' %}
+        
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

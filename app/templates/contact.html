@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<title>
+  Contact Fred Lambuth
+</title>
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/homepage.css') }}">
+
+<style>
+  .glowing-border:hover {
+    box-shadow: 0 0 10px #0af981, 0 0 29px #0af981, 0 0 30px #91f90a;
+    transition: box-shadow 0.5s ease-in-out;  /* Optional: Add a smooth transition effect */
+  }
+
+</style>
+
+<main class="site-wrapper">
+  <div class="pt-table desktop-768">
+    <div class="pt-tablecell page-home relative" style="background-image: url('{{ url_for('static', filename='img/bg2.jpg') }}');
+    background-position: center;
+    background-size: cover;">
+      
+      <div class="overlay"></div>
+
+      <div class="container">
+        <div class="hexagon-menu clear">
+          <a class="hex-content " href="{{ url_for('homepage') }}" title="Huzzah!">
+            <img class='glowing-border' src="{{ url_for('static', filename='img/contact.jpg')}}"  alt="Your Image" style="object-fit: cover; border-radius: 54%; border: 2px solid #0af981; ">
+          </a>
+        </div>
+        
+
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2">
+              <div class="page-title  home text-center">
+                <span class="heading-page" style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;"> Fredrick William Lambuth
+                </span>
+                <p class="mt20" style="color: wheat;">Please only contact me for good things!</p>
+              </div>
+
+              <div class="hexagon-menu clear">
+                <div class="hexagon-item">
+                  <div class="hex-item">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div class="hex-item">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <a class="hex-content" href="mailto:flambuth@gmail.com" title="Send me an email!">
+                    <span class="hex-content-inner">
+                      <span class="icon">
+                        <i class="fas fa-globe fa-lg text-warning"></i>
+                      </span>
+                      <span class="title">Email</span>
+                    </span>
+                    <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                  </a>
+                </div>
+
+                <div class="hexagon-menu clear">
+                  <div class="hexagon-item">
+                    <div class="hex-item">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    <div class="hex-item">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                    <a class="hex-content" href='https://github.com/flambuth' title="See My Coding Stuff!">
+                      <span class="hex-content-inner">
+                        <span class="icon">
+                          <i class='fab fa-github'></i>
+                        </span>
+                        <span class="title">Github</span>
+                      </span>
+                      <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                    </a>
+                  </div>
+
+                  <div class="hexagon-menu clear">
+                    <div class="hexagon-item">
+                      <div class="hex-item">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      <div class="hex-item">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                      </div>
+                      <a class="hex-content" href='https://www.linkedin.com/in/fredricklambuth/' title="See my business stuff!">
+                        <span class="hex-content-inner">
+                          <span class="icon">
+                            <i class='fab fa-linkedin' ></i>
+                          </span>
+                          <span class="title">LinkedIn</span>
+                        </span>
+                        <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                      </a>
+                    </div>
+
+                    <div class="hexagon-menu clear">
+                      <div class="hexagon-item">
+                        <div class="hex-item">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                        <div class="hex-item">
+                          <div></div>
+                          <div></div>
+                          <div></div>
+                        </div>
+                        <a class="hex-content" href='https://lambuth.artstation.com/' title="See my artwork!">
+                          <span class="hex-content-inner">
+                            <span class="icon">
+                              <i class='fas fa-brush' ></i>
+                            </span>
+                            <span class="title">Artstation</span>
+                          </span>
+                          <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

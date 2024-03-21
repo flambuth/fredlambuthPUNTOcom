@@ -1,0 +1,22 @@
+<div class="col-md-3" style="padding-top: 33px;">
+    <div class="card" style="width: 18rem; background-color: darkcyan;">
+        
+        {% if track.img_url == '' %}
+        <img src="{{ url_for('static', filename='/img/fallback.jpeg') }}" class="card-img-top my-image" alt="{{ track.song_name }}">
+        {% else %}
+        <img src="https://i.scdn.co/image/{{ track.img_url }}" title="Que culazo!" class="card-img-top my-image">
+        {% endif %}
+    
+        <a href="https://open.spotify.com/track/{{ track.song_id }}" class="list-group-item list-group-item-action custom-list-item">
+            <b>{{ track.song_name }}</b>
+            <p>by <b>{{ track.art_name }}</p></b>
+        </a>
+        
+        {% if track.song_name != track.album_name %}
+            <small>album: </small><p style="display: inline;">{{ track.album_name }}</p>
+        {% endif %}
+
+
+        <p>{{ track.duration // 1000 }} seconds </p>
+    </div>
+</div>

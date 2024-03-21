@@ -1,0 +1,37 @@
+
+{% for item in art_cat_index %}
+        <div class="col-md-3 my-item">
+
+            <div class="card" style="width: 18rem;">
+                <img src="https://i.scdn.co/image/{{ item.img_url_mid }}" class="card-img-top my-image" alt="{{ item.art_name }}">
+                <div class="card-body">
+                    
+                    {% if item.master_genre == 'rock' %}
+                        <h3 class="my-item-header rock">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'pop' %}
+                        <h3 class="my-item-header pop">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'electronic' %}
+                        <h3 class="my-item-header elec">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'punk' %}
+                        <h3 class="my-item-header punk">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'funk' %}
+                        <h3 class="my-item-header hop">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'indie' %}
+                        <h3 class="my-item-header indie">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'old' %}
+                        <h3 class="my-item-header old">{{ item.master_genre }}</h3>
+                    {% elif item.master_genre == 'country' %}
+                        <h3 class="my-item-header country">{{ item.master_genre }}</h3>
+                    {% else %}
+                        <h3 class="my-item-header" style="background-color: w">{{ item.master_genre }}</h3>
+                    {% endif %}
+
+                    <p class="card-text">{{ item.genre }}</p>
+                    <p class="card-text">{{ item.art_name }}</p>
+                    <p class="card-text">{{ item.followers }}</p>
+                    <p class="card-text">{{ item.app_record_date }}</p>
+                </div>
+            </div>
+
+        </div>
+{% endfor %}

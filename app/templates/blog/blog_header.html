@@ -1,0 +1,24 @@
+<style>
+    .hover-effect:hover {
+        color: rgb(115, 255, 0); /* Change this to your desired hover color */
+        transition: color 0.3s ease; /* Adjust the transition speed as needed */
+    }
+
+    .outlined-text {
+        color: wheat;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    }
+</style>
+
+<br>
+<header class="w3-container w3-center w3-padding-32;" 
+style="background-color: #238a6b; border-radius: 28%; border: 2px solid palegreen;"> 
+    <h1 class="outlined-text"><b>Fred<span class="hover-effect"> and Loathing on The Internet</span></b></h1>
+    <p>Welcome to the public web log of <a href="{{ url_for('blog.blog_landing_page') }}"><span class="w3-tag">Fred Lambuth</span></a></p>
+    <form method="POST" >
+        <p style="color: wheat;" title="Search Through Blog Posts">
+            {{ form.search_term.label }}
+            {{ form.search_term(size=20) }}
+        </p>
+    </form>
+</header>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+
+<title>Untold Blog Pleasures Await You</title>
+
+<style>
+    .square {
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+        background-color: #0b352e; /* Adjust the background color as needed */
+        transition: box-shadow 0.3s ease-in-out;
+        border: 3px solid rgb(84, 134, 84);
+    }
+
+    .square:hover {
+        box-shadow: 0 4px 80px rgba(189, 87, 87, 0.1);
+    }
+
+    .square i {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 24px; /* Adjust the font size as needed */
+    }
+</style>
+
+
+<body class="w3-black">
+
+
+    <div class="container">
+        <div class="w3-row">
+            <div class="col-md-6">
+                <a href="{{ url_for('user_accounts.login') }}">
+                <div class="square login-div">
+                    <i class="fas fa-user"></i>
+                    Login Returning User</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <a href="{{ url_for('user_accounts.register') }}">
+                <div class="square register-div">
+                    <i class="fas fa-user-plus"></i>
+                    Register New User</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

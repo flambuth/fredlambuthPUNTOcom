@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<title>
+  Fred Lambuth's Website!
+</title>
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/homepage.css') }}">
+
+<style>
+    .hex-caption {
+        position: absolute;
+        bottom: -10px; /* Adjust this value to position the caption */
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .caption-text {
+        color: #ff0000; /* Set the color to match your icon */
+        margin: 0;
+        font-size: 12px;
+    }
+
+    /* Add this for hover effect */
+    .hexagon-item:hover .hex-caption {
+        opacity: 1;
+    }
+</style>
+
+<main class="site-wrapper">
+    <div class="pt-table desktop-768">
+      <div class="pt-tablecell page-home relative" style="background-image: url('{{ url_for('static', filename='img/background_home.jpg') }}');
+      background-position: center;
+      background-size: cover;">
+                      <div class="overlay"></div>
+  
+                      <div class="container">
+                          <div class="row">
+                              <div class="col-xs-12 col-md-offset-1 col-md-10 col-lg-offset-2 col-lg-8">
+                                  <div class="page-title  home text-center">
+                                    <span class="heading-page"> Fredrick William Lambuth
+                                    </span>
+                                      <p class="mt20">Welcome to the Website! I made everything here with Python on a Linux server.</p>
+                                  </div>
+  
+                                  <div class="hexagon-menu clear" >
+
+
+                                      <div class="hexagon-item">
+                                        <div class="hex-item">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+
+                                        <div class="hex-item">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+
+                                        <a  class="hex-content" href="{{ url_for('blog.blog_landing_page') }}" title="Where I talk about things, and stuff">
+                                            <span class="hex-content-inner">
+                                                <span class="icon">
+                                                    <i class="fa fa-book"></i>
+                                                </span>
+                                                <span class="title">Blog</span>
+                                            </span>
+                                            <div class="hex-caption">
+                                                <p class="caption-text">mea scripta verba</p>
+                                            </div>
+                                            <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                                        </a>
+
+                                      </div>
+
+                                      <div class="hexagon-item">
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <a  class="hex-content" href="{{ url_for('spotify.spotify_landing_page') }}" title="Place where I hold my fake digital record collection">
+                                              <span class="hex-content-inner">
+                                                  <span class="icon">
+                                                      <i class="fa fa-music"></i>
+                                                  </span>
+                                                  <span class="title">Spotify API</span>
+                                              </span>
+                                              <div class="hex-caption">
+                                                <p class="caption-text">Data since 2020</p>
+                                              </div>
+                                              <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                                          </a>
+                                      </div>
+
+                                      <div class="hexagon-item">
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <a  class="hex-content" href="{{ url_for('contact') }}" title="Ways I can be reached">
+                                              <span class="hex-content-inner" >
+                                                  <span class="icon">
+                                                      <i class="fa fa-phone"></i>
+                                                  </span>
+                                                  <span class="title">Contact</span>
+                                              </span>
+                                              <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                                          </a>    
+                                      </div>
+
+                                      <div class="hexagon-item">
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <div class="hex-item">
+                                              <div></div>
+                                              <div></div>
+                                              <div></div>
+                                          </div>
+                                          <a  class="hex-content" href="{{ url_for('about_me') }}" title="Usually for hiring professionals or for the utmost curious">
+                                              <span class="hex-content-inner">
+                                                  <span class="icon">
+                                                      <i class="fa fa-id-badge"></i>
+                                                  </span>
+                                                  <span class="title">About Me</span>
+                                              </span>
+                                              <svg viewBox="0 0 173.20508075688772 200" height="200" width="174" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M86.60254037844386 0L173.20508075688772 50L173.20508075688772 150L86.60254037844386 200L0 150L0 50Z" fill="#1e2530"></path></svg>
+                                          </a>
+                                      </div>
+
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+    </main>
+
+{% endblock %}
