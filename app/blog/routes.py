@@ -1,14 +1,18 @@
 from app.blog import bp
-from app.forms import SearchForm, CommentForm
+from app.forms import SearchForm, CommentForm, SubmitBlogForm, SubmitPictureForm
 from app.models.blog import blog_posts
 from app.models.accounts import blog_comments
 from app.models.charts import daily_tracks
 from app.extensions import db
+from app.utils import resize_image, resize_imageOLD
 
+import os
+from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
 from datetime import datetime
 from sqlalchemy import desc, func
 from flask_login import login_required, current_user
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, current_app
 
 #################################################
 @bp.route('/blog', methods=['GET', 'POST'])
@@ -113,3 +117,53 @@ def blog_add_comment(post_id):
         return redirect(url_for('blog.blog_single', post_id=post_id))
 
     return render_template('blog/blog_add_comment.html', post=post, form=form)
+
+@bp.route('/upload_blog_post', methods=['GET', 'POST'])
+@login_required
+def submit_blog_post():
+    #UPLOAD_FOLDER = '/static/img/blog_pics/'
+    #ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+    
+    form = SubmitBlogForm()
+    latest_blog_id = str(blog_posts.last_post_id() + 1)
+    test_file_name = f'pic_{latest_blog_id}.jpg'
+    filename = secure_filename(test_file_name)
+    print(filename)
+
+    blog_pic_dir = '/home/flambuth/new_fred/app/static/img/blog_pics/'
+    
+    if form.validate_on_submit():
+
+        print("Form data:", form.data)
+
+        # Check if the provided account creation password is correct
+        if form.picture.data:
+
+            # Constructing the final paths
+            input_path = blog_pic_dir + filename
+
+            print("File to be Saved:", input_path)
+
+            # Save and resize the uploaded file
+            form.picture.data.save(input_path)
+            print("File saved to input path")
+
+        new_post = blog_posts(
+            title=form.title.data,
+            content=form.content.data,
+            post_date=datetime.today().strftime('%Y-%b-%d'))
+
+        db.session.add(new_post)
+        db.session.commit()
+
+        # login_user(new_user)  # Automatically log in the new user after registration
+        return redirect(url_for('blog.blog_landing_page'))
+
+    else:
+        # Form submission failed validation
+        # Print validation errors
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(f"Error in field '{field}': {error}")
+                print(f"Error in field '{field}': {error}")
+        return render_template('blog/blog_add_post.html', title='Register', form=form)

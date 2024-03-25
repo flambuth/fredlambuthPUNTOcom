@@ -19,6 +19,11 @@ class blog_posts(db.Model):
         return convert_to_iso_date(self.post_date)
     
     @classmethod
+    def last_post_id(cls):
+        last_id = cls.query.with_entities(cls.id).all()[-1][0]
+        return last_id
+
+    @classmethod
     def year_month_blogpost_index(cls):
         result = (
             db.session.query(
