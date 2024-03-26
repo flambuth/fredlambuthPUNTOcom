@@ -1,9 +1,9 @@
 from app.user_accounts import bp
-from app.forms import LoginForm, RegistrationForm, CommentForm, SubmitPictureForm
+from app.forms import LoginForm, RegistrationForm, SubmitPictureForm
 from app.extensions import db
-from app.utils import resize_image
+from app.utils import resize_imageOLD, resize_image
 from app.models.accounts import user_accounts, blog_comments
-
+#from app.models.blog import blog_posts
 
 from werkzeug.exceptions import RequestEntityTooLarge
 from operator import attrgetter
@@ -66,8 +66,6 @@ def register():
 
     form = RegistrationForm()
 
-    print('baba booey')
-
     if form.validate_on_submit():
         print("Form data:", form.data)
 
@@ -96,7 +94,7 @@ def register():
             form.profile_picture.data.save(input_path)
             print("File saved to input path")
 
-            resize_image(input_path, output_path)
+            resize_imageOLD(input_path, output_path)
             print("File resized and saved to output path")
 
         password_hash = user_accounts.set_password(form.password.data)
@@ -148,20 +146,17 @@ def change_profile_picture():
     try:
         if form.validate_on_submit():
             if form.pic_file.data:
-                # You can use the current user's username for the filename
+                #current user's username for the filename
                 filename = secure_filename(current_user.username + '.' + form.pic_file.data.filename.rsplit('.', 1)[1].lower())
-
-                input_path = '/home/flambuth/new_fred/app/static/img/user_pics/placeholder.jpg'
-                output_path = '/home/flambuth/new_fred/app/static/img/user_pics/' + filename
-
+                
+                
+                input_path = '/home/flambuth/new_fred/app/static/img/user_pics/' + filename
                 form.pic_file.data.save(input_path)
-                resize_image(input_path, output_path)
+                #output_path = '/home/flambuth/new_fred/app/static/img/user_pics/
 
-                # Update the user's profile picture path in the database
-                current_user.profile_picture = output_path
-                db.session.commit()
-
-                flash('Profile picture updated successfully!')
+                resize_image(input_path)
+                #current_user.profile_picture = output_path
+                #flash('Profile picture updated successfully!')
 
                 return redirect(url_for('user_accounts.user_page'))
 

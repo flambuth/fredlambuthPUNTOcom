@@ -1,5 +1,18 @@
 from datetime import timedelta
 from PIL import Image
+import os
+from app import create_app
+
+def push_app_context():
+    '''
+    Call this so you can interact with flask models outside of deploying the 
+    flask app
+    '''
+    my_flask_app = create_app()
+    app_ctx = my_flask_app.app_context()
+    app_ctx.push()
+    return my_flask_app
+    
 
 def find_streaks_in_dates(dates):
     '''
@@ -51,7 +64,8 @@ def evaluate_longest_streak(streaks1, streaks2):
     return longest_streak
 
 
-def resize_image(input_path, output_path, size=(100, 100)):
+
+def resize_imageOLD(input_path, output_path, size=(100, 100)):
     """
     Resize an image to a specified size.
 
@@ -60,6 +74,28 @@ def resize_image(input_path, output_path, size=(100, 100)):
     - output_path (str): Path to save the resized image.
     - size (tuple): Desired size in pixels (width, height). Default is (100, 100).
     """
+    #output_path = input_path.split('.')[0] + '.jpg'
     with Image.open(input_path) as img:
         img = img.resize(size)
+        #img.convert('RGB').save(output_path, 'JPEG', quality=95)
         img.save(output_path)
+
+def resize_image(input_path, size=(100, 100)):
+    """
+    Resize an image to a specified size and save it as JPEG format.
+
+    Parameters:
+    - input_path (str): Path to the input image file.
+    - output_path (str): Path to save the resized image as JPEG.
+    - size (tuple): Desired size in pixels (width, height). Default is (100, 100).
+    """
+    output_path = input_path.split('.')[0] + '.jpg'
+    with Image.open(input_path) as img:
+            img = img.resize(size)
+            #img.convert('RGB').save(output_path, 'JPEG', quality=95)
+            if input_path.lower().endswith(('.png', '.jpeg')):
+                os.remove(input_path)
+            return img
+
+    if input_path.lower().endswith(('.png', '.jpeg')):
+        os.remove(input_path)
