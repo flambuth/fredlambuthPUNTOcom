@@ -175,12 +175,22 @@ class recently_played(db.Model):
     last_played = db.Column(db.DateTime)
 
     @classmethod
-    def get_latest_song_link(cls):
+    def add_rp_to_db(cls, new_rp):
+        '''
+        Takes a recently_played object as a parameter and add's it
+        to the database
+        '''
+        db.session.add(new_rp)
+        db.session.commit()
+
+    @classmethod
+    def get_latest_song(cls):
         latest_record = cls.query.order_by(cls.id.desc()).first()
         if latest_record:
-            return latest_record.song_link
+            return latest_record
         else:
             return None
+
 
     @classmethod
     def get_timeframe_of_rp_records(

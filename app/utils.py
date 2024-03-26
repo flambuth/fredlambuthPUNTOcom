@@ -1,6 +1,18 @@
 from datetime import timedelta
 from PIL import Image
 import os
+from app import create_app
+
+def push_app_context():
+    '''
+    Call this so you can interact with flask models outside of deploying the 
+    flask app
+    '''
+    my_flask_app = create_app()
+    app_ctx = my_flask_app.app_context()
+    app_ctx.push()
+    return my_flask_app
+    
 
 def find_streaks_in_dates(dates):
     '''
