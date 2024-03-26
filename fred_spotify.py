@@ -54,6 +54,9 @@ class CurrentlyPlaying:
 
     def check_what_type_is_playing(self):
         right_now = self.sp.current_user_playing_track()
+        if right_now == None:
+            return False
+
         if right_now['currently_playing_type'] == 'track':
             return True
 
@@ -69,7 +72,13 @@ class CurrentlyPlaying:
             return True
         
     def add_to_recently_played(self):
-        
+        '''
+        performs checks to see if song currently playing on spotify is a track different
+        then the last one on the database
+        if the song is new, a record is added to the 'recently_played' model
+
+        Runs on a cron job every minute.
+        '''
         if self.check_what_type_is_playing() and self.check_for_new_song():
             recently_played.add_rp_to_db(self.current_rp_on_spot)
             print('Added to recently_played table')

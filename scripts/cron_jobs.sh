@@ -1,0 +1,1 @@
+*/1 * * * * /home/flambuth/new_fred/scripts/check_current_song.sh >> /home/flambuth/new_fred/scripts/output.log 2>&1
