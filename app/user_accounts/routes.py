@@ -14,7 +14,111 @@ from werkzeug.utils import secure_filename
 #import os
 
 from flask_login import current_user, login_user, logout_user, login_required
-from flask import render_template, request, redirect, url_for, flash, current_app
+from flask import render_template, request, redirect, url_for, flash, current_app, session
+
+#############################
+#spot_login_stuff
+import json
+import config
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+######################
+@bp.route('/spotify_login')
+def spotify_login():
+    scope = config.scope
+    sp_oauth = SpotifyOAuth(client_id=config.SPOTIPY_CLIENT_ID,
+                            client_secret=config.SPOTIPY_CLIENT_SECRET,
+                            redirect_uri=config.SPOTIPY_REDIRECT_URI,
+                            scope=scope)
+    auth_url = sp_oauth.get_authorize_url()
+    return redirect(auth_url)
+
+@bp.route('/spotify_callback')
+def spotify_callback():
+    scope = config.scope
+    sp_oauth = SpotifyOAuth(client_id=config.SPOTIPY_CLIENT_ID,
+                            client_secret=config.SPOTIPY_CLIENT_SECRET,
+                            redirect_uri=config.SPOTIPY_REDIRECT_URI,
+                            scope=scope)
+    code = request.args.get('code')
+    
+    #exchanges the authorization code for an access token and a refresh token.
+    token_info = sp_oauth.get_access_token(code)
+    
+    access_token = token_info['access_token']
+    refresh_token = token_info['refresh_token']
+
+    # Store tokens securely (e.g., in session, database)
+    session['access_token'] = access_token
+    session['refresh_token'] = refresh_token
+
+    #tokens = {
+    #    'access_token': access_token,
+    #    'refresh_token': refresh_token
+    #}
+    #with open('spotify_tokens.json', 'w') as f:
+    #    json.dump(tokens, f)
+
+    return redirect('/spotify_success')
+
+@bp.route('/spotify_success')
+def spotify_success():
+    # Retrieve tokens from the session
+    access_token = session.get('access_token')
+    
+    if not access_token:
+        # Handle case where access token is not available
+        return redirect('/spotify_login')
+
+    # Initialize Spotipy with the obtained access token
+    sp = spotipy.Spotify(auth=access_token)
+
+    # Retrieve user's profile information including username
+    user_info = sp.current_user()
+    username = user_info.get('id')
+
+    results = sp.current_user_playing_track()
+    # Process the data and render a page with the user's saved tracks
+
+    # Store tokens, including the username, securely
+    tokens = {
+        'access_token': access_token,
+        'refresh_token': session.get('refresh_token'),
+        'username': username
+    }
+    # Create JSON file with cache-{spotify_user_name}.json format
+    json_file_name = f'cache-{username}.json'
+    with open(json_file_name, 'w') as f:
+        json.dump(tokens, f)
+
+    return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
+
+@bp.route('/spotify_success/<username>')
+def success_for_this_user(username):
+    # Construct the filename for the JSON file based on the username
+    json_filename = f'cache-{username}.json'
+
+    # Read tokens from the JSON file
+    try:
+        with open(json_filename, 'r') as f:
+            tokens = json.load(f)
+    except FileNotFoundError:
+        # Handle case where the JSON file for the specified user is not found
+        return "User not found"
+
+    access_token = tokens.get('access_token')
+
+    if not access_token:
+        # Handle case where access token is not available
+        return redirect('/spotify_login')
+
+    # Initialize Spotipy with the obtained access token
+    sp = spotipy.Spotify(auth=access_token)
+
+    results = sp.current_user_playing_track()
+    # Process the data and render a page with the user's currently playing track
+    return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
+
 
 ###########################
 #######LOGIN, LOGOUT, Register_new_user
@@ -191,3 +295,26 @@ def all_users_page():
         'user_stats':stats,
     }
     return render_template('accounts/all_users_showcase.html', **context)
+
+
+
+'''
+@bp.route('/spot_suc2')
+def success2():
+
+    # Retrieve access token from session or database
+    access_token = session.get('access_token')
+
+    if not access_token:
+        # Handle case where access token is not available
+        return redirect('/spotify_login')
+
+    # Initialize Spotipy with the obtained access token
+    sp = spotipy.Spotify(auth=access_token)
+
+    # Example: Get user's saved tracks
+    results = sp.current_user_saved_tracks()
+    
+    # Process the data and render a page with the user's saved tracks
+    return f"User's saved tracks: {results}"
+'''
