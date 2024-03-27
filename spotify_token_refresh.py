@@ -30,11 +30,15 @@ def refresh_token_for_user(spotify_username):
             json.dump(tokens, f)
 
         # Use the new access token to make API requests
-        sp = spotipy.Spotify(auth=tokens['access_token'])
+        #sp = spotipy.Spotify(auth=tokens['access_token'])
         # Now you can use sp to make authenticated requests
 
         # Example: Get user's currently playing track
-        results = sp.current_user_playing_track()
-        print(f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token and a dead hooker")
+        #results = sp.current_user_playing_track()
+        #if results:
+        #   print(f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with my ADDIDAS")
+        #else:
+        #    print('no new song')
+        return True
     else:
-        print(f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token")
+        print("Token not refreshed")
