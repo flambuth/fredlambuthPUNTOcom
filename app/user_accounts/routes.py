@@ -22,6 +22,8 @@ import json
 import config
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+
+from spotify_token_refresh import refresh_token_for_user
 ######################
 @bp.route('/spotify_login')
 def spotify_login():
@@ -93,8 +95,8 @@ def spotify_success():
 
     return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
 
-@bp.route('/spotify_success/<username>')
-def success_for_this_user(username):
+@bp.route('/spotify_successOLD/<username>')
+def success_for_this_userOLD(username):
     # Construct the filename for the JSON file based on the username
     json_filename = f'cache-{username}.json'
 
@@ -116,8 +118,53 @@ def success_for_this_user(username):
     sp = spotipy.Spotify(auth=access_token)
 
     results = sp.current_user_playing_track()
+    if results:
+            return(f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token and a dead hooker")
+    else:
+        return('no new song')
     # Process the data and render a page with the user's currently playing track
-    return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
+    #return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
+
+@bp.route('/spotify_success/<username>')
+def success_for_this_user(username):
+    # Construct the filename for the JSON file based on the username
+    json_filename = f'cache-{username}.json'
+
+    # Read tokens from the JSON file
+    try:
+        with open(json_filename, 'r') as f:
+            tokens = json.load(f)
+    except FileNotFoundError:
+        # Handle case where the JSON file for the specified user is not found
+        return "User not found"
+
+    access_token = tokens.get('access_token')
+
+    if not access_token:
+        # Handle case where access token is not available
+        return redirect('/spotify_login')
+
+    # Attempt to refresh the access token
+    refresh_success = refresh_token_for_user(username)
+
+    if refresh_success:
+        # If token refresh was successful, update the access token
+        with open(json_filename, 'r') as f:
+            tokens = json.load(f)
+        access_token = tokens.get('access_token')
+
+        # Use the refreshed access token to make API requests
+        sp = spotipy.Spotify(auth=access_token)
+
+        # Example: Get user's currently playing track
+        results = sp.current_user_playing_track()
+        if results:
+            return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token"
+        else:
+            return 'No new song'
+    else:
+        return 'Token refresh failed'
+
 
 
 ###########################
