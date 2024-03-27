@@ -1,20 +1,39 @@
 import spotipy
-from config import username, SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI
+from config import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI
 from spotipy.oauth2 import SpotifyOAuth
 from datetime import datetime
 from app.models.charts import recently_played
 from app.utils import push_app_context
+
+import json
+
+def get_spot_token_for_user(spotify_username):
+    # Load tokens from JSON file
+    with open(f'cache-{spotify_username}.json', 'r') as f:
+        tokens = json.load(f)
+    return tokens['access_token']
+
+def sp_orbNEW(spotify_username):
+    '''
+    Makes a spotipy object that can make requests to my spot account
+    '''
+    sp = spotipy.Spotify(
+        get_spot_token_for_user(spotify_username)
+    )
+    return sp
+
 
 def sp_orb():
     '''
     Makes a spotipy object that can make requests to my spot account
     '''
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-            username=username,
+            username='lambuth',
             client_id=SPOTIPY_CLIENT_ID,
             client_secret=SPOTIPY_CLIENT_SECRET,
             redirect_uri=SPOTIPY_REDIRECT_URI))
     return sp
+
 
 def sp_to_rp(sp_current_song):
     '''
@@ -84,6 +103,19 @@ class CurrentlyPlaying:
             print('Added to recently_played table')
         else:
             print('No Dice.')
+
+def today_top_chart(table_name):
+    '''
+    Accepts a string of one of the daily tables, requests the short-term top10 from Spotify, returns a JSON
+    '''
+    sp
+
+    if table_name=='daily_artists':
+        today_top_results = sp.current_user_top_artists(time_range='short_term', limit=10)
+    elif table_name=='daily_tracks':
+        today_top_results = sp.current_user_top_tracks(time_range='short_term', limit=10)
+    return today_top_results
+
 
 if __name__ == '__main__':
     CurrentlyPlaying().add_to_recently_played()
