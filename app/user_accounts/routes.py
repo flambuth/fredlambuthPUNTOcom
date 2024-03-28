@@ -27,6 +27,7 @@ from spotify_token_refresh import refresh_token_for_user
 ######################
 @bp.route('/spotify_login')
 def spotify_login():
+    session.clear()
     scope = config.scope
     sp_oauth = SpotifyOAuth(client_id=config.SPOTIPY_CLIENT_ID,
                             client_secret=config.SPOTIPY_CLIENT_SECRET,
@@ -54,12 +55,12 @@ def spotify_callback():
     session['access_token'] = access_token
     session['refresh_token'] = refresh_token
 
-    #tokens = {
-    #    'access_token': access_token,
-    #    'refresh_token': refresh_token
-    #}
-    #with open('spotify_tokens.json', 'w') as f:
-    #    json.dump(tokens, f)
+    tokens = {
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }
+    with open('spotify_tokens.json', 'w') as f:
+        json.dump(tokens, f)
 
     return redirect('/spotify_success')
 
@@ -79,7 +80,7 @@ def spotify_success():
     user_info = sp.current_user()
     username = user_info.get('id')
 
-    results = sp.current_user_playing_track()
+    results = sp.current_user_top_artists()
     # Process the data and render a page with the user's saved tracks
 
     # Store tokens, including the username, securely
@@ -88,42 +89,15 @@ def spotify_success():
         'refresh_token': session.get('refresh_token'),
         'username': username
     }
-    # Create JSON file with cache-{spotify_user_name}.json format
+    #Create JSON file with cache-{spotify_user_name}.json format
     json_file_name = f'cache-{username}.json'
     with open(json_file_name, 'w') as f:
         json.dump(tokens, f)
 
-    return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
-
-@bp.route('/spotify_successOLD/<username>')
-def success_for_this_userOLD(username):
-    # Construct the filename for the JSON file based on the username
-    json_filename = f'cache-{username}.json'
-
-    # Read tokens from the JSON file
-    try:
-        with open(json_filename, 'r') as f:
-            tokens = json.load(f)
-    except FileNotFoundError:
-        # Handle case where the JSON file for the specified user is not found
-        return "User not found"
-
-    access_token = tokens.get('access_token')
-
-    if not access_token:
-        # Handle case where access token is not available
-        return redirect('/spotify_login')
-
-    # Initialize Spotipy with the obtained access token
-    sp = spotipy.Spotify(auth=access_token)
-
-    results = sp.current_user_playing_track()
     if results:
-            return(f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token and a dead hooker")
+        return results
     else:
-        return('no new song')
-    # Process the data and render a page with the user's currently playing track
-    #return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']}"
+        return "Not Listening Right Now"
 
 @bp.route('/spotify_success/<username>')
 def success_for_this_user(username):

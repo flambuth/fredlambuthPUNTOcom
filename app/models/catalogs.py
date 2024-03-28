@@ -3,6 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func, or_, case
 #from .main import daily_tracks
 
+#from app.models.charts import daily_artists, daily_tracks
+
 Base = declarative_base()
 
 class artist_catalog(db.Model):
@@ -22,6 +24,14 @@ class artist_catalog(db.Model):
 
     #use this one in the views so that there are not duplicates of each artist
     #this will trim it down to the latest record
+    @classmethod
+    def all_art_ids_in_cat(cls):
+        '''
+        List so you can check if the charts models have art_ids not in the catalog
+        '''
+        unique_art_ids = [i[0] for i in cls.query.with_entities(cls.art_id).all()]
+        return unique_art_ids
+
     @classmethod
     def get_current_records(cls):
         return cls.query.filter_by(is_current=True)
@@ -53,6 +63,18 @@ class artist_catalog(db.Model):
     
     def __str__(self):
         return f'Artist Catalog Entry For: "{self.art_name}">'
+
+    @classmethod
+    def add_new_art_cat_to_db(cls, new_art_cat):
+        '''
+        Takes a recently_played object as a parameter and add's it
+        to the database
+        '''
+        if new_art_cat.art_id in cls.all_art_ids_in_cat():
+            print('art_id already exists')
+        else:
+            db.session.add(new_art_cat)
+            db.session.commit()
 
     @staticmethod
     def find_name_in_art_cat(test_name):
