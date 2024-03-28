@@ -26,6 +26,32 @@ class daily_tracks(db.Model):
     def __repr__(self):
         return f'<daily_tracks for "{self.date}">'
     
+    @classmethod
+    def all_art_ids_in_chart_history(cls):
+        '''
+        List so you can check if the charts models have art_ids not in the catalog
+        '''
+        unique_art_ids = list(set(
+            [i[0] for i in cls.query.with_entities(cls.art_id).all()]
+        ))
+        return unique_art_ids
+    
+    @classmethod
+    def ids_not_in_art_cat(cls):
+        art_cat_ids = artist_catalog.all_art_ids_in_cat()
+        tracks_ids = daily_tracks.all_art_ids_in_chart_history()
+        new_ids = [i for i in tracks_ids if i not in art_cat_ids ]
+        return new_ids
+
+    @classmethod
+    def add_daily_chart_to_db(cls, new_daily_chart):
+        '''
+        Takes a recently_played object as a parameter and add's it
+        to the database
+        '''
+        db.session.add(new_daily_chart)
+        db.session.commit()
+
     @staticmethod
     def get_latest_date():
         latest_date = db.session.query(func.max(daily_tracks.date)).scalar()
@@ -117,8 +143,40 @@ class daily_artists(db.Model):
     )
     art_name = db.Column(db.String(150))
     date = db.Column(db.Date(), nullable=False)
+
     def __repr__(self):
         return f'<daily_artists for "{self.date}">'
+
+    @staticmethod
+    def get_latest_date():
+        latest_date = db.session.query(func.max(daily_artists.date)).scalar()
+        return latest_date
+
+    @classmethod
+    def all_art_ids_in_chart_history(cls):
+        '''
+        List so you can check if the charts models have art_ids not in the catalog
+        '''
+        unique_art_ids = list(set(
+            [i[0] for i in cls.query.with_entities(cls.art_id).all()]
+        ))
+        return unique_art_ids
+    
+    @classmethod
+    def ids_not_in_art_cat(cls):
+        art_cat_ids = artist_catalog.all_art_ids_in_cat()
+        arts_ids = cls.all_art_ids_in_chart_history()
+        new_ids = [i for i in arts_ids if i not in art_cat_ids ]
+        return new_ids
+
+    @classmethod
+    def add_daily_chart_to_db(cls, new_daily_chart):
+        '''
+        Takes a recently_played object as a parameter and add's it
+        to the database
+        '''
+        db.session.add(new_daily_chart)
+        db.session.commit()
 
     @classmethod
     def filter_by_year_month(cls, year, month):
