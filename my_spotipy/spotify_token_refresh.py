@@ -1,11 +1,16 @@
 import json
-import spotipy
+import os
 import config
 from spotipy.oauth2 import SpotifyOAuth
 
 def refresh_token_for_user(spotify_username):
     # Load tokens from JSON file
-    with open(f'cache-{spotify_username}.json', 'r') as f:
+    tokens_directory = os.path.join(os.getcwd(), 'my_spotipy', 'user_tokens')
+
+    # Construct the filename for the JSON file based on the username
+    json_filename = os.path.join(tokens_directory, f'cache-{spotify_username}.json')
+
+    with open(json_filename, 'r') as f:
         tokens = json.load(f)
 
     # Initialize Spotipy OAuth object with client ID, client secret, and refresh token

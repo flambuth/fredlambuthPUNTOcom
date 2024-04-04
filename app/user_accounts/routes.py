@@ -11,7 +11,7 @@ from urllib.parse import urlsplit
 import random
 
 from werkzeug.utils import secure_filename
-#import os
+import os
 
 from flask_login import current_user, login_user, logout_user, login_required
 from flask import render_template, request, redirect, url_for, flash, current_app, session
@@ -23,9 +23,10 @@ import config
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from spotify_token_refresh import refresh_token_for_user
+from my_spotipy.spotify_token_refresh import refresh_token_for_user
 ######################
 @bp.route('/spotify_login')
+#@login_required
 def spotify_login():
     session.clear()
     scope = config.scope
@@ -37,6 +38,7 @@ def spotify_login():
     return redirect(auth_url)
 
 @bp.route('/spotify_callback')
+#@login_required
 def spotify_callback():
     scope = config.scope
     sp_oauth = SpotifyOAuth(client_id=config.SPOTIPY_CLIENT_ID,
@@ -55,16 +57,10 @@ def spotify_callback():
     session['access_token'] = access_token
     session['refresh_token'] = refresh_token
 
-    tokens = {
-        'access_token': access_token,
-        'refresh_token': refresh_token
-    }
-    with open('spotify_tokens.json', 'w') as f:
-        json.dump(tokens, f)
-
     return redirect('/spotify_success')
 
 @bp.route('/spotify_success')
+#@login_required
 def spotify_success():
     # Retrieve tokens from the session
     access_token = session.get('access_token')
@@ -89,20 +85,27 @@ def spotify_success():
         'refresh_token': session.get('refresh_token'),
         'username': username
     }
+
+    tokens_directory = os.path.join(os.getcwd(), 'my_spotipy', 'user_tokens')
+
     #Create JSON file with cache-{spotify_user_name}.json format
-    json_file_name = f'cache-{username}.json'
+    json_file_name = os.path.join(tokens_directory, f'cache-{username}.json')
     with open(json_file_name, 'w') as f:
         json.dump(tokens, f)
 
     if results:
         return results
     else:
-        return "Not Listening Right Now"
+        return "No results for user_top_artists"
 
-@bp.route('/spotify_success/<username>')
+@bp.route('/spotify/user/<username>')
+@login_required
 def success_for_this_user(username):
     # Construct the filename for the JSON file based on the username
-    json_filename = f'cache-{username}.json'
+    tokens_directory = os.path.join(os.getcwd(), 'my_spotipy', 'user_tokens')
+
+    # Construct the filename for the JSON file based on the username
+    json_filename = os.path.join(tokens_directory, f'cache-{username}.json')
 
     # Read tokens from the JSON file
     try:
@@ -132,7 +135,7 @@ def success_for_this_user(username):
 
         # Example: Get user's currently playing track
         results = sp.current_user_playing_track()
-        if results:
+        if results['item']:
             return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token"
         else:
             return 'No new song'
