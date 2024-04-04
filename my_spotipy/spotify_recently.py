@@ -35,7 +35,7 @@ class CurrentlyPlaying:
             spotify_username):
         #spotify
         self.spot_username = spotify_username
-        self.sp = sp_obj(spotify_username)
+        self.sp = sp_obj(self.spot_username)
 
         #flask-model
         self.cls = cls

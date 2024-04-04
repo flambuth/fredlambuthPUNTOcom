@@ -4,9 +4,13 @@ import pandas as pd
 from app.dash_plotlys.plotly_figures import songs_line_chart, artists_hbar_chart
 import json
 import sqlite3
+import os
+
+from config import basedir
 
 # Load the dictionary from the JSON file
-with open("country_codes.json", "r") as json_file:
+country_codes_json = basedir + "/country_codes.json"
+with open(country_codes_json, "r") as json_file:
     country_codes = json.load(json_file)
 
 def cleaned_df(csv_name='universal_top_spotify_songs.csv'):
