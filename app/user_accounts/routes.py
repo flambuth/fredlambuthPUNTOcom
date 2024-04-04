@@ -135,7 +135,7 @@ def success_for_this_user(username):
 
         # Example: Get user's currently playing track
         results = sp.current_user_playing_track()
-        if results['item']:
+        if results:
             return f"User currently listening to: {results['item']['name']} by {results['item']['artists'][0]['name']} with a refreshed token"
         else:
             return 'No new song'
