@@ -92,10 +92,7 @@ def resize_image(input_path, size=(100, 100)):
     output_path = input_path.split('.')[0] + '.jpg'
     with Image.open(input_path) as img:
             img = img.resize(size)
-            #img.convert('RGB').save(output_path, 'JPEG', quality=95)
-            if input_path.lower().endswith(('.png', '.jpeg')):
-                os.remove(input_path)
+            img.convert('RGB').save(output_path, 'JPEG', quality=95)
+            #if input_path.lower().endswith(('.png', '.jpeg')):
+            #    os.remove(input_path)
             return img
-
-    if input_path.lower().endswith(('.png', '.jpeg')):
-        os.remove(input_path)

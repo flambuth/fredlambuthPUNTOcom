@@ -212,8 +212,8 @@ def register():
             filename = secure_filename(form.username.data + '.' + form.profile_picture.data.filename.rsplit('.', 1)[1].lower())
 
             # Constructing the final paths
-            input_path = '/home/flambuth/new_fred/app/static/img/user_pics/placeholder.jpg'  # Placeholder file
-            output_path = '/home/flambuth/new_fred/app/static/img/user_pics/' + filename
+            input_path = config.basedir + '/app/static/img/user_pics/placeholder.jpg'  # Placeholder file
+            output_path = config.basedir + '/app/static/img/user_pics/' + filename
 
             print("Input Path:", input_path)
             print("Output Path:", output_path)
@@ -278,7 +278,7 @@ def change_profile_picture():
                 filename = secure_filename(current_user.username + '.' + form.pic_file.data.filename.rsplit('.', 1)[1].lower())
                 
                 
-                input_path = '/home/flambuth/new_fred/app/static/img/user_pics/' + filename
+                input_path = config.basedir + '/app/static/img/user_pics/' + filename
                 form.pic_file.data.save(input_path)
                 #output_path = '/home/flambuth/new_fred/app/static/img/user_pics/
 
