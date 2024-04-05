@@ -1,18 +1,24 @@
 from app.spotify import bp, cache
-from flask import render_template, request, redirect, url_for, render_template_string, session
-from flask_login import login_required
+from flask import render_template, request, redirect, url_for, render_template_string, flash
+from flask_login import login_required, current_user
 from sqlalchemy import desc
 
 from app.models.charts import recently_played, daily_artists ,daily_tracks
 from app.models.catalogs import track_catalog, artist_catalog
 from app.models.playlists import Playlists
+from app.models.accounts import artist_comments
+
+from app import db
 
 from app.dash_plotlys.plotly_figures import chart_scatter_plotly
 
 from app.spotify.forms import CourseForm
+from app.forms import CommentForm
+
 import app.spotify.daily_funcs as daily_funcs
 import app.spotify.art_cat_funcs as ac_funcs
 from app.spotify.plotly_figs import top_5_artists_fig, top_5_tracks_fig
+
 
 from datetime import datetime
 
@@ -116,15 +122,32 @@ def art_cat_landing_page():
 
     return render_template('spotify/art_cat/art_cat_landing.html', **context)
 
+
+######Adding COmments to artist
+###############################################
 @bp.route('/spotify/art_cat/artist/<string:art_id>', methods=('GET','POST'))
 def art_cat_profile(art_id):
     form = CourseForm()
+    comment_form = CommentForm()
     #if form.validate_on_submit():
-    if request.method == 'POST':
+    if form.validate_on_submit():
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
-    
+    if comment_form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash('You must be logged in to add a comment.', 'warning')
+            return redirect(url_for('user_accounts.login'))  # Redirect to login page if not logged in
+        art_comment = artist_comments(
+            content=comment_form.content.data,
+            artist_catalog_id=art_id,
+            user_id=current_user.id,
+            comment_date=datetime.utcnow())
+        db.session.add(art_comment)
+        db.session.commit()
+        return redirect(url_for('spotify.art_cat_profile', art_id=art_id))
+
     profile_context = ac_funcs.art_cat_profile(art_id)
     profile_context['form'] = form
+    profile_context['comment_form'] = comment_form
 
     return render_template('spotify/art_cat/art_cat_profile.html', **profile_context)
 

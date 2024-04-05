@@ -55,49 +55,85 @@
                   <p class="mb-0 ms-2">Artist Dashboard</p>
               </div>
             </div>
-      </div>
 
-        <div class="col-lg-8">
-          <div class="card mb-4">
-            <div class="card-body">
+            <div class="card mb-4">
+              <div class="card-body">
+                  <h5 class="card-title">Peanut Gallery</h5>
+                  {% if comments %}
+                    {% for comment in comments %}
+                    <div class="comment">
+                      <div class="row">
+                          <div class="col-2 text-center">
+                              <img src="{{ url_for('static', filename='img/user_pics/' + comment.user.username + '.jpg') }}" alt="User profile picture" class="rounded-circle img-fluid" style="width: 50px;">
+                          </div>
+                          <div class="col-10">
+                              <div class="comment-content">
+                                  <p>{{ comment.content }}</p>
+                                  <small class="text-muted">{{ comment.comment_date }}</small>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
 
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Spotify Followers</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="mb-0" style="color: wheat;">{{ followers }}</p>
-                </div>
+                    {% endfor %}
+                  {% else %}
+                      <p>No comments available.</p>
+                  {% endif %}
               </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Total Days on Charts</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="mb-0" style="color: wheat;">{{ total_days_on_charts }}</p>
-                </div>
+            </div>
+            
+            <form method="post">
+              {{ comment_form.hidden_tag() }}  <!-- Include CSRF token -->
+              <div class="form-group">
+                  {{ comment_form.content.label(class="form-label") }}
+                  {{ comment_form.content(class="form-control") }}
               </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">First Chart Appearance</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="mb-0" style="color: wheat;">{{ first_appearance }}</p>
-                </div>
+              <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+
+        </div>
+
+      <div class="col-lg-8">
+        <div class="card mb-4">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Spotify Followers</p>
               </div>
-              <hr>
-              <div class="row">
-                <div class="col-sm-3">
-                  <p class="mb-0">Last Chart Appearance</p>
-                </div>
-                <div class="col-sm-9">
-                  <p class="mb-0" style="color: wheat;">{{ last_appearance }}</p>
-                </div>
+              <div class="col-sm-9">
+                <p class="mb-0" style="color: wheat;">{{ followers }}</p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Total Days on Charts</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="mb-0" style="color: wheat;">{{ total_days_on_charts }}</p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">First Chart Appearance</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="mb-0" style="color: wheat;">{{ first_appearance }}</p>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3">
+                <p class="mb-0">Last Chart Appearance</p>
+              </div>
+              <div class="col-sm-9">
+                <p class="mb-0" style="color: wheat;">{{ last_appearance }}</p>
               </div>
             </div>
           </div>
+        </div>
 
           <div class="row">
 
