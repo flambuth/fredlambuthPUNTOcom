@@ -1,7 +1,7 @@
 from app.models.catalogs import artist_catalog
+from app.models.accounts import artist_comments
 from app import db
 from app.spotify.daily_funcs import artist_days_on_both_charts, find_streaks_in_dates, notable_tracks, is_one_hit_wonder
-
 from sqlalchemy import func, or_
 
 #latest_art_cats = artist_catalog.query.order_by(artist_catalog.app_record_date.desc()).limit(5).all()
@@ -160,6 +160,8 @@ def art_cat_profile(art_id):
     both_charts = artist_days_on_both_charts(art_cat_obj.art_name)
     dates = [i.date for i in both_charts]
 
+    comments = artist_comments.query.filter_by(artist_catalog_id=art_id).all()
+
     art_profile_context = {
         'art_id':art_id,
         'art_name':art_cat_obj.art_name,
@@ -180,6 +182,7 @@ def art_cat_profile(art_id):
         #tuple! first is the track_name, second is the track_id for Spotify API
         'notable_tracks': notable_tracks(art_cat_obj.art_name),
         'is_one_hit_wonder': is_one_hit_wonder(art_cat_obj.art_name),
+        'comments':comments,
     }
 
     return art_profile_context
