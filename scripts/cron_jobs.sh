@@ -8,6 +8,6 @@
 20 6 * * * /home/flambuth/fredlambuthPUNTOcom/scripts/scan_for_new_art_ids.sh  >> /home/flambuth/fredlambuthPUNTOcom/scripts/artcat_errors.log 2>&1
 
 #global_csv_refresh
-0 7 * * *  ~/fredlambuthPUNTOcom/scripts/refresh_universal_csv.sh >> /home/flambuth/archives/global_cron_errors.log 2>&1
+0 7 * * *  ~/fredlambuthPUNTOcom/scripts/refresh_global_csv.sh >> /home/flambuth/archives/global_cron_errors.log 2>&1
 #global_db_refresh, takes about 100 seconds
-5 7 * * *  /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/scripts/csv2sqlite.py >> /home/flambuth/fredlambuthPUNTOcom/scripts/csv2sqlite_cron_errors.log 2>&1
+5 7 * * *  /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/csv2sqlite.py >> /home/flambuth/fredlambuthPUNTOcom/scripts/csv2sqlite_cron_errors.log 2>&1
