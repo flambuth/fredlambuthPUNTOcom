@@ -1,8 +1,8 @@
 import json
-from app.dash_plotlys.global_stats import initiate_db
+from app.dash_plotlys.global_stats import initiate_db, country_codes
 
-with open("country_codes.json", "r") as json_file:
-    country_codes = json.load(json_file)
+#with open("country_codes.json", "r") as json_file:
+#    country_codes = json.load(json_file)
 
 country_names = list(country_codes.values())
 

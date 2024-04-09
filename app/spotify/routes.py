@@ -129,18 +129,22 @@ def art_cat_landing_page():
 def art_cat_profile(art_id):
     form = CourseForm()
     comment_form = CommentForm()
-    #if form.validate_on_submit():
+
     if form.validate_on_submit():
+        flash('search bar was used')
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
+    
     if comment_form.validate_on_submit():
         if not current_user.is_authenticated:
             flash('You must be logged in to add a comment.', 'warning')
             return redirect(url_for('user_accounts.login'))  # Redirect to login page if not logged in
+        
         art_comment = artist_comments(
             content=comment_form.content.data,
             artist_catalog_id=art_id,
             user_id=current_user.id,
             comment_date=datetime.utcnow())
+        
         db.session.add(art_comment)
         db.session.commit()
         return redirect(url_for('spotify.art_cat_profile', art_id=art_id))
