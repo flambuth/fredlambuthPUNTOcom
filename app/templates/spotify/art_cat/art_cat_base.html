@@ -84,6 +84,8 @@
     </ul>
 
     <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ form.csrf_token }}
       <p style="color: antiquewhite;">
         {{ form.search_term.label }}
         {{ form.search_term(size=20) }}

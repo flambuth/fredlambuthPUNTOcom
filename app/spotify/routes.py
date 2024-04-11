@@ -13,7 +13,7 @@ from app import db
 from app.dash_plotlys.plotly_figures import chart_scatter_plotly
 
 from app.spotify.forms import CourseForm
-from app.forms import CommentForm
+from app.forms import CommentForm, SearchForm
 
 import app.spotify.daily_funcs as daily_funcs
 import app.spotify.art_cat_funcs as ac_funcs
@@ -127,14 +127,16 @@ def art_cat_landing_page():
 ###############################################
 @bp.route('/spotify/art_cat/artist/<string:art_id>', methods=('GET','POST'))
 def art_cat_profile(art_id):
-    form = CourseForm()
+    form = SearchForm()
     comment_form = CommentForm()
 
-    if form.validate_on_submit():
-        flash('search bar was used')
+    if (form.validate_on_submit()):
+        print('search bar was used')
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
     
+    
     if comment_form.validate_on_submit():
+        print('comment was made')
         if not current_user.is_authenticated:
             flash('You must be logged in to add a comment.', 'warning')
             return redirect(url_for('user_accounts.login'))  # Redirect to login page if not logged in
@@ -153,7 +155,30 @@ def art_cat_profile(art_id):
     profile_context['form'] = form
     profile_context['comment_form'] = comment_form
 
+    print('profile got GET')
     return render_template('spotify/art_cat/art_cat_profile.html', **profile_context)
+
+def art_cat_profileOLD(art_id):
+    form = CourseForm()
+    comment_form = CommentForm()
+
+    #if (form.validate_on_submit()):
+    if request.method == 'POST':
+        if not form.validate_on_submit():
+            print(form.errors)
+        else:
+            print('search bar was used')
+            return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
+
+
+    profile_context = ac_funcs.art_cat_profile(art_id)
+    profile_context['form'] = form
+    profile_context['comment_form'] = comment_form
+
+    print('profile got GET')
+    return render_template('spotify/art_cat/art_cat_profile.html', **profile_context)
+
+
 
 @bp.route('/spotify/art_cat/<string:letter>', methods=('GET','POST'))
 def index_by_letter(letter):
