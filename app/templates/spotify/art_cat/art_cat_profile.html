@@ -60,27 +60,28 @@
               <div class="card-body">
                   <h5 class="card-title">Peanut Gallery</h5>
                   {% if comments %}
-                    {% for comment in comments %}
-                    <div class="comment">
-                      <div class="row">
-                          <div class="col-2 text-center">
-                              <img src="{{ url_for('static', filename='img/user_pics/' + comment.user.username + '.jpg') }}" alt="User profile picture" class="rounded-circle img-fluid" style="width: 50px;">
-                          </div>
-                          <div class="col-10">
-                              <div class="comment-content">
-                                  <p>{{ comment.content }}</p>
-                                  <small class="text-muted">{{ comment.comment_date }}</small>
+                      {% for comment in comments %}
+                          <div class="comment">
+                              <div class="row">
+                                  <div class="col-4 text-center"> <!-- Increased width to col-4 -->
+                                      <img src="{{ url_for('static', filename='img/user_pics/' + comment.user.username + '.jpg') }}" alt="User profile picture" class="rounded-circle img-fluid" style="width: 50px;">
+                                      <p class="text-muted">{{ comment.user.username }}</p> <!-- Username text -->
+                                  </div>
+                                  <div class="col-8">
+                                      <div class="comment-content">
+                                          <p>{{ comment.content }}</p>
+                                          <small class="text-muted">{{ comment.comment_date }}</small>
+                                      </div>
+                                  </div>
                               </div>
                           </div>
-                      </div>
-                    </div>
-
-                    {% endfor %}
+                      {% endfor %}
                   {% else %}
                       <p>No comments available.</p>
                   {% endif %}
               </div>
             </div>
+          
             
             <form method="post">
               {{ comment_form.hidden_tag() }}  <!-- Include CSRF token -->

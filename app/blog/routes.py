@@ -130,7 +130,7 @@ def submit_blog_post():
     filename = secure_filename(test_file_name)
     print(filename)
 
-    blog_pic_dir = '/home/flambuth/new_fred/app/static/img/blog_pics/'
+    blog_pic_dir = '/home/flambuth/fredlambuthPUNTOcom/app/static/img/blog_pics/'
     
     if form.validate_on_submit():
 
