@@ -3,7 +3,6 @@ from app.forms import LoginForm, RegistrationForm, SubmitPictureForm
 from app.extensions import db
 from app.utils import resize_imageOLD, resize_image
 from app.models.accounts import user_accounts, blog_comments
-#from app.models.blog import blog_posts
 
 from werkzeug.exceptions import RequestEntityTooLarge
 from operator import attrgetter
@@ -165,7 +164,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
             if not next_page or urlsplit(next_page).netloc != '':
-                next_page = url_for('blog.blog_landing_page')
+                next_page = url_for('user_accounts.account')
             return redirect(next_page)
 
     return render_template('accounts/login.html', title='Sign In', form=form)
