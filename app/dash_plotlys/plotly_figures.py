@@ -176,6 +176,8 @@ def day_of_week_bars(
 ):
     series_dts = pd.Series(datetimes)
     n_weeks = int(series_dts.dt.date.nunique() / 7)
+    if n_weeks == 0:
+        n_weeks = 1
     grouped_by_day_count = series_dts.groupby(series_dts.dt.day_name()).count()
     grouped_by_day = grouped_by_day_count / n_weeks
     # Convert the index (day names) to strings

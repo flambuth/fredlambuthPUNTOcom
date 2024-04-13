@@ -156,6 +156,8 @@ class Fred_Big_Dash_Stuff:
         '''
         series_dts = pd.Series(self.dts)
         n_weeks = int(series_dts.dt.date.nunique() / 7)
+        if n_weeks == 0:
+            n_weeks = 1
         grouped_by_day_count = series_dts.groupby(series_dts.dt.hour).count()
         grouped_by_day = grouped_by_day_count / n_weeks
 
