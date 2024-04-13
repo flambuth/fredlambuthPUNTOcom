@@ -3,16 +3,12 @@ from dash import dcc
 from dash import html
 from dash import Input, Output
 
-from urllib import parse
+from datetime import date
 
 import dash_bootstrap_components as dbc
 from dash_bootstrap_templates import load_figure_template
 load_figure_template('VAPOR')
-
 from app.dash_plotlys import data_sources, plotly_figures, layouts
-
-
-
 navbar = layouts.create_navbar()
 #navbar_style = {
 #    'backgroundColor': 'white',  # Change this to your desired color
@@ -136,7 +132,8 @@ def Add_Big_Dash(flask_app):
         hourly_line_fig = plotly_figures.hourly_listening_line_chart(rp_stuff.avg_song_per_hour_Series())
 
         #date range in headline
-        date_range_info = html.H5(f'{rp_stuff.first_day} thru {rp_stuff.last_day}')  # New date range info
+        today_string = date.today().strftime("%Y-%m-%d")
+        date_range_info = html.H5(f'{rp_stuff.first_day} thru {today_string}')  # New date range info
 
         #side card column
         top_subgenre_card = layouts.side_card(
