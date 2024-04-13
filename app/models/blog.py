@@ -1,18 +1,21 @@
 from app.extensions import db
-from app import login_manager
+#from app import login_manager
 from datetime import datetime
-from flask_login import UserMixin
+#from flask_login import UserMixin
 from sqlalchemy import func
-from werkzeug.security import check_password_hash, generate_password_hash
+#from werkzeug.security import check_password_hash, generate_password_hash
 
 def convert_to_iso_date(date_string):
     return datetime.strptime(date_string, '%Y-%b-%d').isoformat()[:10]
 
 class blog_posts(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(150))
-    content = db.Column(db.Text)
-    post_date = db.Column(db.String(20))
+    title = db.Column(db.String(150), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    post_date = db.Column(db.String(20), nullable=False)
+    medium = db.Column(db.String(50))
+    theme1 = db.Column(db.String(50))
+    theme2 = db.Column(db.String(50))
 
     @property
     def iso_date(self):

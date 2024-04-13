@@ -22,7 +22,7 @@ def create_app(config_class=Config):
     app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg'}
 
     login_manager.init_app(app)
-    login_manager.login_view = 'blog.login'
+    login_manager.login_view = 'user_accounts.login'
 
     db.init_app(app)
     migrate = Migrate(app, db)

@@ -44,6 +44,19 @@ def blog_yearmonth_group(year_month):
     }
     return render_template('blog/blog_index.html', **context)
 
+@bp.route('/blog/review/<string:medium>', methods=['GET', 'POST'])
+def blog_about_this_medium(medium):
+    searchform = SearchForm()
+    if request.method == 'POST':
+        return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
+    posts = blog_posts.query.filter(blog_posts.medium == medium).all()
+
+    context = {
+        'posts' : posts,
+        'form':searchform,
+    }
+    return render_template('blog/blog_index.html', **context)
+
 
 
 @bp.route('/blog/search/<string:search_term>', methods=('GET','POST'))
