@@ -148,7 +148,7 @@ def success_for_this_user(username):
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('user_page'))
+        return redirect(url_for('user_accounts.account'))
 
     form = LoginForm()
 

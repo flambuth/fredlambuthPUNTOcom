@@ -39,6 +39,9 @@ def create_app(config_class=Config):
     from app.blog import bp as blog_bp
     app.register_blueprint(blog_bp)
 
+    from app.podcast import bp as podcast_bp
+    app.register_blueprint(podcast_bp)
+
     @app.route('/')
     def homepage():
         return render_template('homepage.html')
