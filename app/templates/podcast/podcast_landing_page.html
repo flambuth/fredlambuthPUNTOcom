@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+
+<title>Books being books being books</title>
+
+<body class="w3-black">
+
+    <!-- w3-content defines a container for fixed size centered content, 
+    and is wrapped around the whole page content, except for the footer in this example -->
+<!-- Header -->
+<div class="w3-container w3-teal">
+    <h1>Books Unlimited</h1>
+    <p>Listen to a cavalcade of misfits yammer on endlessly on our podcast!</p>
+</div>
+
+<div class="w3-content" style="max-width:1400px">
+    
+    <!-- Grid -->
+    <div class="w3-row">
+    
+        <!-- Introduction menu -->
+        <div class="w3-col l4">
+            <!-- About Card -->
+            <div class="w3-card w3-margin w3-margin-top">
+                <img src="{{url_for('static', filename='img/podcast.jpg')}}" title="CS2 Peter Grabnickas, a crew member of the USS Capelin, disappeared with the ship in the Celebes Sea near Indonesia on Dec 2, 1943. Photo taken two months before the submarine's last known sighting.">
+                <div class="w3-container w3-teal">
+                    <p>This is the podcast! Good authors too who once knew better words
+                        Now only use four-letter words
+                        Writing prose
+                        Anything goes</p>
+                </div>
+            </div>
+            
+            <hr>
+
+            <!-- Episodes -->
+            <div class="w3-card w3-margin">
+                <h3>Episodes:</h3>
+                {% for file in files %}
+                <li><a href="{{ url_for('podcast.serve_podcast_file', podcast_id=file) }}">Episode {{ file }}</a></li>
+                {% endfor %}
+            </div>
+
+            <hr> 
+            
+            <!-- END Introduction Menu -->
+        </div>
+    
+        <!-- Something that will always be here. Image? Text? It will get stacked to bottom on vert screens -->
+        <div class="w3-col l8 s12">
+            I'll put stuff here later. I promise!
+        </div>
+    <!-- END GRID -->
+    </div><br>
+    
+    <!-- END w3-content -->
+</div>
+    
+    
+    </body>
+
+{% endblock %}

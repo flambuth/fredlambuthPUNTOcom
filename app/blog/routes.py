@@ -145,19 +145,19 @@ def submit_blog_post():
 
     blog_pic_dir = '/home/flambuth/fredlambuthPUNTOcom/app/static/img/blog_pics/'
     
+    if current_user.username != 'eddie_from_chicago':
+        flash("You are not authorized to submit a blog post.")
+        return redirect(url_for('user_accounts.login'))
+
     if form.validate_on_submit():
 
         print("Form data:", form.data)
 
-        # Check if the provided account creation password is correct
+        
         if form.picture.data:
 
-            # Constructing the final paths
             input_path = blog_pic_dir + filename
-
             print("File to be Saved:", input_path)
-
-            # Save and resize the uploaded file
             form.picture.data.save(input_path)
             print("File saved to input path")
 
@@ -169,7 +169,7 @@ def submit_blog_post():
         db.session.add(new_post)
         db.session.commit()
 
-        # login_user(new_user)  # Automatically log in the new user after registration
+        
         return redirect(url_for('blog.blog_landing_page'))
 
     else:
