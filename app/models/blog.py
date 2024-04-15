@@ -27,6 +27,13 @@ class blog_posts(db.Model):
         return last_id
 
     @classmethod
+    def mediums_index(cls):
+        medium_counts = db.session.query(
+            cls.medium, func.count()
+            ).group_by(cls.medium).order_by(func.count().desc()).all()
+        return medium_counts
+
+    @classmethod
     def year_month_blogpost_index(cls):
         result = (
             db.session.query(
@@ -43,6 +50,24 @@ class blog_posts(db.Model):
         sorted_data = sorted(datetime_result, key=lambda x: x[0])
         sorted_strings = [(datetime.strftime(date_str, "%Y-%b"), post_count) for date_str, post_count in sorted_data]
         return sorted_strings
+
+    @classmethod
+    def year_of_blog_posts(cls):
+        result = (
+            db.session.query(
+                func.substr(cls.post_date, 1, 4).label('year'),
+                func.count().label('post_count')
+            )
+            .group_by('year')
+            .order_by('year')  # Optional: Order the results by year-month
+            .all()
+        )
+
+        #does a quick sort by changing the 2023-JAN string to a measurable date 
+        #datetime_result = [(datetime.strptime(i[0], '%Y-%b'),i[1]) for i in result]
+        #sorted_data = sorted(datetime_result, key=lambda x: x[0])
+        #sorted_strings = [(datetime.strftime(date_str, "%Y-%b"), post_count) for date_str, post_count in sorted_data]
+        return result
 
     def __repr__(self):
         return f'<Post "{self.title}">'

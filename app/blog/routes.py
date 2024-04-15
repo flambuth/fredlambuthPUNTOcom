@@ -14,20 +14,31 @@ from sqlalchemy import desc, func
 from flask_login import login_required, current_user
 from flask import render_template, request, redirect, url_for, flash, current_app
 
+from datetime import date
 #################################################
 @bp.route('/blog', methods=['GET', 'POST'])
 @bp.route('/blog/', methods=['GET', 'POST'])
 def blog_landing_page():
+    current_year = str(date.today().year)
     searchform = SearchForm()
     if request.method == 'POST':
         return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
-    latest_6_posts = blog_posts.query.order_by(desc(blog_posts.id)).limit(6).all()
+    latest_3_posts = blog_posts.query.order_by(desc(blog_posts.id)).limit(3).all()
+
+    all_yearmonths_index = blog_posts.year_month_blogpost_index()
+    this_yearmonths_index = [i for i in all_yearmonths_index if i[0][:4]==current_year]
+
+    all_years_index = blog_posts.year_of_blog_posts()
+    prev_years_index = [i for i in all_years_index if i[0]!=current_year]
+
+    medios_index = blog_posts.mediums_index()
 
     context = {
-        'year_month_index' : blog_posts.year_month_blogpost_index(),
-        'latest_6_posts' : latest_6_posts,
+        'year_month_index' : this_yearmonths_index,
+        'prev_years_index' : prev_years_index,
+        'mediums_index' : medios_index,
+        'latest_3_posts' : latest_3_posts,
         'form':searchform,
-
     }
     return render_template('blog/blog_landing_page.html', **context)
 
@@ -37,6 +48,21 @@ def blog_yearmonth_group(year_month):
     if request.method == 'POST':
         return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
     posts = blog_posts.query.filter(blog_posts.post_date.like(f'{year_month}%')).all()
+
+    context = {
+        'posts' : posts,
+        'form':searchform,
+    }
+    return render_template('blog/blog_index.html', **context)
+
+@bp.route('/blog/year/<string:year>', methods=['GET', 'POST'])
+def blog_year_group(year):
+    searchform = SearchForm()
+    if request.method == 'POST':
+        return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
+    posts = blog_posts.query.filter(
+        func.substr(blog_posts.post_date, 1, 4) == year
+        ).all()
 
     context = {
         'posts' : posts,
