@@ -190,6 +190,7 @@ def submit_blog_post():
         new_post = blog_posts(
             title=form.title.data,
             content=form.content.data,
+            medium=form.medium.data.lower(),
             post_date=datetime.today().strftime('%Y-%b-%d'))
 
         db.session.add(new_post)
