@@ -72,14 +72,31 @@ def blog_year_group(year):
 
 @bp.route('/blog/review/<string:medium>', methods=['GET', 'POST'])
 def blog_about_this_medium(medium):
+    per_page = 6
+    # Get the current page from request arguments, defaulting to 1
+    page = request.args.get('page', 1, type=int)
+
     searchform = SearchForm()
     if request.method == 'POST':
         return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
-    posts = blog_posts.query.filter(blog_posts.medium == medium).all()
+    
+    #posts = blog_posts.query.filter(blog_posts.medium == medium).all()
+    paginated_posts = blog_posts.query.filter(blog_posts.medium == medium).order_by(
+        desc(blog_posts.post_date)
+    ).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
 
     context = {
-        'posts' : posts,
-        'form':searchform,
+        'posts': paginated_posts.items,
+        'form': searchform,
+        'page': page,
+        'medium':medium,
+        'total_pages': paginated_posts.pages,
+        'prev_page': paginated_posts.prev_num,
+        'next_page': paginated_posts.next_num,
     }
     return render_template('blog/blog_index.html', **context)
 
