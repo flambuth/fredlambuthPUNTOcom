@@ -99,21 +99,21 @@ def top_ever_daily_tracks(
     return cream
 
 def artist_days_on_charts(
-        art_name,
+        art_id,
         chart_type):
     '''
     uses the actual model object as the chart_type parameter
 
     art_name is just the string title of the artist
     '''
-    art_days = chart_type.query.filter(chart_type.art_name == art_name).all()
+    art_days = chart_type.query.filter(chart_type.art_id == art_id).all()
     return art_days
 
 def artist_days_on_both_charts(
-        art_name
+        art_id
     ):
-    tracks_days = artist_days_on_charts(art_name, daily_tracks)
-    arts_days = artist_days_on_charts(art_name, daily_artists)
+    tracks_days = artist_days_on_charts(art_id, daily_tracks)
+    arts_days = artist_days_on_charts(art_id, daily_artists)
     return tracks_days + arts_days
 
 def notable_tracks(
@@ -131,11 +131,11 @@ def notable_tracks(
     if track_hits:
         track_titles = [i.song_name for i in track_hits]
         track_ids = [i.song_id for i in track_hits]
+        return list(set(zip(track_titles, track_ids)))
     else:
         return None
 
-    return list(set(zip(track_titles, track_ids)))
-
+    
 def is_one_hit_wonder(
         art_name
     ):
@@ -144,7 +144,7 @@ def is_one_hit_wonder(
         return False
     
     track_hits = notable_tracks(art_name)
-    if len(track_hits) > 1:
+    if track_hits:
         return False
     else:
         return 'One Hit Wonder'

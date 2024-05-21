@@ -57,16 +57,29 @@ def blog_yearmonth_group(year_month):
 
 @bp.route('/blog/year/<string:year>', methods=['GET', 'POST'])
 def blog_year_group(year):
+    per_page = 6
+    # Get the current page from request arguments, defaulting to 1
+    page = request.args.get('page', 1, type=int)
+
     searchform = SearchForm()
     if request.method == 'POST':
         return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
     posts = blog_posts.query.filter(
         func.substr(blog_posts.post_date, 1, 4) == year
-        ).all()
+    ).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
 
     context = {
-        'posts' : posts,
+        'posts' : posts.items,
         'form':searchform,
+        'page': page,
+        'year': year,
+        'total_pages': posts.pages,
+        'prev_page': posts.prev_num,
+        'next_page': posts.next_num,
     }
     return render_template('blog/blog_index.html', **context)
 
@@ -93,7 +106,7 @@ def blog_about_this_medium(medium):
         'posts': paginated_posts.items,
         'form': searchform,
         'page': page,
-        'medium':medium,
+        'medium': medium,
         'total_pages': paginated_posts.pages,
         'prev_page': paginated_posts.prev_num,
         'next_page': paginated_posts.next_num,
