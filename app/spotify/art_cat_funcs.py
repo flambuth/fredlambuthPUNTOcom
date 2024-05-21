@@ -157,9 +157,10 @@ def art_cat_profile(art_id):
     '''
     art_cat_obj = art_id_to_art_cat(art_id)
 
-    both_charts = artist_days_on_both_charts(art_cat_obj.art_name)
+    both_charts = artist_days_on_both_charts(art_cat_obj.art_id)
     dates = [i.date for i in both_charts]
 
+    #USER COMMENTS
     comments = artist_comments.query.filter_by(artist_catalog_id=art_id).all()
 
     art_profile_context = {
