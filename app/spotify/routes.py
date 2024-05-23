@@ -158,27 +158,9 @@ def art_cat_profile(art_id):
     print('profile got GET')
     return render_template('spotify/art_cat/art_cat_profile.html', **profile_context)
 
-def art_cat_profileOLD(art_id):
-    form = CourseForm()
-    comment_form = CommentForm()
-
-    #if (form.validate_on_submit()):
-    if request.method == 'POST':
-        if not form.validate_on_submit():
-            print(form.errors)
-        else:
-            print('search bar was used')
-            return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
-
-
-    profile_context = ac_funcs.art_cat_profile(art_id)
-    profile_context['form'] = form
-    profile_context['comment_form'] = comment_form
-
-    print('profile got GET')
-    return render_template('spotify/art_cat/art_cat_profile.html', **profile_context)
-
-
+#######################
+#Three index routes. They need pagination.
+#How?
 
 @bp.route('/spotify/art_cat/<string:letter>', methods=('GET','POST'))
 def index_by_letter(letter):
@@ -200,20 +182,25 @@ def index_by_letter(letter):
 @bp.route('/spotify/art_cat/genre/<string:master_genre>', methods=('GET','POST'))
 @bp.route('/spotify/art_cat/genre', defaults={'master_genre': None}, methods=('GET','POST'))
 def index_by_genre(master_genre):
+    page = request.args.get('page', 1, type=int)
     form = CourseForm()
     #if form.validate_on_submit():
     if request.method == 'POST':
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
     
     if (master_genre in ac_funcs.genres)|(master_genre is None) :
+        #art_cat_index = ac_funcs.all_art_cats_in_master_genre(master_genre, page)
         art_cat_index = ac_funcs.all_art_cats_in_master_genre(master_genre)    
     else:
+        #art_cat_index = ac_funcs.art_cats_with_this_genre(master_genre, page)
         art_cat_index = ac_funcs.art_cats_with_this_genre(master_genre)
 
     context = {
         'genre': master_genre,
         'art_cat_index': art_cat_index,
         'form':form,
+        #'prev_page':art_cat_index.prev_num,
+        #'next_page':art_cat_index.next_num,
     }
 
     return render_template('spotify/art_cat/art_cat_index.html', **context)
