@@ -23,7 +23,9 @@ def possible_alphas(art_cats_model):
 
 ############
 #Indexing functions, Alpha, master_genre, and sub-genre
-def all_art_cats_starting_with(letter):
+def all_art_cats_starting_with(
+        letter
+        ):
     
     start_with_letter = artist_catalog.get_current_records().filter(
         artist_catalog.art_name.startswith(letter)
@@ -37,8 +39,42 @@ def all_art_cats_starting_with(letter):
     art_cat_results = start_with_letter + thes
     return art_cat_results
 
+def all_art_cats_in_master_genreNEW(
+        master_genre,
+        page,
+        ):
+    '''
+    Returns list of art_cat objects
+    '''
+    per_page = 12
+    if master_genre is not None:
+        arts_in_the_genre = artist_catalog.get_current_records().filter(
+            artist_catalog.master_genre == master_genre
+            ).order_by('art_name'
+                       ).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
+    else:
+        arts_in_the_genre = artist_catalog.get_current_records().filter(
+            artist_catalog.master_genre.is_(None)
+            ).order_by(artist_catalog.art_name
+                       ).paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
 
-def all_art_cats_in_master_genre(master_genre):
+    return arts_in_the_genre
+
+def all_art_cats_in_master_genre(
+        master_genre,
+        ):
+    '''
+    Returns list of art_cat objects
+    '''
+    
     if master_genre is not None:
         arts_in_the_genre = artist_catalog.get_current_records().filter(
             artist_catalog.master_genre == master_genre
@@ -50,12 +86,33 @@ def all_art_cats_in_master_genre(master_genre):
             ).order_by(artist_catalog.art_name
                        ).all()
 
-
     return arts_in_the_genre
+
+def art_cats_with_this_genreNEW(
+        searched_genre,
+        page,
+        ):
+    per_page = 12
+    search_term_lower = searched_genre.lower()  # Convert search term to lowercase
+    matching_arts = (
+        artist_catalog.get_current_records()
+        .filter(
+            or_(
+                func.lower(artist_catalog.genre).like(f"%{search_term_lower}%"),
+                func.lower(artist_catalog.genre2).like(f"%{search_term_lower}%"),
+                func.lower(artist_catalog.genre3).like(f"%{search_term_lower}%")
+            )
+        )
+        .paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
+    )
+    return matching_arts
 
 def art_cats_with_this_genre(searched_genre):
     search_term_lower = searched_genre.lower()  # Convert search term to lowercase
-
     matching_arts = (
         artist_catalog.get_current_records()
         .filter(
@@ -181,8 +238,8 @@ def art_cat_profile(art_id):
         'streaks':find_streaks_in_dates(dates),
 
         #tuple! first is the track_name, second is the track_id for Spotify API
-        'notable_tracks': notable_tracks(art_cat_obj.art_name),
-        'is_one_hit_wonder': is_one_hit_wonder(art_cat_obj.art_name),
+        'notable_tracks': notable_tracks(art_cat_obj.art_id),
+        'is_one_hit_wonder': is_one_hit_wonder(art_cat_obj.art_id),
         'comments':comments,
     }
 

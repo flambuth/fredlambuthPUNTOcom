@@ -117,14 +117,14 @@ def artist_days_on_both_charts(
     return tracks_days + arts_days
 
 def notable_tracks(
-        art_name
+        art_id
     ):
     '''
     Returns a list of strings for each unique song in the daily_tracks for the given artist
     Returns None if there aren't any track hits for the given artist
     '''
     track_hits = artist_days_on_charts(
-        art_name,
+        art_id,
         daily_tracks
     )
 
@@ -137,13 +137,13 @@ def notable_tracks(
 
     
 def is_one_hit_wonder(
-        art_name
+        art_id
     ):
-    has_art_days = artist_days_on_charts(art_name, daily_artists)
+    has_art_days = artist_days_on_charts(art_id, daily_artists)
     if has_art_days:
         return False
     
-    track_hits = notable_tracks(art_name)
+    track_hits = notable_tracks(art_id)
     if track_hits:
         return False
     else:
