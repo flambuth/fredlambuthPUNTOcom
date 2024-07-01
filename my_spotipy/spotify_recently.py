@@ -1,7 +1,10 @@
 from datetime import datetime
 from my_spotipy.spotify_object import sp_obj
+from app.models.charts import recently_played
 
-def sp_to_rp(sp_current_song, cls):
+def sp_to_rp(
+        sp_current_song, 
+        cls=recently_played):
     '''
     Converts the response you get from the sp requests endpoint 'current_user_playing_track'
     to a recently_played object

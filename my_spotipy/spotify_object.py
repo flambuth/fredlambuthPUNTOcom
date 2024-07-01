@@ -26,3 +26,16 @@ def sp_obj(
         get_spot_token_for_user(spotify_username)
     )
     return sp
+
+def amys_last_five_songs_recently_played():
+    '''
+    returns a simple 5 item data structure of the last five songs Amy has listened to
+    
+    '''
+    spotify_user = 'riggle.amy'
+    ariggs_sp_obj = sp_obj(spotify_user)
+    amys_last_five = ariggs_sp_obj.current_user_recently_played(5)['items']
+
+    song_names = [i['track']['name'] for i in amys_last_five]
+    artist_names = [i['track']['artists'][0]['name'] for i in amys_last_five]
+    return list(zip(song_names, artist_names))

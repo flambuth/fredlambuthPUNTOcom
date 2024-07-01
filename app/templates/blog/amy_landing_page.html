@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/blog.css') }}">
+
+<title>Amy Riggle's Blog Page</title>
+
+<style>
+.song-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.song-item {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.song-item:nth-child(odd) {
+    background-color: #444;
+}
+
+.song-title {
+    font-size: 1.2em;
+}
+
+.song-artist {
+    font-size: 1em;
+    font-style: italic;
+}
+
+</style>
+
+<body class="w3-black">
+
+    <!-- w3-content defines a container for fixed size centered content, 
+    and is wrapped around the whole page content, except for the footer in this example -->
+    <div class="w3-content" style="max-width:1400px">
+    
+        <!-- Header -->
+        {% include 'blog/blog_header.html' %}
+    
+        <!-- Grid -->
+        <div class="w3-row">
+    
+            <!-- Introduction menu -->
+            <div class="w3-col l4">
+                <!-- About Card -->
+                <div class="w3-card w3-margin w3-margin-top">
+                    <img src="{{url_for('static', filename='img/kusama.jpg')}}" title="CS2 Peter Grabnickas, a crew member of the USS Capelin, disappeared with the ship in the Celebes Sea near Indonesia on Dec 2, 1943. Photo taken two months before the submarine's last known sighting.">
+                    <div class="w3-container w3-teal">
+                        <b>Amy's Blog</b>
+                        <p>Girls being girls being girls being girls! Girl Group!</p>
+                    </div>
+                </div>
+                
+                <hr>
+                <div class="w3-card w3-margin w3-padding">
+                    <h3>Amy's Last Five on Spotify:</h3>
+                    <ul class="song-list">
+                        {% for song, artist in amy_5_songs %}
+                            <li class="song-item">
+                                <span class="song-title">{{ song }}</span>
+                                <span class="song-artist">by {{ artist }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+    
+            <!-- Blog entries -->
+            <div class="w3-col l8 s12">
+                <!-- Blog entry goes here -->
+                <p>{% autoescape false %} {{ blog_post | replace('\n', '<br>') }} {% endautoescape %}</p>
+            </div>
+    
+        </div>
+    
+    <!-- END w3-content -->
+    </div>
+    
+</body>
+
+{% endblock %}
