@@ -6,6 +6,8 @@ from app.models.charts import daily_tracks
 from app.extensions import db
 from app.utils import resize_image, resize_imageOLD
 
+from my_spotipy import spotify_object
+
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -237,3 +239,26 @@ def submit_blog_post():
                 flash(f"Error in field '{field}': {error}")
                 print(f"Error in field '{field}': {error}")
         return render_template('blog/blog_add_post.html', title='Register', form=form)
+    
+
+
+#################################################
+@bp.route('/blog/amy', methods=['GET', 'POST'])
+def amy_landing_page():
+    current_year = str(date.today().year)
+    searchform = SearchForm()
+    if request.method == 'POST':
+        return redirect(url_for('blog.blog_index_search', search_term=searchform.search_term.data))
+
+    filepath = os.path.join(current_app.static_folder, 'amy.txt')
+    with open(filepath, 'r') as file:
+        content = file.read()
+
+    amy_5_songs = spotify_object.amys_last_five_songs_recently_played()
+
+    context = {
+        'amy_5_songs' : amy_5_songs,
+        'blog_post' : content,
+        'form':searchform,
+    }
+    return render_template('blog/amy_landing_page.html', **context)
