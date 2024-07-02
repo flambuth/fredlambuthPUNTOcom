@@ -167,6 +167,26 @@ class track_catalog(db.Model):
     duration = db.Column(db.Integer)
     app_record_date = db.Column(db.String(150))
 
+
+    @classmethod
+    def add_new_track_cat_to_db(cls, new_track_cat):
+        '''
+        Accepts a track_catalog type object and saves it to the track_catalog table in sqlite
+        '''
+        if new_track_cat.song_id in cls.all_song_ids_in_cat():
+            print('song_id already exists')
+        else:
+            db.session.add(new_track_cat)
+            db.session.commit()
+
+    @classmethod
+    def all_song_ids_in_cat(cls):
+        '''
+        List so you can check if the charts models have art_ids not in the catalog
+        '''
+        unique_song_ids = [i[0] for i in cls.query.with_entities(cls.song_id).all()]
+        return unique_song_ids
+
     @classmethod
     def count_tracks_by_first_letter(cls):
         query = db.session.query(func.substr(track_catalog.song_name, 1, 1).label('first_char'), func.count().label('count'))
