@@ -2,6 +2,7 @@ from my_spotipy.spotify_object import sp_obj
 from my_spotipy.genres import inspect_tri_genres
 from datetime import date
 
+from app.models.catalogs import track_catalog
 from app.utils import push_app_context
 
 def three_genre_fields(genre_list):
@@ -96,10 +97,28 @@ class ArtistCatalog:
         return artist_data
     
     
-'''
-def art_id_to_art_cat(artist_id):
+class TrackCatalog:
 
-    spot_art_record = sp.artist(artist_id)
-    art_cat_record = spot_json_to_list(spot_art_record)
-    return art_cat_record
-'''
+    def __init__(            
+            self,
+            track_id,
+            spotify_username='lambuth'):
+        '''
+        Temp Object gathering spotify data on one track, then making a track_cat object
+        ready to be saved to the db
+        '''
+        self.track_id = track_id
+
+        self.sp = sp_obj(spotify_username)
+        self.app = push_app_context()
+        self.spotify_result = self.sp.track(self.track_id)
+        self.new_tc = track_catalog(
+            art_name=self.spotify_result['artists'][0]['name'],
+            album_id=self.spotify_result['album']['id'],
+            album_name=self.spotify_result['album']['name'],
+            song_id=self.spotify_result['id'],
+            song_name=self.spotify_result['name'],
+            img_url=self.spotify_result['album']['images'][0]['url'][24:],
+            duration=self.spotify_result['duration_ms'],
+            app_record_date=date.today().isoformat()
+        )

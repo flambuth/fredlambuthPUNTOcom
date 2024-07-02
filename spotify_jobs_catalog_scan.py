@@ -1,7 +1,8 @@
-from app.models.catalogs import artist_catalog
+from app.models.catalogs import artist_catalog, track_catalog
+from app.models.charts import daily_tracks
 from app.utils import push_app_context
 
-from my_spotipy.spotify_artcat import ArtistCatalog
+from my_spotipy.spotify_catalog import ArtistCatalog, TrackCatalog
 from my_spotipy.spotify_daily import ids_missing_from_art_cat
 
 #what = ArtistCatalog(missing_in_both[0])
@@ -23,7 +24,7 @@ def list_to_art_cat_obj(data_list):
     )
     return new_ac
 
-def scan_and_add_missing(
+def scan_and_add_missing_artists(
         app=push_app_context()
 ):
     '''
@@ -38,7 +39,27 @@ def scan_and_add_missing(
 
     else:
         print('No new art_ids found in daily models.')
+
+
+def scan_and_add_new_tracks(
+        app=push_app_context()
+):
+    '''
+    Looks for new tracks. Saves to the db any new ones found in daily tracks
+    that were not found in track_catalog
+    '''
+    new_ids = daily_tracks.song_ids_not_in_track_cat()
+
+    if new_ids:
+        for song_id in new_ids:
+            spot_result = TrackCatalog(song_id)
+            track_catalog.add_new_track_cat_to_db(
+                spot_result.new_tc
+            )
+    else:
+        print('No new song_ids found in daily models.')
         
 
 if __name__ == '__main__':
-    scan_and_add_missing()
+    scan_and_add_missing_artists()
+    scan_and_add_new_tracks()

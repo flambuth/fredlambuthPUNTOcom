@@ -5,7 +5,7 @@ from sqlalchemy import func, extract
 import random
 from datetime import datetime, timedelta
 
-from app.models.catalogs import artist_catalog
+from app.models.catalogs import artist_catalog, track_catalog
 
 Base = declarative_base()
 
@@ -36,12 +36,31 @@ class daily_tracks(db.Model):
         ))
         return unique_art_ids
     
+    
     @classmethod
     def ids_not_in_art_cat(cls):
+        '''
+        Finds all art_ids in the daily tables that are not found in the artist catalog.
+        '''
         art_cat_ids = artist_catalog.all_art_ids_in_cat()
-        tracks_ids = daily_tracks.all_art_ids_in_chart_history()
+        tracks_ids = cls.all_art_ids_in_chart_history()
         new_ids = [i for i in tracks_ids if i not in art_cat_ids ]
         return new_ids
+    
+    @classmethod
+    def song_ids_not_in_track_cat(cls):
+        '''
+        Scans the daily_tracks table for new song_ids
+        '''
+        missing_tracks_query = db.session.query(cls.song_id).outerjoin(
+            track_catalog, cls.song_id == track_catalog.song_id
+        ).filter(track_catalog.song_id == None).distinct()
+
+        missing_tracks = missing_tracks_query.all()
+
+        # song_id values from the query result
+        missing_song_ids = [track.song_id for track in missing_tracks]
+        return missing_song_ids
 
     @classmethod
     def add_daily_chart_to_db(cls, new_daily_chart):
