@@ -2,7 +2,7 @@ from app.models.catalogs import artist_catalog
 from app.models.accounts import artist_comments
 from app import db
 from app.spotify.daily_funcs import artist_days_on_both_charts, find_streaks_in_dates, notable_tracks, is_one_hit_wonder
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, text
 
 #latest_art_cats = artist_catalog.query.order_by(artist_catalog.app_record_date.desc()).limit(5).all()
 
@@ -24,22 +24,37 @@ def possible_alphas(art_cats_model):
 ############
 #Indexing functions, Alpha, master_genre, and sub-genre
 def all_art_cats_starting_with(
-        letter
+        letter,
+        page,
         ):
-    
-    start_with_letter = artist_catalog.get_current_records().filter(
+    '''
+    Returns all artists that have the first letter use as a parameter.
+    Artists that have 'The' before their name are appended to the list
+    of results.
+    '''
+    per_page = 12
+    start_with_letter_query = artist_catalog.get_current_records().filter(
         artist_catalog.art_name.startswith(letter)
-            ).order_by('art_name').all()
-
-    thes = artist_catalog.get_current_records().filter(
-        func.substring(artist_catalog.art_name,0,5)=='The '
-        ).filter(func.substring(artist_catalog.art_name,6,-1).startswith(letter)
-                ).order_by('art_name').all()
+    )
     
-    art_cat_results = start_with_letter + thes
-    return art_cat_results
+    thes_query = artist_catalog.get_current_records().filter(
+        func.substring(artist_catalog.art_name, 0, 5) == 'The '
+    ).filter(
+        func.substring(artist_catalog.art_name, 5, -1).startswith(letter)
+    )
+    
+    combined_query = start_with_letter_query.union_all(thes_query).order_by(text('artist_catalog_art_name'))
+    total_count = combined_query.count()
 
-def all_art_cats_in_master_genreNEW(
+    arts_starting_with = combined_query.paginate(
+            page=page,
+            per_page=per_page,
+            error_out=False,
+        )
+
+    return arts_starting_with, total_count
+
+def all_art_cats_in_master_genre(
         master_genre,
         page,
         ):
@@ -47,54 +62,36 @@ def all_art_cats_in_master_genreNEW(
     Returns list of art_cat objects
     '''
     per_page = 12
+
     if master_genre is not None:
-        arts_in_the_genre = artist_catalog.get_current_records().filter(
+        base_query = artist_catalog.get_current_records().filter(
             artist_catalog.master_genre == master_genre
-            ).order_by('art_name'
-                       ).paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False,
-    )
+        ).order_by('art_name')
     else:
-        arts_in_the_genre = artist_catalog.get_current_records().filter(
+        base_query = artist_catalog.get_current_records().filter(
             artist_catalog.master_genre.is_(None)
-            ).order_by(artist_catalog.art_name
-                       ).paginate(
-        page=page,
-        per_page=per_page,
-        error_out=False,
-    )
-
-    return arts_in_the_genre
-
-def all_art_cats_in_master_genre(
-        master_genre,
-        ):
-    '''
-    Returns list of art_cat objects
-    '''
+        ).order_by('art_name')
     
-    if master_genre is not None:
-        arts_in_the_genre = artist_catalog.get_current_records().filter(
-            artist_catalog.master_genre == master_genre
-            ).order_by('art_name'
-                       ).all()
-    else:
-        arts_in_the_genre = artist_catalog.get_current_records().filter(
-            artist_catalog.master_genre.is_(None)
-            ).order_by(artist_catalog.art_name
-                       ).all()
+    # Get the total count of the records
+    total_count = base_query.count()
+    
+    # Apply pagination to the base query
+    arts_in_the_genre = base_query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False,
+    )
 
-    return arts_in_the_genre
+    return arts_in_the_genre, total_count
 
-def art_cats_with_this_genreNEW(
+
+def art_cats_with_this_genre(
         searched_genre,
         page,
         ):
     per_page = 12
     search_term_lower = searched_genre.lower()  # Convert search term to lowercase
-    matching_arts = (
+    matching_arts_query = (
         artist_catalog.get_current_records()
         .filter(
             or_(
@@ -102,30 +99,17 @@ def art_cats_with_this_genreNEW(
                 func.lower(artist_catalog.genre2).like(f"%{search_term_lower}%"),
                 func.lower(artist_catalog.genre3).like(f"%{search_term_lower}%")
             )
-        )
-        .paginate(
+        )).order_by('art_name')
+
+    total_count = matching_arts_query.count()
+
+    matching_arts = matching_arts_query.paginate(
         page=page,
         per_page=per_page,
         error_out=False,
     )
-    )
-    return matching_arts
-
-def art_cats_with_this_genre(searched_genre):
-    search_term_lower = searched_genre.lower()  # Convert search term to lowercase
-    matching_arts = (
-        artist_catalog.get_current_records()
-        .filter(
-            or_(
-                func.lower(artist_catalog.genre).like(f"%{search_term_lower}%"),
-                func.lower(artist_catalog.genre2).like(f"%{search_term_lower}%"),
-                func.lower(artist_catalog.genre3).like(f"%{search_term_lower}%")
-            )
-        )
-        .all()
-    )
-    return matching_arts
-
+    
+    return matching_arts, total_count
 
 
 ############
@@ -180,8 +164,8 @@ def art_cat_name_search(search_term):
 #single art_cat functions
 def get_one_artist(art_name):
     '''
-    Get just one art_cat record
-    '''
+    Looks into the artist catalog and returns the first result that comes from filtering
+    down to the input art_name    '''
     uno_art_cat = (
         artist_catalog.query.filter(artist_catalog.art_name == art_name
         ).first())
@@ -201,7 +185,8 @@ def random_artist_in_genre(genre):
 
 def art_id_to_art_cat(art_id):
     '''
-    Get just one art_cat record
+    Looks into the artist catalog and returns the first result that comes from filtering
+    down to the input art_id
     '''
     uno_art_cat = (
         artist_catalog.query.filter(artist_catalog.art_id == art_id

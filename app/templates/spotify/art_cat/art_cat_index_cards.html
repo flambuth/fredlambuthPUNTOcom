@@ -1,5 +1,23 @@
-
 <style>
+    .card {
+        position: relative;
+        width: 18rem;
+    }
+
+    .card-img-top {
+        max-height: 250px;
+        object-fit: cover;
+        transition: filter 0.3s ease; /* Add transition effect for the filter */
+    }
+
+    .card:hover .card-img-top {
+        filter: saturate(190%) hue-rotate(40deg); /* Adjust saturation and hue rotation */
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
     .my-item {
         transition: box-shadow 0.3s ease;
     }
@@ -8,48 +26,44 @@
         box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5); /* Adjust the shadow color and size as needed */
     }
 
-    .card-img-top {
-        max-height: 250px; /* Adjust the maximum height of the image */
-        object-fit: cover;
+    .my-item-header {
+        font-size: 1.2rem;
+        margin-top: 0.5rem;
     }
 </style>
 
 <div class="col-md-3" style="padding-top: 30px;">
-    <div class="card" style="width: 18rem;">
+    <div class="card">
         <a href="{{ url_for('spotify.art_cat_profile', art_id=item.art_id) }}">
-
-    {% if item.img_url_mid == '' %}
-        <img src="{{ url_for('static', filename='/img/fallback.jpeg') }}" class="card-img-top my-image" alt="{{ item.art_name }}">
-    {% else %}
-    <!-- Fallback image from the static folder -->
-        <img src="https://i.scdn.co/image/{{ item.img_url_mid }}" class="card-img-top my-image" alt="{{ item.art_name }}">
-    {% endif %}
-
-        <div class="card-body my-item">
-            
-            {% if item.master_genre == 'rock' %}
-                <h3 class="my-item-header rock">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'pop' %}
-                <h3 class="my-item-header pop">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'electronic' %}
-                <h3 class="my-item-header electronic">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'punk' %}
-                <h3 class="my-item-header punk">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'funk' %}
-                <h3 class="my-item-header funk">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'indie' %}
-                <h3 class="my-item-header indie">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'old' %}
-                <h3 class="my-item-header old">{{ item.art_name }}</h3>
-            {% elif item.master_genre == 'country' %}
-                <h3 class="my-item-header country">{{ item.art_name }}</h3>
+            {% if item.img_url_mid %}
+                <img src="https://i.scdn.co/image/{{ item.img_url_mid }}" class="card-img-top" alt="{{ item.art_name }}">
             {% else %}
-                <h3 class="my-item-header" style="background-color: w">{{ item.art_name }}</h3>
+                <img src="{{ url_for('static', filename='favicon-32x32.png') }}" class="card-img-top" alt="{{ item.art_name }}">
             {% endif %}
 
-            <b><p class="card-text">{{ item.genre }}</p></b>
-            
-        </div>
+            <div class="card-body my-item">
+                {% if item.master_genre == 'rock' %}
+                    <h3 class="my-item-header rock">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'pop' %}
+                    <h3 class="my-item-header pop">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'electronic' %}
+                    <h3 class="my-item-header electronic">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'punk' %}
+                    <h3 class="my-item-header punk">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'funk' %}
+                    <h3 class="my-item-header funk">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'indie' %}
+                    <h3 class="my-item-header indie">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'old' %}
+                    <h3 class="my-item-header old">{{ item.art_name }}</h3>
+                {% elif item.master_genre == 'country' %}
+                    <h3 class="my-item-header country">{{ item.art_name }}</h3>
+                {% else %}
+                    <h3 class="my-item-header">{{ item.art_name }}</h3>
+                {% endif %}
+
+                <p class="card-text">{{ item.genre }}</p>
+            </div>
         </a>
     </div>
 </div>

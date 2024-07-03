@@ -97,7 +97,7 @@ def blog_about_this_medium(medium):
     
     #posts = blog_posts.query.filter(blog_posts.medium == medium).all()
     paginated_posts = blog_posts.query.filter(blog_posts.medium == medium).order_by(
-        desc(blog_posts.post_date)
+        desc(blog_posts.id)
     ).paginate(
         page=page,
         per_page=per_page,

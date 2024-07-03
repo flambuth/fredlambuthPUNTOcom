@@ -164,20 +164,31 @@ def art_cat_profile(art_id):
 
 @bp.route('/spotify/art_cat/<string:letter>', methods=('GET','POST'))
 def index_by_letter(letter):
+    page = request.args.get('page', 1, type=int)
     form = CourseForm()
     #if form.validate_on_submit():
     if request.method == 'POST':
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
     
-    art_cat_index = ac_funcs.all_art_cats_starting_with(letter)
+    art_cat_index, total_count = ac_funcs.all_art_cats_starting_with(
+        letter,
+        page,
+        )
     
     context = {
-        'art_cat_index' : art_cat_index,
+        'art_cat_index' : art_cat_index.items,
         'letter' : letter,
         'form':form,
+        'artist_count': total_count,
+        'prev_page':art_cat_index.prev_num,
+        'next_page':art_cat_index.next_num,
+        'first_page':1,
+        'last_page':art_cat_index.pages,
     }
 
     return render_template('spotify/art_cat/art_cat_index.html', **context)
+
+
 
 @bp.route('/spotify/art_cat/genre/<string:master_genre>', methods=('GET','POST'))
 @bp.route('/spotify/art_cat/genre', defaults={'master_genre': None}, methods=('GET','POST'))
@@ -189,18 +200,20 @@ def index_by_genre(master_genre):
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
     
     if (master_genre in ac_funcs.genres)|(master_genre is None) :
-        #art_cat_index = ac_funcs.all_art_cats_in_master_genre(master_genre, page)
-        art_cat_index = ac_funcs.all_art_cats_in_master_genre(master_genre)    
+        art_cat_index, ac_count = ac_funcs.all_art_cats_in_master_genre(master_genre, page)    
     else:
-        #art_cat_index = ac_funcs.art_cats_with_this_genre(master_genre, page)
-        art_cat_index = ac_funcs.art_cats_with_this_genre(master_genre)
+        art_cat_index, ac_count = ac_funcs.art_cats_with_this_genre(master_genre, page)
+
 
     context = {
         'genre': master_genre,
-        'art_cat_index': art_cat_index,
+        'artist_count': ac_count,
+        'art_cat_index': art_cat_index.items,
         'form':form,
-        #'prev_page':art_cat_index.prev_num,
-        #'next_page':art_cat_index.next_num,
+        'prev_page':art_cat_index.prev_num,
+        'next_page':art_cat_index.next_num,
+        'first_page':1,
+        'last_page':art_cat_index.pages,
     }
 
     return render_template('spotify/art_cat/art_cat_index.html', **context)
@@ -355,3 +368,24 @@ def arts_prev(year, month, day):
     )
     return render_template('spotify/archive_chart_artists.html', **context)
 
+
+
+
+'''
+@bp.route('/spotify/art_cat/<string:letter>', methods=('GET','POST'))
+def index_by_letterOLD(letter):
+    form = CourseForm()
+    #if form.validate_on_submit():
+    if request.method == 'POST':
+        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
+    
+    art_cat_index = ac_funcs.all_art_cats_starting_with(letter)
+    
+    context = {
+        'art_cat_index' : art_cat_index,
+        'letter' : letter,
+        'form':form,
+    }
+
+    return render_template('spotify/art_cat/art_cat_index.html', **context)
+'''
