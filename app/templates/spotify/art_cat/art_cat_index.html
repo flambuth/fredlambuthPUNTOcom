@@ -4,20 +4,25 @@
 <link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
 
 <style>
+.genre-highlight {
+    font-weight: bold;
+    color: #00ffbf; /* Change this to the desired color */
+}
+
 
 </style>
 
-<div class="container text-center">
 
-    {% if art_cat_index is not defined or art_cat_index|length == 0 %}
-    <p>The variable is empty or undefined.</p>
-    {% else %}
-    {% if letter is defined %}
-    <p>{{ art_cat_index|length }} artists when indexed by {{ letter }}</p>
-    {% elif genre is defined %}
-    <p>{{ art_cat_index|length }} artists when indexed by {{ genre }}</p>
-    {% endif %}
-    {% endif %}
+
+
+<div class="container text-center">
+    <div class="row mb-3">
+        <div class="col-12">
+            <h4><span class="genre-highlight"> {{ artist_count }} </span> artists indexed by <span class="genre-highlight">{{ genre or letter}}</span></h4>
+        </div>
+    </div>
+
+    {% include 'spotify/art_cat/art_cat_nav_buttons.html' %}
 
     <div class="row">
         {% for item in art_cat_index %}
@@ -28,25 +33,7 @@
     </div>
 </div>
 
-{% if next_page or prev_page %}
-<div class="mt-3 d-flex" style="justify-content: center;">
-    {% if prev_page %}
-    <span>
-        <a class='prev-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=prev_page) }}">
-            {{ 'Previous' }}
-        </a>
-    </span>
-    {% endif %}
-    {% if next_page and prev_page %} || {% endif %}
-    {% if next_page %}
-    <span>
-        <a class='next-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=next_page) }}">
-            {{ 'Next' }}
-        </a>
-    </span>
-    {% endif %}
+{% include 'spotify/art_cat/art_cat_nav_buttons.html' %}
 
-</div>
-{% endif %}
 
 {% endblock %}
