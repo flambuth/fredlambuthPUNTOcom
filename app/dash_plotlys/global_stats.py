@@ -9,7 +9,7 @@ import os
 from config import basedir
 
 # Load the dictionary from the JSON file
-country_codes_json = basedir + "/country_codes.json"
+country_codes_json = basedir + "/global_spotify/country_codes.json"
 with open(country_codes_json, "r") as json_file:
     country_codes = json.load(json_file)
 
@@ -21,6 +21,14 @@ def cleaned_df(csv_name='universal_top_spotify_songs.csv'):
     big_df = pd.read_csv(csv_name).dropna()
     big_df['country_string'] = big_df.country.map(country_codes)
     return big_df
+
+def cleaned_df_country(country_code):
+    '''
+    csv_name = 'universal_top_spotify_songs.csv'
+    '''
+    big_df = cleaned_df()
+    country_df = big_df[ big_df.country == country_code]
+    return country_df
 
 class Chart_Data:
     def __init__(self, df=None):
