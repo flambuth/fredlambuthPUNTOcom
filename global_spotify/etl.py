@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import sqlite3
 from collections import Counter
+import gc
 
 def country_codes_map():
     '''
@@ -16,12 +17,12 @@ def cleaned_df(
         csv_name='/home/flambuth/fredlambuthPUNTOcom/universal_top_spotify_songs.csv',
         chunk_size=13000
         ):
-    '''
-    csv_name = 'universal_top_spotify_songs.csv'
-    '''
-    big_df = pd.read_csv(csv_name).dropna()
-    big_df['country_string'] = big_df.country.map(country_codes_map())
-    return big_df
+    country_codes = country_codes_map()
+    chunks = pd.read_csv(csv_name, chunksize=chunk_size)
+    for chunk in chunks:
+        chunk = chunk.dropna()
+        chunk['country_string'] = chunk.country.map(country_codes)
+        yield chunk
 
 def cleaned_df_country(country_code):
     '''
@@ -36,8 +37,15 @@ class Country_Stats:
         self,
         country_code
         ):
-        
-        self.df = cleaned_df_country(country_code) 
+        self.country_code = country_code
+        self.df = self._load_country_df()
+
+    def _load_country_df(self):
+        country_df_list = []
+        for chunk in cleaned_df():
+            country_chunk = chunk[chunk.country == self.country_code]
+            country_df_list.append(country_chunk)
+        return pd.concat(country_df_list)
 
     def filter_spotify_ids(self, spotify_ids, df):
         filtered_df = df[df.spotify_id.isin(spotify_ids)]
@@ -191,3 +199,7 @@ def write_all_countries_to_db():
         country_obj = Country_Dataframes(country_code)
         country_obj.add_country_column()
         country_obj.write_dfs_to_db()
+        
+        #give baCK memory
+        del country_obj
+        gc.collect()
