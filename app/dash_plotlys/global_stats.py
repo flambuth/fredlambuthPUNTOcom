@@ -235,7 +235,7 @@ def country_dash_dfs(country):
     'top_10_song_data',
     'top_10_songs_today'
 ]
-    queries = [f"SELECT * from {table} where country='{country}';" for table in tables]
+    queries = [f"SELECT * from {table} where country_string='{country}';" for table in tables]
     
     df_artists = pd.read_sql(queries[0],conn)
     

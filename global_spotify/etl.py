@@ -119,6 +119,8 @@ class Country_Dataframes(Country_Stats):
 
     def __init__(self, country_code):
         super().__init__(country_code)
+        self.country_code = country_code
+        self.country_string = country_codes_map().get(self.country_code)
 
         self.df_top_10_artists = self.get_top_n_artists()
 
@@ -132,14 +134,44 @@ class Country_Dataframes(Country_Stats):
                 'snapshot_date',
             ]]
 
+    def add_country_column(self):
+        """
+        Add the country code to the dataframes.
+        """
+        self.df_top_10_songs_data['country'] = self.country_code
+        self.df_today_top10['country'] = self.country_code
+        self.df_top_10_artists['country'] = self.country_code
+
+        self.df_top_10_songs_data['country_string'] = self.country_string
+        self.df_today_top10['country_string'] = self.country_string
+        self.df_top_10_artists['country_string'] = self.country_string
+
+
+
     def write_dfs_to_db(self):
         conn = sqlite3.connect('global.db')
-        self.df_top_10_data.to_sql('top_10_song_data', conn, index=False, if_exists='replace')
-        self.df_today_top10.to_sql('top_10_songs_today', conn, index=False, if_exists='replace')
-        self.df_top_10_songs.to_sql('top_10_artists', conn, index=False, if_exists='replace')
+        try:
+            self.df_top_10_songs_data.to_sql('top_10_song_data', conn, index=False, if_exists='append')
+            self.df_today_top10.to_sql('top_10_songs_today', conn, index=False, if_exists='append')
+            self.df_top_10_artists.to_sql('top_10_artists', conn, index=False, if_exists='append')
+
+            # Debugging: Check the number of rows in each table after appending
+            top_10_song_data_count = pd.read_sql_query("SELECT COUNT(*) FROM top_10_song_data", conn).iloc[0, 0]
+            top_10_songs_today_count = pd.read_sql_query("SELECT COUNT(*) FROM top_10_songs_today", conn).iloc[0, 0]
+            top_10_artists_count = pd.read_sql_query("SELECT COUNT(*) FROM top_10_artists", conn).iloc[0, 0]
+
+            print(f"After appending for {self.country_code}:")
+            print(f"top_10_song_data: {top_10_song_data_count} rows")
+            print(f"top_10_songs_today: {top_10_songs_today_count} rows")
+            print(f"top_10_artists: {top_10_artists_count} rows")
+        finally:
+            conn.close()
 
 def write_all_countries_to_db():
     '''
+    Drops existing tables so that each run's data is the only available in the
+    database
+
     Iterates alphabetically through the country_codes dictionary. At each iteration:
         three dataframes are made of:
             10 artists with most chart data,
@@ -148,10 +180,14 @@ def write_all_countries_to_db():
         each dataframe is written to a table in a 'global.db' SQLITE file in the current
         directory
     '''
+    conn = sqlite3.connect('global.db')
+    conn.execute("DROP TABLE IF EXISTS top_10_song_data")
+    conn.execute("DROP TABLE IF EXISTS top_10_songs_today")
+    conn.execute("DROP TABLE IF EXISTS top_10_artists")
+    conn.close()
+
     codes = country_codes_map().keys()
     for country_code in codes:
-        Country_Dataframes.write_dfs_to_db(country_code)
-
-#write_all_countries_to_db()
-
-#print('Snide remark for success!')
+        country_obj = Country_Dataframes(country_code)
+        country_obj.add_country_column()
+        country_obj.write_dfs_to_db()
