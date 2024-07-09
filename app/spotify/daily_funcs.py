@@ -131,7 +131,16 @@ def notable_tracks(
     if track_hits:
         track_titles = [i.song_name for i in track_hits]
         track_ids = [i.song_id for i in track_hits]
-        return list(set(zip(track_titles, track_ids)))
+        tuples_list = list(set(zip(track_titles, track_ids)))
+
+        #removes tracks that have more than one spotify track id
+        seen = set()
+        result = []
+        for item in tuples_list:
+            if item[0] not in seen:
+                seen.add(item[0])
+                result.append(item)
+        return result
     else:
         return None
 

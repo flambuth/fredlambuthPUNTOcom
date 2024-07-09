@@ -203,3 +203,6 @@ def write_all_countries_to_db():
         #give baCK memory
         del country_obj
         gc.collect()
+
+if __name__ == '__main__':
+    write_all_countries_to_db()

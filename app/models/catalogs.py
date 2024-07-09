@@ -1,6 +1,6 @@
 from app.extensions import db
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import func, or_, case
+from sqlalchemy import func, or_, case, and_
 #from .main import daily_tracks
 
 #from app.models.charts import daily_artists, daily_tracks
@@ -75,6 +75,40 @@ class artist_catalog(db.Model):
         else:
             db.session.add(new_art_cat)
             db.session.commit()
+
+    @classmethod
+    def add_refreshed_art_cat_to_db(cls, refreshed_art_cat):
+        '''
+        Takes a recently_played object as a parameter and add's it
+        to the database
+        Updates all records with art_id to be set as not active
+        '''
+        try:
+            # Add the new record to the database
+            db.session.add(refreshed_art_cat)
+
+            # Define the condition for the update
+            condition = and_(
+                artist_catalog.art_id == refreshed_art_cat.art_id,
+                artist_catalog.app_record_date != refreshed_art_cat.app_record_date
+            )
+
+            # Update the is_active field to False for matching records
+            artist_catalog.query.filter(condition).update(
+                {artist_catalog.is_current: False},
+                synchronize_session=False
+            )
+
+            # Commit the changes to the database
+            db.session.commit()
+            
+            # Print statement to indicate progress
+            print(f"Refreshed and added to DB: {refreshed_art_cat.art_name}")
+        
+        except Exception as e:
+            # Rollback the session in case of an error
+            db.session.rollback()
+            raise e
 
     @staticmethod
     def find_name_in_art_cat(test_name):
