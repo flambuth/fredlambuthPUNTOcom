@@ -202,11 +202,11 @@ def followers_since_ac_refresh(art_id):
     current = art_id_to_art_cat(art_id)
     prev = artist_catalog.get_inactive_records().filter(artist_catalog.art_id == art_id).first()
     
-    if not current or not prev:
-        return "No data found", None
+    if not prev:
+        return None,None,None
     
-    if prev.followers == 0:
-        return "Previous followers count is zero, cannot calculate percentage difference", None
+    #if prev.followers == 0:
+    #    return "Previous followers count is zero, cannot calculate percentage difference", None
     
     diff = current.followers - prev.followers
     diff_pct = round(diff / prev.followers * 100, 1)
@@ -219,41 +219,52 @@ def art_cat_profile(art_id):
     Returns a dict or obj that has all the values of an art_name that will be displayed on a the art_cat_profile template
     '''
     art_cat_obj = art_id_to_art_cat(art_id)
+    
+    # Ensure the values from followers_since_ac_refresh are valid
     followers_diff, followers_diff_pct, prev_date = followers_since_ac_refresh(art_id)
 
     both_charts = artist_days_on_both_charts(art_cat_obj.art_id)
     dates = [i.date for i in both_charts]
 
-    #USER COMMENTS
+    # Ensure dates are available for calculating first and last appearances
+    if dates:
+        first_appearance = min(dates)
+        last_appearance = max(dates)
+    else:
+        first_appearance = "N/A"
+        last_appearance = "N/A"
+
+    # User comments
     comments = artist_comments.query.filter_by(artist_catalog_id=art_id).all()
 
     art_profile_context = {
-        'art_id':art_id,
-        'art_name':art_cat_obj.art_name,
-        'genre1':art_cat_obj.genre,
-        'genre2':art_cat_obj.genre2,
-        'genre3':art_cat_obj.genre3,
-        'img_url':art_cat_obj.img_url,
-        'img_url_mid':art_cat_obj.img_url_mid,
-        'img_url_sml':art_cat_obj.img_url_sml,
+        'art_id': art_id,
+        'art_name': art_cat_obj.art_name,
+        'genre1': art_cat_obj.genre,
+        'genre2': art_cat_obj.genre2,
+        'genre3': art_cat_obj.genre3,
+        'img_url': art_cat_obj.img_url,
+        'img_url_mid': art_cat_obj.img_url_mid,
+        'img_url_sml': art_cat_obj.img_url_sml,
 
-        'followers':art_cat_obj.followers,
-        'followers_diff':followers_diff,
-        'followers_diff_pct':followers_diff_pct,
-        'prev_date':prev_date,
+        'followers': art_cat_obj.followers,
+        'followers_diff': followers_diff,
+        'followers_diff_pct': followers_diff_pct,
+        'prev_date': prev_date,
 
-        'total_days_on_charts':len(both_charts),
+        'total_days_on_charts': len(both_charts),
 
-        'first_appearance' : min(dates),
-        'last_appearance' : max(dates),
-        'streaks':find_streaks_in_dates(dates),
+        'first_appearance': first_appearance,
+        'last_appearance': last_appearance,
+        'streaks': find_streaks_in_dates(dates),
 
-        #tuple! first is the track_name, second is the track_id for Spotify API
+        # Tuple! first is the track_name, second is the track_id for Spotify API
         'notable_tracks': notable_tracks(art_cat_obj.art_id),
         'is_one_hit_wonder': is_one_hit_wonder(art_cat_obj.art_id),
-        'comments':comments,
+        'comments': comments,
     }
 
     return art_profile_context
+
 
 
