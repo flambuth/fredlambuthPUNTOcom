@@ -19,8 +19,7 @@ def possible_alphas(art_cats_model):
     unique_chars = list(set(all_letters))
     return sorted(unique_chars, key=lambda x: (not x.isalpha(), x))
 
-
-
+#####
 ############
 #Indexing functions, Alpha, master_genre, and sub-genre
 def all_art_cats_starting_with(
@@ -53,6 +52,7 @@ def all_art_cats_starting_with(
         )
 
     return arts_starting_with, total_count
+
 
 def all_art_cats_in_master_genre(
         master_genre,
@@ -121,11 +121,13 @@ def latest_art_cats(num=5):
     latest_acs = artist_catalog.query.order_by(artist_catalog.id.desc()).limit(num).all()
     return latest_acs
 
+
 def art_cat_artist_count():
     '''
     Integer count of all unique artists in the art_cat model
     '''
     return artist_catalog.get_current_records().count()
+
 
 def art_cat_genre_group_counts():
     '''
@@ -139,6 +141,7 @@ def art_cat_genre_group_counts():
         ).all()
     return genre_group_counts
 
+
 def genre_landing_thruples():
     '''
     Returns 9 tuples. Each have a master genre, number of unique artists, and a random artist img_url for teh genre
@@ -150,6 +153,7 @@ def genre_landing_thruples():
     ))
     return thruples
 
+
 ####################
 #Search stuff
 def art_cat_name_search(search_term):
@@ -159,6 +163,7 @@ def art_cat_name_search(search_term):
     like_arts_blob = artist_catalog.art_name.like(f"%{search_term}%")
     like_arts = artist_catalog.get_current_records().filter(like_arts_blob).order_by('art_name').all()
     return like_arts
+
 
 #####################
 #single art_cat functions
@@ -189,15 +194,32 @@ def art_id_to_art_cat(art_id):
     down to the input art_id
     '''
     uno_art_cat = (
-        artist_catalog.query.filter(artist_catalog.art_id == art_id
+        artist_catalog.get_current_records().filter(artist_catalog.art_id == art_id
         ).first())
     return uno_art_cat
+
+def followers_since_ac_refresh(art_id):
+    current = art_id_to_art_cat(art_id)
+    prev = artist_catalog.get_inactive_records().filter(artist_catalog.art_id == art_id).first()
+    
+    if not current or not prev:
+        return "No data found", None
+    
+    if prev.followers == 0:
+        return "Previous followers count is zero, cannot calculate percentage difference", None
+    
+    diff = current.followers - prev.followers
+    diff_pct = round(diff / prev.followers * 100, 1)
+    prev_date = prev.app_record_date
+
+    return diff, diff_pct, prev_date
 
 def art_cat_profile(art_id):
     '''
     Returns a dict or obj that has all the values of an art_name that will be displayed on a the art_cat_profile template
     '''
     art_cat_obj = art_id_to_art_cat(art_id)
+    followers_diff, followers_diff_pct, prev_date = followers_since_ac_refresh(art_id)
 
     both_charts = artist_days_on_both_charts(art_cat_obj.art_id)
     dates = [i.date for i in both_charts]
@@ -214,7 +236,11 @@ def art_cat_profile(art_id):
         'img_url':art_cat_obj.img_url,
         'img_url_mid':art_cat_obj.img_url_mid,
         'img_url_sml':art_cat_obj.img_url_sml,
+
         'followers':art_cat_obj.followers,
+        'followers_diff':followers_diff,
+        'followers_diff_pct':followers_diff_pct,
+        'prev_date':prev_date,
 
         'total_days_on_charts':len(both_charts),
 
