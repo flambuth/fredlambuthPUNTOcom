@@ -29,7 +29,7 @@ class artist_catalog(db.Model):
         '''
         List so you can check if the charts models have art_ids not in the catalog
         '''
-        unique_art_ids = [i[0] for i in cls.query.with_entities(cls.art_id).all()]
+        unique_art_ids = [i[0] for i in cls.query.with_entities(cls.art_id).distinct().all()]
         return unique_art_ids
 
     @classmethod
@@ -39,7 +39,7 @@ class artist_catalog(db.Model):
     #this one is the archival view of non_current records
     @classmethod
     def get_inactive_records(cls):
-        return cls.query.filter(cls.is_current.is_(None)).all()
+        return cls.query.filter_by(is_current=False)
 
     @classmethod
     def count_active_records_by_genre(cls):

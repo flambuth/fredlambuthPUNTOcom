@@ -99,12 +99,29 @@
           <div class="card-body">
 
             <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Spotify Followers</p>
+              <div class="col-sm-4">
+                <p class="mb-0">Current Spotify Followers</p>
               </div>
-              <div class="col-sm-9">
+              <div class="col-sm-8">
                 <p class="mb-0" style="color: wheat;">{{ followers }}</p>
               </div>
+              {% if followers_diff and followers_diff_pct is not none %}
+              <div class="col-sm-4">
+                <p class="mb-0">Change since: {{ prev_date }}</p>
+              </div>
+              <div class="col-sm-8">
+                <p class="mb-0" style="color: {% if followers_diff > 0 %}green{% elif followers_diff < 0 %}red{% else %}wheat{% endif %};">
+                  {{ followers_diff }}
+                </p>
+              </div>              
+
+              <div class="col-sm-4">
+                <p class="mb-0">Change Pct:</p>
+              </div>
+              <div class="col-sm-8">
+                <p class="mb-0" style="color: wheat;">{{ followers_diff_pct }}%</p>
+              </div>
+              {% endif %}
             </div>
             <hr>
             <div class="row">
