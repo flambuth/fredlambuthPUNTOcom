@@ -1,6 +1,6 @@
 from app.extensions import db
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import func, or_, case, and_
+from sqlalchemy import func, or_, desc, and_
 #from .main import daily_tracks
 
 #from app.models.charts import daily_artists, daily_tracks
@@ -63,6 +63,30 @@ class artist_catalog(db.Model):
     
     def __str__(self):
         return f'Artist Catalog Entry For: "{self.art_name}">'
+
+    @classmethod
+    def all_distinct_genres(cls):
+        uno = list(set([i[0] for i in cls.get_current_records().with_entities(cls.genre).distinct().all()]))
+        dos = list(set([i[0] for i in cls.get_current_records().with_entities(cls.genre2).distinct().all()]))
+        tres = list(set([i[0] for i in cls.get_current_records().with_entities(cls.genre3).distinct().all()]))
+        all_distinct_genres = list(set(uno + dos + tres))
+        esto = sorted([i for i in all_distinct_genres if i is not None])
+        return esto
+    
+    @staticmethod
+    def artists_in_genre(genre):
+        genre = genre.lower()
+        matching_arts_query = (
+        artist_catalog.get_current_records()
+        .filter(
+            or_(
+                func.lower(artist_catalog.genre)==genre,
+                func.lower(artist_catalog.genre2)==genre,
+                func.lower(artist_catalog.genre3)==genre,
+            )
+        )).order_by('art_name')
+        results = matching_arts_query.all()
+        return results
 
     @classmethod
     def add_new_art_cat_to_db(cls, new_art_cat):
@@ -189,6 +213,23 @@ class artist_catalog(db.Model):
             artist_catalog.query.filter(artist_catalog.master_genre==genre).with_entities(artist_catalog.art_name).distinct().all()
         ]
         return genre_ac_names
+    
+    @staticmethod
+    def genre_counts():
+        group_counts = db.session.query(
+        artist_catalog.genre,
+        (
+            func.sum(artist_catalog.genre.isnot(None).cast(db.Integer)) +
+            func.sum(artist_catalog.genre2.isnot(None).cast(db.Integer)) +
+            func.sum(artist_catalog.genre3.isnot(None).cast(db.Integer))
+        ).label('total_count')
+        ).filter(
+            artist_catalog.is_current == True
+            ).group_by(
+                artist_catalog.genre
+                ).order_by(desc('total_count')).all()
+
+        return group_counts
 
 class track_catalog(db.Model):
     id = db.Column(db.Integer, primary_key=True)

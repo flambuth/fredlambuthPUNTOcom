@@ -104,6 +104,22 @@ def spotify_landing_page():
 ###########################################
 #art_cat routes
 
+@bp.route('/spotify/genres', methods=('GET','POST'))
+def genre_list():
+    form = CourseForm()
+    #if form.validate_on_submit():
+    if request.method == 'POST':
+        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
+    
+    blob_list = artist_catalog.all_distinct_genres()
+    genre_bookings = { genre: artist_catalog.artists_in_genre(genre) for genre in blob_list}
+
+    context = {
+        'genre_list' : genre_bookings,
+        'form':form,
+    }
+    return render_template('spotify/art_cat/art_cat_genre_main_list.html', **context)
+
 
 @bp.route('/spotify/art_cat/', methods=('GET','POST'))
 @bp.route('/spotify/art_cat', methods=('GET','POST'))
@@ -370,22 +386,3 @@ def arts_prev(year, month, day):
 
 
 
-
-'''
-@bp.route('/spotify/art_cat/<string:letter>', methods=('GET','POST'))
-def index_by_letterOLD(letter):
-    form = CourseForm()
-    #if form.validate_on_submit():
-    if request.method == 'POST':
-        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
-    
-    art_cat_index = ac_funcs.all_art_cats_starting_with(letter)
-    
-    context = {
-        'art_cat_index' : art_cat_index,
-        'letter' : letter,
-        'form':form,
-    }
-
-    return render_template('spotify/art_cat/art_cat_index.html', **context)
-'''
