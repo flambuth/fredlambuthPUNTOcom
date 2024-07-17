@@ -1,0 +1,71 @@
+{% extends 'spotify/art_cat/art_cat_base.html' %}
+
+{% block content %}
+
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<title>Genres in Fred's Listening History</title>
+
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    
+    ul {
+        padding: 0;
+        list-style-type: none;
+        width: 100%;
+    }
+    
+    .grid-container {
+        width: 100%;
+    }
+    
+    .artist-item {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        list-style-type: none;
+        margin: 5px 0;
+        width: 100%;
+    }
+    
+    .artist-img {
+        height: 2em;
+        margin-right: 10px;
+    }
+
+    .list-group-item:hover {
+        background-color: #9fe2ce;
+        cursor: pointer;
+    }
+</style>
+
+{% for genero, artists in genre_list.items() %}
+    <h2>{{ genero }}</h2>
+    <ul>
+        <div class="grid-container with-border">
+            {% for artist in artists %}
+                <li class="artist-item card-body list-group-item">
+
+                    <a href="https://open.spotify.com/artist/{{ art_id }}" target="_blank" rel="noopener noreferrer" title="Link to hear on Spotify">
+                        <img src="https://i.scdn.co/image/{{ artist.img_url_sml }}" alt="{{ artist.art_name }}" class="artist-img">
+                    </a>
+                    
+                    <a href="{{ url_for('spotify.art_cat_profile', art_id=artist.art_id) }}" title="Link to see listening stats">
+                        {{ artist.art_name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </div>
+    </ul>
+{% endfor %}
+
+{% endblock %}
