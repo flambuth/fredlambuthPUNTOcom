@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel='stylesheet' type='text/css' href="{{ url_for('static', filename='css/spotify.css') }}">
+
+<style>
+    body {
+    background-color: #0f1f19;
+    color: wheat;
+  }
+
+    .container {
+        max-width: 900px; /* Set the maximum width of the container */
+    }
+
+    .card {
+        width: 100%;
+        height: 100%;
+        border: 2px solid;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add box-shadow to the transition */
+    }
+
+    .card:hover {
+        box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5); /* Add inner shadow on hover */
+    }
+
+    .card-img-top {
+        max-height: 170px; /* Adjust the maximum height of the image */
+        object-fit: cover;
+    }
+</style>
+
+<title>Fred's Spotify Genre List</title>
+
+{% include 'spotify/spotify_header.html' %}
+
+<div class="container mt-5 text-center">
+    <h3 style="color: wheat;">Fred's Spotify Genre Collection</h3>
+    <div class="row">
+
+        {% for cell in thruples %}
+            <div class="col-md-2 mb-4">
+                <div class="card" style="background-color: darkcyan;">
+                    <a href="{{ url_for('spotify.alpha_genre_list', letter=cell.0) }}">
+                    
+                    <div class="card-body">
+                        <h5 class="circle">{{ cell.0 }}</h5>
+                        <p class="card-text">{{ cell.1 }}</p>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

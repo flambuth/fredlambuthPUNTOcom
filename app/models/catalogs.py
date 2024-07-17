@@ -87,6 +87,16 @@ class artist_catalog(db.Model):
         )).order_by('art_name')
         results = matching_arts_query.all()
         return results
+    
+    @staticmethod
+    def genre_dictionary():
+        '''
+        Returns a dictionary with all genres in found in the art_cat as keys
+        lists of art_cat objs as values
+        '''
+        blob_list = artist_catalog.all_distinct_genres()
+        genre_bookings = { genre: artist_catalog.artists_in_genre(genre) for genre in blob_list}
+        return genre_bookings
 
     @classmethod
     def add_new_art_cat_to_db(cls, new_art_cat):
