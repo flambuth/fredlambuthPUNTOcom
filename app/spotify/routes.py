@@ -102,24 +102,7 @@ def spotify_landing_page():
 
 
 ###########################################
-#art_cat routes
-
-@bp.route('/spotify/genres', methods=('GET','POST'))
-def genre_list():
-    form = CourseForm()
-    #if form.validate_on_submit():
-    if request.method == 'POST':
-        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
-    
-    blob_list = artist_catalog.all_distinct_genres()
-    genre_bookings = { genre: artist_catalog.artists_in_genre(genre) for genre in blob_list}
-
-    context = {
-        'genre_list' : genre_bookings,
-        'form':form,
-    }
-    return render_template('spotify/art_cat/art_cat_genre_main_list.html', **context)
-
+# art_cat routes
 
 @bp.route('/spotify/art_cat/', methods=('GET','POST'))
 @bp.route('/spotify/art_cat', methods=('GET','POST'))
@@ -385,4 +368,55 @@ def arts_prev(year, month, day):
     return render_template('spotify/archive_chart_artists.html', **context)
 
 
+@bp.route('/spotify/genres/', methods=('GET','POST'))
+@bp.route('/spotify/genres', methods=('GET','POST'))
+def genres_landing_page():
+    form = CourseForm()
+    #if form.validate_on_submit():
+    if request.method == 'POST':
+        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
 
+    book = artist_catalog.genre_dictionary()
+    starting_chars = list(set([i[0] for i in book.keys()]))
+    starting_alphas = sorted([char for char in starting_chars if char.isalpha() == True])
+    alpha_counts = [
+    len([genre for genre in book.keys() if genre.startswith(i)]) for i in starting_alphas
+    ]
+
+    thruples = list(zip(
+        starting_alphas,
+        alpha_counts,
+    ))
+
+    context = {
+        'thruples' : thruples,
+        'form':form,
+    }
+
+    return render_template('spotify/genre_cat/genre_landing.html', **context)
+
+
+@bp.route('/spotify/genres/<string:letter>', methods=('GET','POST'))
+def alpha_genre_list(letter):
+    form = CourseForm()
+    #if form.validate_on_submit():
+    if request.method == 'POST':
+        return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
+    
+    blob_list = artist_catalog.all_distinct_genres()
+    genre_bookings = { genre: artist_catalog.artists_in_genre(genre) for genre in blob_list}
+
+    # all the genres that start with the 'letter'
+    lettered_results = [i for i in genre_bookings.keys() if i.startswith(letter)]
+    # the genre_bookings dict filtered to just the keys that are in lettered_results
+    filtered_dict = {k: genre_bookings[k] for k in lettered_results if k in genre_bookings}
+
+    genre_count = len(filtered_dict.keys())
+
+    context = {
+        'genre_list' : filtered_dict,
+        'form':form,
+        'letter':letter,
+        'genre_count':genre_count,
+    }
+    return render_template('spotify/genre_cat/genre_alpha_list.html', **context)
