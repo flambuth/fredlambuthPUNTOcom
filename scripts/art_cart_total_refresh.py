@@ -3,7 +3,7 @@ from app.utils import push_app_context
 from app.models.catalogs import artist_catalog
 from my_spotipy.spotify_catalog import ArtistCatalog
 
-def find_break_points(arr, n=4):
+def find_break_points(arr, n=16):
     '''
     Returns a dict of the index points that would break the length of the input array's chunks
     divided by 'n'. 
@@ -28,7 +28,7 @@ def break_art_cat_into_chunks(arr, breakpoints):
         
     return chunks
 
-def art_cat_ids_in_chunks(n_chunks=4):
+def art_cat_ids_in_chunks(n_chunks=16):
     arr = artist_catalog.all_art_ids_in_cat()
     breakpoints = find_break_points(arr, n_chunks)
     dict_o_chunks = break_art_cat_into_chunks(

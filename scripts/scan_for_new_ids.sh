@@ -2,12 +2,16 @@
 
 # Set the path to your virtual environment directory
 VENV_DIR="/home/flambuth/fredlambuthPUNTOcom/fredlambuth_env"
+PROJECT_DIR="/home/flambuth/fredlambuthPUNTOcom"
 
 # Check if the virtual environment directory exists
 if [ -d "$VENV_DIR" ]; then
+    cd "$PROJECT_DIR"
+    export PYTHONPATH="$PROJECT_DIR"
     # Use Python interpreter from the virtual environment
-    "$VENV_DIR/bin/python3" /home/flambuth/fredlambuthPUNTOcom/spotify_jobs_catalog_scan.py
+    "$VENV_DIR/bin/python3" cron_jobs/spotify_jobs_catalog_scan.py
 else
     # Fallback to using system Python interpreter
-    /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/spotify_jobs_catalog_scan.py
+    export PYTHONPATH="$PROJECT_DIR"
+    /usr/bin/python3 "$PROJECT_DIR/cron_jobs/spotify_jobs_catalog_scan.py"
 fi

@@ -9,16 +9,33 @@
     color: #00ffbf; /* Change this to the desired color */
 }
 
+.sort-link {
+    font-style: italic;
+    color: #00ffbf; /* Match this color to the genre-highlight color */
+    text-decoration: none;
+}
 
+.sort-link:hover {
+    text-decoration: underline;
+}
 </style>
-
-
-
 
 <div class="container text-center">
     <div class="row mb-3">
         <div class="col-12">
-            <h4><span class="genre-highlight"> {{ artist_count }} </span> artists indexed by <span class="genre-highlight">{{ genre or letter}}</span></h4>
+            <h4><span class="genre-highlight"> {{ artist_count }} </span> artists indexed by <span class="genre-highlight">{{ genre or letter }}</span></h4>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <form method="get" action="{{ url_for('spotify.index_by_genre', master_genre=genre) }}" style="display:inline;">
+                <input type="hidden" name="page" value="{{ page }}">
+                <input type="hidden" name="sort" value="{{ 'popularity' if sort == 'default' else 'default' }}">
+                <button type="submit" class="sort-link btn btn-link">
+                    Sort by {{ 'Popularity' if sort == 'default' else 'ABC..' }}
+                </button>
+            </form>
         </div>
     </div>
 
@@ -26,14 +43,11 @@
 
     <div class="row">
         {% for item in art_cat_index %}
-
-        {% include 'spotify/art_cat/art_cat_index_cards.html' %}
-        
+            {% include 'spotify/art_cat/art_cat_index_cards.html' %}
         {% endfor %}
     </div>
 </div>
 
 {% include 'spotify/art_cat/art_cat_nav_buttons.html' %}
-
 
 {% endblock %}

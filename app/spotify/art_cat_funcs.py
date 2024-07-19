@@ -2,7 +2,7 @@ from app.models.catalogs import artist_catalog
 from app.models.accounts import artist_comments
 from app import db
 from app.spotify.daily_funcs import artist_days_on_both_charts, find_streaks_in_dates, notable_tracks, is_one_hit_wonder
-from sqlalchemy import func, or_, text
+from sqlalchemy import func, or_, text, desc
 
 #latest_art_cats = artist_catalog.query.order_by(artist_catalog.app_record_date.desc()).limit(5).all()
 
@@ -54,23 +54,35 @@ def all_art_cats_starting_with(
     return arts_starting_with, total_count
 
 
+
 def all_art_cats_in_master_genre(
         master_genre,
         page,
+        sort='default'
         ):
     '''
     Returns list of art_cat objects
     '''
     per_page = 12
 
-    if master_genre is not None:
-        base_query = artist_catalog.get_current_records().filter(
-            artist_catalog.master_genre == master_genre
-        ).order_by('art_name')
+    if sort=='popularity':
+        if master_genre is not None:
+            base_query = artist_catalog.get_current_records().filter(
+                artist_catalog.master_genre == master_genre
+            ).order_by(desc('followers'))
+        else:
+            base_query = artist_catalog.get_current_records().filter(
+                artist_catalog.master_genre.is_(None)
+            ).order_by(desc('followers'))
     else:
-        base_query = artist_catalog.get_current_records().filter(
-            artist_catalog.master_genre.is_(None)
-        ).order_by('art_name')
+        if master_genre is not None:
+            base_query = artist_catalog.get_current_records().filter(
+                artist_catalog.master_genre == master_genre
+            ).order_by('art_name')
+        else:
+            base_query = artist_catalog.get_current_records().filter(
+                artist_catalog.master_genre.is_(None)
+            ).order_by('art_name')
     
     # Get the total count of the records
     total_count = base_query.count()
@@ -84,10 +96,16 @@ def all_art_cats_in_master_genre(
 
     return arts_in_the_genre, total_count
 
-
+def apply_sorting(query, sort, default_column='art_name'):
+    if sort == 'popularity':
+        return query.order_by(desc('followers'))
+    else:
+        return query.order_by(default_column)
+    
 def art_cats_with_this_genre(
         searched_genre,
         page,
+        sort='default'
         ):
     per_page = 12
     search_term_lower = searched_genre.lower()  # Convert search term to lowercase
@@ -99,8 +117,10 @@ def art_cats_with_this_genre(
                 func.lower(artist_catalog.genre2).like(f"%{search_term_lower}%"),
                 func.lower(artist_catalog.genre3).like(f"%{search_term_lower}%")
             )
-        )).order_by('art_name')
+        ))
 
+    matching_arts_query = apply_sorting(matching_arts_query, sort)
+    
     total_count = matching_arts_query.count()
 
     matching_arts = matching_arts_query.paginate(
@@ -110,7 +130,6 @@ def art_cats_with_this_genre(
     )
     
     return matching_arts, total_count
-
 
 ############
 #Homepage Level Statistics
