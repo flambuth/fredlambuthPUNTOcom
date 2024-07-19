@@ -157,7 +157,7 @@ class Country_Dataframes(Country_Stats):
 
 
     def write_dfs_to_db(self):
-        conn = sqlite3.connect('global.db')
+        conn = sqlite3.connect('data/global.db')
         try:
             self.df_top_10_songs_data.to_sql('top_10_song_data', conn, index=False, if_exists='append')
             self.df_today_top10.to_sql('top_10_songs_today', conn, index=False, if_exists='append')
@@ -185,10 +185,10 @@ def write_all_countries_to_db():
             10 artists with most chart data,
             10 top songs today,
             10 songs with largest total chart history
-        each dataframe is written to a table in a 'global.db' SQLITE file in the current
+        each dataframe is written to a table in a 'data/global.db' SQLITE file in the current
         directory
     '''
-    conn = sqlite3.connect('global.db')
+    conn = sqlite3.connect('data/global.db')
     conn.execute("DROP TABLE IF EXISTS top_10_song_data")
     conn.execute("DROP TABLE IF EXISTS top_10_songs_today")
     conn.execute("DROP TABLE IF EXISTS top_10_artists")

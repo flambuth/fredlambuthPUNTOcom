@@ -13,7 +13,7 @@ country_codes_json = basedir + "/global_spotify/country_codes.json"
 with open(country_codes_json, "r") as json_file:
     country_codes = json.load(json_file)
 
-def cleaned_df(csv_name='universal_top_spotify_songs.csv'):
+def cleaned_df(csv_name='data/universal_top_spotify_songs.csv'):
     '''
     csv_name = 'universal_top_spotify_songs.csv'
     '''
@@ -229,7 +229,7 @@ def append_data_for_countries(country_names, conn):
         country_obj.df_today_top10.to_sql('top_10_songs_today', conn, index=False, if_exists='append')
 
 def country_dash_dfs(country):
-    conn = sqlite3.connect('global.db')
+    conn = sqlite3.connect('data/global.db')
     tables = [
     'top_10_artists',
     'top_10_song_data',

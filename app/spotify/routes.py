@@ -198,10 +198,20 @@ def index_by_genre(master_genre):
     if request.method == 'POST':
         return redirect(url_for('spotify.index_by_search', search_term=form.search_term.data))
     
+    sort = request.args.get('sort','default')
+
     if (master_genre in ac_funcs.genres)|(master_genre is None) :
-        art_cat_index, ac_count = ac_funcs.all_art_cats_in_master_genre(master_genre, page)    
+        art_cat_index, ac_count = ac_funcs.all_art_cats_in_master_genre(
+            master_genre, 
+            page,
+            sort
+            )    
     else:
-        art_cat_index, ac_count = ac_funcs.art_cats_with_this_genre(master_genre, page)
+        art_cat_index, ac_count = ac_funcs.art_cats_with_this_genre(
+            master_genre, 
+            page,
+            sort,
+            )
 
 
     context = {
@@ -213,6 +223,7 @@ def index_by_genre(master_genre):
         'next_page':art_cat_index.next_num,
         'first_page':1,
         'last_page':art_cat_index.pages,
+        'sort':sort,
     }
 
     return render_template('spotify/art_cat/art_cat_index.html', **context)

@@ -3,28 +3,28 @@
     {% if genre %}
         {% if first_page %}
         <span>
-            <a class='first-page btn btn-primary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=first_page) }}">
+            <a class='first-page btn btn-primary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=first_page, sort=sort) }}">
                 {{ '<<' }}
             </a>
         </span>
         {% endif %}
         {% if prev_page %}
         <span style="margin-left: 10px;">
-            <a class='prev-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=prev_page) }}">
+            <a class='prev-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=prev_page, sort=sort) }}">
                 {{ 'Previous' }}
             </a>
         </span>
         {% endif %}
         {% if next_page %}
         <span style="margin-left: 10px;">
-            <a class='next-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=next_page) }}">
+            <a class='next-post btn btn-secondary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=next_page, sort=sort) }}">
                 {{ 'Next' }}
             </a>
         </span>
         {% endif %}
         {% if last_page %}
         <span style="margin-left: 10px;">
-            <a class='last-page btn btn-primary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=last_page) }}">
+            <a class='last-page btn btn-primary' href="{{ url_for('spotify.index_by_genre', master_genre=genre, page=last_page, sort=sort) }}">
                 {{ '>>' }}
             </a>
         </span>
@@ -32,28 +32,28 @@
     {% elif letter %}
         {% if first_page %}
         <span>
-            <a class='first-page btn btn-primary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=first_page) }}">
+            <a class='first-page btn btn-primary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=first_page, sort=sort) }}">
                 {{ '<<' }}
             </a>
         </span>
         {% endif %}
         {% if prev_page %}
         <span style="margin-left: 10px;">
-            <a class='prev-post btn btn-secondary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=prev_page) }}">
+            <a class='prev-post btn btn-secondary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=prev_page, sort=sort) }}">
                 {{ 'Previous' }}
             </a>
         </span>
         {% endif %}
         {% if next_page %}
         <span style="margin-left: 10px;">
-            <a class='next-post btn btn-secondary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=next_page) }}">
+            <a class='next-post btn btn-secondary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=next_page, sort=sort) }}">
                 {{ 'Next' }}
             </a>
         </span>
         {% endif %}
         {% if last_page %}
         <span style="margin-left: 10px;">
-            <a class='last-page btn btn-primary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=last_page) }}">
+            <a class='last-page btn btn-primary' href="{{ url_for('spotify.index_by_letter', letter=letter, page=last_page, sort=sort) }}">
                 {{ '>>' }}
             </a>
         </span>
