@@ -14,7 +14,7 @@ def country_codes_map():
     return country_codes
 
 def cleaned_df(
-        csv_name='/home/flambuth/fredlambuthPUNTOcom/universal_top_spotify_songs.csv',
+        csv_name='/home/flambuth/fredlambuthPUNTOcom/data/universal_top_spotify_songs.csv',
         chunk_size=13000
         ):
     country_codes = country_codes_map()
