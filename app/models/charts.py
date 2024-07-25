@@ -3,7 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func, extract
 
 import random
-from datetime import datetime, timedelta
+from datetime import timedelta
+from collections import Counter
 
 from app.models.catalogs import artist_catalog, track_catalog
 
@@ -285,6 +286,21 @@ class recently_played(db.Model):
         ).all()
         return timeframe_of_rps
     
+
+    @staticmethod
+    def find_rps_per_hour(date_times):
+        '''
+        Input should be a list of rp object within the same calendar day
+        Returns a Collection dict with 0-23 hrs as keys, the rps per hour in that day as values
+        '''
+        rps_per_hour = Counter([i.hour for i in date_times])
+        missing_hours = [i for i in range(24) if i not in rps_per_hour.keys()]
+        #imputes 0 for hours with no RPs
+        for i in missing_hours:
+            rps_per_hour[i]=0
+        return rps_per_hour
+
+
     @classmethod
     def past_24_hrs_rps(cls):
         '''
@@ -299,7 +315,7 @@ class recently_played(db.Model):
     
     @classmethod
     def get_rps_from_n_days_ago(cls, n):
-        delta = timedelta(days=n-1)
+        delta = timedelta(days=n)
         start_date = cls.latest_played_datetime() - delta
         #end_date = cls.latest_played_datetime()
         rps = cls.query.filter(cls.last_played >= start_date).all()
@@ -342,6 +358,19 @@ class recently_played(db.Model):
         else:
             return None
     
+    @staticmethod
+    def cat_scan_rp_object(rp_obj):
+        if track_catalog.know_this_track(rp_obj):
+            rp_obj.known_track = True
+        else:
+            rp_obj.known_track = False
+
+        if artist_catalog.find_name_in_art_cat(rp_obj.art_name):
+            rp_obj.known_artist = True
+        else:
+            rp_obj.known_artist = False
+
+        return rp_obj
 
 
     def __repr__(self):

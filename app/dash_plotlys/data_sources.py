@@ -164,3 +164,22 @@ class Fred_Big_Dash_Stuff:
         # Reindex to include all hours of the day and fill missing values with 0
         grouped_by_day = grouped_by_day.reindex(range(24), fill_value=0)
         return grouped_by_day
+    
+
+
+def polar_chart_ingredients(date_obj):
+    '''
+    Returns two lists of 12 integers:
+        am values,
+        pm values,
+    Polar Chart figure by default will use 0-11 as the hour label
+    '''
+    start, end = utils.first_and_last_dt_in_day(date_obj)
+    rps = recently_played.get_timeframe_of_rp_records(start, end)
+    date_times = [i.last_played for i in rps]
+    hour_counts = recently_played.find_rps_per_hour(date_times)
+    am_counts = {k:v for k,v in sorted(hour_counts.items()) if k < 12}
+    am_values = list(am_counts.values())
+    pm_counts = {k:v for k,v in sorted(hour_counts.items()) if k >= 12}
+    pm_values = list(pm_counts.values())
+    return date_obj, am_values, pm_values

@@ -356,5 +356,22 @@ class track_catalog(db.Model):
             ))
         return thruples
 
+    ##########RP Inspection
+    @classmethod
+    def know_this_track(cls, rp_obj):
+        for_sure = cls.song_id_to_track_cat(rp_obj.song_link[-22:])
+        if for_sure:
+            return True
+        
+        maybe = cls.find_song_in_track_cat(rp_obj.song_name)
+        maybe_art_name = cls.song_id_to_track_cat(maybe)
+        if maybe_art_name == rp_obj.art_name:
+            return True
+        
+        else:
+            return False
+
+
+
     def __repr__(self):
         return f'<track_cat_entry "{self.song_name}">'
