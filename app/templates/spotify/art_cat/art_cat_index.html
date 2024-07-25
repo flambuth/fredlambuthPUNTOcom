@@ -27,6 +27,7 @@
         </div>
     </div>
 
+    {% if sort %}
     <div class="row mb-3">
         <div class="col-12">
             <form method="get" action="{{ url_for('spotify.index_by_genre', master_genre=genre) }}" style="display:inline;">
@@ -38,6 +39,7 @@
             </form>
         </div>
     </div>
+    {% endif %}
 
     {% include 'spotify/art_cat/art_cat_nav_buttons.html' %}
 
