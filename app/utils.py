@@ -1,6 +1,6 @@
-from datetime import timedelta
+from datetime import timedelta, date, datetime
 from PIL import Image
-import os
+# import os
 from app import create_app
 
 def push_app_context():
@@ -96,3 +96,20 @@ def resize_image(input_path, size=(100, 100)):
             #if input_path.lower().endswith(('.png', '.jpeg')):
             #    os.remove(input_path)
             return img
+    
+def pick_days_ago_from_today(n_days=1):
+    '''
+    Returns a date isostring of today - n_days
+    '''
+    blob = date.today()
+    delta = timedelta(days=n_days)
+    day_before_blob = blob - delta
+    return day_before_blob
+
+def first_and_last_dt_in_day(date_obj):
+    '''
+    Returns the first and last possible datetime from the date_object
+    '''
+    start_of_day = datetime(date_obj.year, date_obj.month, date_obj.day)
+    end_of_day = start_of_day + timedelta(days=1)
+    return start_of_day, end_of_day

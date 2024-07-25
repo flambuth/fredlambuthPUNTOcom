@@ -13,13 +13,23 @@
         width: 200px;
         margin-right: 20px;
         margin-bottom: 20px; /* Added margin-bottom for space between rows */
-        background-color: #14281f;
+        background-color: rgba(196, 238, 219, 0.4); /* 50% transparent */
         border: 1px dotted #028874;
     }
 
     .track-col:hover {
         background-color: #1a3a30; /* Change this to your desired hover color */
     }
+
+    .known-artist {
+        background-color: rgba(0, 162, 255, 0.5); /* Color for known_artist (example: blue) */
+    }
+
+    .known-both {
+        background-color: rgba(6, 126, 72, 0.8);
+        border: 2px dotted #620288; /* Mix of two colors (example: orange) */
+    }
+
 </style>
 
 <script>
@@ -52,11 +62,23 @@
 
     <div class="text-center mt-3" style="margin-bottom: 6%;">
         <h2 style="color: #fff;">Endless Stream of What I'm Listening To</h2>
+        <h5 style="color: #aaa;">Legend: <span style="background-color: rgba(0, 162, 255, 0.5); padding: 0 10px;">I've Heard of Them</span>,
+            <span style="background-color: rgba(6, 126, 72, 0.8); padding: 0 10px;">And I Know This Song</span>
+            <span style="background-color: rgba(196, 238, 219, 0.4); padding: 0 10px;">New to the App</span>
+        </h5>
     </div>
 
     <div class="row" id="track-container" style="background-color: #0f1f19; white-space: nowrap;">
-        {% for track in last_three %}
-        <div class="col track-col">
+        {% for track in last_five %}
+        <div class="col track-col 
+            {% if track.known_track and track.known_artist %}
+                known-both
+            {% elif track.known_track %}
+                known-track
+            {% elif track.known_artist %}
+                known-artist
+            {% endif %}
+        ">
             {{ track.song_name[:35] }}
             <div class="hex">
                 <a href="{{ track.song_link }}">
@@ -70,7 +92,8 @@
             </div>
         </div>
         {% endfor %}
-    </div>    
+    </div>
+        
 
     {% if pagination.has_next %}
     <div class="text-center mt-3">

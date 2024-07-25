@@ -312,10 +312,15 @@ def right_now():
     page = request.args.get('page', 1, type=int)
     per_page = 5
     pagination = recently_played.query.order_by(desc(recently_played.id)).paginate(page=page, per_page=per_page, error_out=False)
-    three_ago = pagination.items
+    five_ago = pagination.items
+    
+    cat_scanned = list(map(
+        recently_played.cat_scan_rp_object,
+        five_ago
+    ))
 
     context = {
-        'last_three': three_ago,
+        'last_five': cat_scanned,
         'pagination': pagination,
     }
 

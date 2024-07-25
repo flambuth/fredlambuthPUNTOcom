@@ -5,4 +5,4 @@ cd /home/flambuth/crap
 /home/flambuth/.local/bin/kaggle datasets download --force asaniczka/top-spotify-songs-in-73-countries-daily-updated
 
 # Unzip the downloaded file to the specified directory
-unzip -o top-spotify-songs-in-73-countries-daily-updated.zip -d /home/flambuth/fredlambuthPUNTOcom/
+unzip -o top-spotify-songs-in-73-countries-daily-updated.zip -d /home/flambuth/fredlambuthPUNTOcom/data/
