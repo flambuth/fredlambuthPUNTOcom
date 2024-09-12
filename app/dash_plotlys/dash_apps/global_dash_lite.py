@@ -1,8 +1,6 @@
 from dash import Dash
 from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output
-#import plotly.express as px
-#import pandas as pd
 import app.dash_plotlys.global_stats as global_stats
 from app.dash_plotlys.layouts import create_navbar, my_icon, external_scripts, external_stylesheets
 import dash_bootstrap_components as dbc

@@ -1,5 +1,9 @@
 import polars as pl
+import json
+import sqlite3
 from datetime import date, timedelta
+
+basedir = '/home/flambuth/fredlambuthPUNTOcom'
 
 class UNIVERSAL_TOP_SPOTIFY_SONGS:
     def __init__(
@@ -24,6 +28,14 @@ class UNIVERSAL_TOP_SPOTIFY_SONGS:
             (50 + 1 - pl.col('daily_rank')).alias('inverted_rank')
         )
         return df
+
+    @staticmethod
+    def spotify_ids_in_df(lazy_df):
+        '''
+        Returns a list of unique strings found in the 'spotify_id' of the parameter lazy_df
+        '''
+        spotify_ids = lazy_df.select('spotify_id').unique().collect().to_series().to_list()
+        return spotify_ids
 
     @staticmethod
     def scan_csv_date_endpoints(lazy_df):
@@ -98,10 +110,10 @@ class UNIVERSAL_TOP_SPOTIFY_SONGS:
         df_prim_art = df_split.with_columns(
             [pl.col("artists_list").list.get(0).cast(pl.Utf8).alias('primary_artist')]
         )
-        df_feat_art = df_prim_art.with_columns(
-            [pl.col("artists_list").list.slice(1).alias('featured_artists')]
-        )
-        return df_feat_art
+        #df_feat_art = df_prim_art.with_columns(
+        #    [pl.col("artists_list").list.slice(1).alias('featured_artists')]
+        #)
+        return df_prim_art.drop('artists_list')
 
     ###################
     # GROUPBY PRIMARY_ARTISTS
@@ -111,22 +123,34 @@ class UNIVERSAL_TOP_SPOTIFY_SONGS:
         Returns 2-col dataframe of artist appearances in the primary_artist column
         USE split_artist_column before this method
         '''
-        df_counts = lazy_df.group_by('primary_artist').agg(
+        df_counts = lazy_df.group_by(['primary_artist','country']).agg(
             pl.len().alias('appearances')
         ).sort('appearances', descending=True)
         return df_counts
+
     
     @staticmethod
-    def artist_rank_sum(lazy_df):
+    def artist_rank_percentage(lazy_df):
         '''
-        Returns 2-col dataframe of the total rank of the primary_artist column
-        USE split_artist_column before this method
+        Returns 2-col dataframe of the total rank percentage of the primary_artist column.
+        USE split_artist_column before this method.
         '''
-        df_counts = lazy_df.group_by('primary_artist').agg(
+        # Step 1: Calculate the total rank for each artist
+        df_counts = lazy_df.group_by(['primary_artist','country']).agg(
             pl.col('inverted_rank').sum().alias('total_rank')
-        ).sort('total_rank', descending=True)
-        return df_counts
-    
+        )
+        
+        # Step 2: Calculate the total rank sum across all artists
+        total_rank_sum = df_counts.select(pl.col('total_rank').sum()).collect()[0, 0]
+
+        # Step 3: Calculate the percentage for each artist
+        df_percentages = df_counts.with_columns(
+            ((pl.col('total_rank') / total_rank_sum) * 100).alias('rank_percentage')
+        ).sort(['country', 'rank_percentage'], descending=[False, True])
+
+        return df_percentages
+
+
     @staticmethod
     def artist_song_count(lazy_df):
         '''
@@ -139,50 +163,15 @@ class UNIVERSAL_TOP_SPOTIFY_SONGS:
         return artist_song_counts
 
 
-class COUNTRY_TOP_SPOTIFY_SONGS(UNIVERSAL_TOP_SPOTIFY_SONGS):
+class GLOBAL_SPOTIFY_DATABASE:
     '''
-    Filtered down to one country. Enriches self.lazy_df with more columns
+    Object that will hold the output of a daily ETL job that finds data about each country's
+    daily top 10 tracks and artists
     '''
-    def __init__(self, csv_location, country_code):
-        super().__init__(csv_location)  
-        self.country_code = country_code
-        
-        # Apply the filter to the LazyFrame for the specific country
-        self.lazy_df = self.lazy_df.filter(
-            pl.col('country') == self.country_code
-        )
+    def __init__(self, db_name) -> None:
+        self.db_path = f'/home/flambuth/fredlambuthPUNTOcom/data/{db_name}.db'
+        self.db_uri = "sqlite:///" + self.db_path
+        self.conn = sqlite3.connect(self.db_path)
 
-        # Apply the split_artist_column and add_inverted_rank_column transformations
-        self.lazy_df = self.split_artist_column(self.lazy_df)
-        self.lazy_df = self.add_inverted_rank_column(self.lazy_df)
-
-
-    # Track Stats
-    def todays_top10_tracks(self, n=10):
-        first_day_chart = self.single_day_charts(
-            self.lazy_df,
-            self.last_date)
-        return first_day_chart.head(n)
-    
-    def today_top10_track_history(self):
-        df = self.todays_top10_tracks()
-        top_10_spot_ids = df.select('spotify_id').unique().collect()
-
-        track_history = self.lazy_df.filter(
-            pl.col('spotify_id').is_in(top_10_spot_ids)
-        )
-        return track_history
-    
-
-    # Artist Stats
-    def todays_most_ranked_artists(self, n=10):
-        art_df = self.artist_rank_sum(self.lazy_df).head(n)
-        arts = art_df.select('primary_artist').collect()
-
-        art_song_count_df = self.artist_song_count(self.lazy_df)
-        df = art_song_count_df.filter(
-            pl.col('primary_artist').is_in(arts)
-        )
-
-        joined_df = art_df.join(df, on='primary_artist', how='inner')
-        return joined_df.sort('total_rank', descending=True)
+        with open('/home/flambuth/fredlambuthPUNTOcom/global_spotify/country_codes.json', 'r') as file:
+            self.country_codes = json.load(file)
