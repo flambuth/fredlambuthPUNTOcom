@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import config
+from scripts import rp_archives
 
 class RP_Backend:
     def __init__(self, db_path=None):
@@ -41,3 +42,21 @@ class RP_Backend:
             cursor = conn.cursor()
             cursor.execute(query)
             conn.commit()
+
+    def recently_played_shuffle(self):
+        '''
+        Appends rp_records not found in the CSV.
+        Truncates the rp model down to the last 100 days
+        '''
+        the_annals = rp_archives.RP_Archive_CSV()
+        backdoor = self.RP_Backend()
+
+        archive_df = the_annals.load_csv()
+        missing_in_archives = backdoor.current_rps_not_in_archive(archive_df)
+        formatted = the_annals.format_archive_df(missing_in_archives)
+        the_annals.append_to_csv(formatted)
+        
+        backdoor.truncate_rps_older_than_n_days(100)
+
+if __name__ == '__main__':
+    RP_Backend().recently_played_shuffle()
