@@ -6,14 +6,12 @@ def track_history_line_plot(track_history_df):
     Returns a plotly figure
     '''
 
-    prim_arts = track_history_df.select('primary_artist').to_series().to_list()
-    feat_arts = track_history_df.select('featured_artists').to_series().to_list()
-    song_names = track_history_df.select('name').to_series().to_list()
     fig = px.line(
-        x=track_history_df.select('snapshot_date').to_series().to_list(),
-        y=track_history_df.select('daily_rank').to_series().to_list(),
-        color = track_history_df.select('name').to_series().to_list(),
-        hover_data={'primary_artists': prim_arts, 'featured_artists': feat_arts, 'songs': song_names},
+        track_history_df,
+        x='snapshot_date',
+        y='daily_rank',
+        color = 'name',
+        hover_data=['primary_artist','name'],
         template='plotly_dark',
     )
     fig.update_yaxes(autorange="reversed",)
@@ -40,6 +38,6 @@ def track_history_line_plot(track_history_df):
     )
 
     fig.update_traces(
-        hovertemplate='%{y}<br>Artist= %{customdata[0]}<br>Song= %{customdata[2]}<br><extra></extra>'
+        hovertemplate='%{y}<br>Artist= %{customdata[0]}<br>Song= %{customdata[1]}<br><extra></extra>'
     )
     return fig
