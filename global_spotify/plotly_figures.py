@@ -14,7 +14,9 @@ def track_history_line_plot(track_history_df):
         hover_data=['primary_artist','name'],
         template='plotly_dark',
     )
-    fig.update_yaxes(autorange="reversed",)
+    fig.update_yaxes(
+        autorange="reversed",
+    )
     fig.update_layout(
         yaxis_title=" ",
         xaxis_title=" ",

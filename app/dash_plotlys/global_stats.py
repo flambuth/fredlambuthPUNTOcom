@@ -1,11 +1,20 @@
 import pandas as pd
-from app.dash_plotlys.plotly_figures import songs_line_chart
 import sqlite3
+import json
 
+with open('global_spotify/country_codes.json', 'r') as json_file:
+    country_dict = json.load(json_file)
+
+def get_country_string(country_code):
+    '''
+    Makes a dict of global_spotify/country_codes.json, then looks up the name for the input code
+    '''
+    country_string = country_dict[country_code]
+    return country_string
 
 def country_todays_tracks_stats(
         country_code,
-        database='/home/flambuth/fredlambuthPUNTOcom/data/global.db'
+        database='/home/flambuth/fredlambuthPUNTOcom/data/global_TEST.db'
         ):
     conn = sqlite3.connect(database)
     tables = [
@@ -26,7 +35,8 @@ def country_todays_tracks_stats(
 
 class Country_Dash_Components:
     def __init__(self, country_code, database):
-        self.country = country_code
+        self.country_code = country_code
+        self.country = get_country_string(country_code)
         self.df_top10_artists, self.df_top10_songs_data, self.df_top10_songs_today, self.df_ten_oldest = country_todays_tracks_stats(
             country_code,
             database=database
