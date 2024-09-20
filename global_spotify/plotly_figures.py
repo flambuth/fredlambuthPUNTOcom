@@ -18,26 +18,21 @@ def track_history_line_plot(track_history_df):
         autorange="reversed",
     )
     fig.update_layout(
-        yaxis_title=" ",
+        yaxis_title="Daily Rank",
         xaxis_title=" ",
         height=880, 
-        annotations=[
-            dict(
-                text="Artist name can be found in hover text. Double Legend to Isolate Line",
-                x=0.5,
-                y=-0.12,
-                showarrow=False,
-                xref="paper",
-                yref="paper",
-                font=dict(
-                    size=8,
-                    color="limegreen"
-                )
-            )
-        ],
         hovermode="x unified",
         showlegend=False,
-    )
+        
+        title=dict(    
+            text=track_history_df.country.iloc[0],
+            font=dict(size=30),
+            x=0.5,              # Horizontal centering (0.5 means center)
+            xanchor='center',    # Align the title text to the center
+            y=0.95,             # Adjust the vertical position (optional)
+            yanchor='top',       # Ensure it stays at the top
+            automargin=True),
+        )
 
     fig.update_traces(
         hovertemplate='%{y}<br>Artist= %{customdata[0]}<br>Song= %{customdata[1]}<br><extra></extra>'

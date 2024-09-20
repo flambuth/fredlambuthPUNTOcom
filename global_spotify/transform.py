@@ -108,7 +108,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     csv_loc = "/home/flambuth/fredlambuthPUNTOcom/data/universal_top_spotify_songs.csv"
-    db_name = "global_TEST"
+    db_name = "global"
     UTSS_Load(
         csv_loc,
         db_name

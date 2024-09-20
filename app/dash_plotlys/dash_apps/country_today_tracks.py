@@ -11,7 +11,7 @@ from global_spotify.plotly_figures import track_history_line_plot
 load_figure_template('VAPOR')
 navbar = layouts.create_navbar()
 
-db = '/home/flambuth/fredlambuthPUNTOcom/data/global_TEST.db'
+db = '/home/flambuth/fredlambuthPUNTOcom/data/global.db'
 
 dropdown_options = [
     {'label': v, 'value': k} for k,v in global_stats.country_dict.items()
@@ -20,7 +20,7 @@ dropdown_options = [
 def Add_Dash_today_tracks_in_country(flask_app):
     dash_app = Dash(
         server=flask_app, name="country", 
-        url_base_pathname="/spotify/global/country/",
+        url_base_pathname="/spotify/global/",
         external_stylesheets=layouts.external_stylesheets,
         external_scripts=layouts.external_scripts
     )
@@ -35,8 +35,7 @@ def Add_Dash_today_tracks_in_country(flask_app):
     date_today = nz_components.df_top10_songs_today['snapshot_date'].iloc[0]
 
     # App layout
-    the_layout = html.Div(
-    [
+    the_layout = html.Div([
         navbar,
 
         dbc.Row(
@@ -63,7 +62,7 @@ def Add_Dash_today_tracks_in_country(flask_app):
                             dcc.Dropdown(
                                 id='category-dropdown',
                                 options=dropdown_options,
-                                value='BE',
+                                value='US',
                                 style={'color': 'black'},
                             ),
                             dbc.Table(                    
@@ -76,7 +75,7 @@ def Add_Dash_today_tracks_in_country(flask_app):
                         ],
                         className="d-flex flex-column justify-content-center h-100"  # Flexbox centering
                     ),
-                    width=3
+                    width=12,lg=3
                 ),
                 
                 # Right column: Line plot
@@ -89,15 +88,14 @@ def Add_Dash_today_tracks_in_country(flask_app):
                             'padding': '10px'            # Optional: spacing between border and content
                         }
                     ),  # Use dcc.Graph to render plotly figures
-                    width=9
+                    width=12, lg=9
                 ),
             ],
             className="h-100",  # Make the row take up the full height
             style={'min-height': '80vh'}  # Ensures the row has a minimum height for centering
         ),
         layouts.my_icon
-    ]
-)
+    ])
 
 
     dash_app.layout = the_layout
