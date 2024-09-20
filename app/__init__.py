@@ -79,8 +79,11 @@ def create_app(config_class=Config):
     from app.dash_plotlys.dash_apps.big_dash import Add_Big_Dash
     Add_Big_Dash(app)
 
-    from app.dash_plotlys.dash_apps.global_dash_lite import Add_Dash_global_view_lite
-    Add_Dash_global_view_lite(app)
+    #from app.dash_plotlys.dash_apps.global_dash_lite import Add_Dash_global_view_lite
+    #Add_Dash_global_view_lite(app)
+
+    from app.dash_plotlys.dash_apps.country_today_tracks import Add_Dash_today_tracks_in_country
+    Add_Dash_today_tracks_in_country(app)
         
     return app
 

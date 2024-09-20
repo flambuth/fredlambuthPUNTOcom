@@ -1,9 +1,9 @@
-import sqlite3
+# import sqlite3
 import pandas as pd
 import config
 
-current_rp_db = config.basedir + '/data/' + config.database
-archive_db = config.basedir + '/data/' + config.archive_database
+# current_rp_db = config.basedir + '/data/' + config.database
+# archive_db = config.basedir + '/data/' + config.archive_database
 
 rp_archive_csv = config.basedir + '/data/archives/recently_played.csv'
 

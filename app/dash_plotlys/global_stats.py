@@ -1,42 +1,43 @@
-from collections import Counter
 import pandas as pd
-
-from app.dash_plotlys.plotly_figures import songs_line_chart, artists_hbar_chart
-import json
 import sqlite3
-import os
+import json
 
-from config import basedir
+with open('global_spotify/country_codes.json', 'r') as json_file:
+    country_dict = json.load(json_file)
 
-country_codes_json = basedir + "/global_spotify/country_codes.json"
-with open(country_codes_json, "r") as json_file:
-    country_codes = json.load(json_file)
-#################################
-#data processing of the universal_top_spotify_songs.csv
+def get_country_string(country_code):
+    '''
+    Makes a dict of global_spotify/country_codes.json, then looks up the name for the input code
+    '''
+    country_string = country_dict[country_code]
+    return country_string
 
-def country_dash_dfs(country):
-    conn = sqlite3.connect('data/global.db')
+def country_todays_tracks_stats(
+        country_code,
+        database='/home/flambuth/fredlambuthPUNTOcom/data/global_TEST.db'
+        ):
+    conn = sqlite3.connect(database)
     tables = [
     'top_10_artists',
     'top_10_song_data',
-    'top_10_songs_today'
-]
-    queries = [f"SELECT * from {table} where country_string='{country}';" for table in tables]
+    'top_10_songs_today',
+    'oldest_10_songs'
+    ]
+    queries = [f"SELECT * from {table} where country='{country_code}';" for table in tables]
     
     df_artists = pd.read_sql(queries[0],conn)
-    
-    #some songs feature too many artists and it warps the legend of the 
-    #plotly figure that is fed with this dataframe
     df_song_data = pd.read_sql(queries[1],conn)
-    max_length = 100
-    df_song_data['artists'] = df_song_data['artists'].str.slice(0, max_length)
-    
     df_songs_today = pd.read_sql(queries[2],conn)
-    return df_artists, df_song_data, df_songs_today
+    df_oldest_10_today = pd.read_sql(queries[3],conn)
+
+    return df_artists, df_song_data, df_songs_today, df_oldest_10_today
+
 
 class Country_Dash_Components:
-    def __init__(self, country_string):
-        self.country = country_string
-        self.df_top10_artists, self.df_top10_songs_data, self.df_top10_songs_today = country_dash_dfs(country_string)
-        self.fig_top10_artists = artists_hbar_chart(self.df_top10_artists)
-        self.fig_top10_song = songs_line_chart(self.df_top10_songs_data)
+    def __init__(self, country_code, database):
+        self.country_code = country_code
+        self.country = get_country_string(country_code)
+        self.df_top10_artists, self.df_top10_songs_data, self.df_top10_songs_today, self.df_ten_oldest = country_todays_tracks_stats(
+            country_code,
+            database=database
+        )

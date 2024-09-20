@@ -30,12 +30,18 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
         return today_10_only_df
     
     def today_top10_history(self):
-        spot_ids = UNIVERSAL_TOP_SPOTIFY_SONGS.spotify_ids_in_df(
-            self.todays_top10_tracks()
+        '''
+        I'm accidentally pulling in history for out of context for a country's daily top10
+        '''
+        spot_ids_w_country_df = UNIVERSAL_TOP_SPOTIFY_SONGS.spotify_ids_and_country_in_df(
+            self.lazy_df
         )
-        top10_history_df = self.lazy_df.filter(
-            pl.col('spotify_id').is_in(spot_ids)
+        top10_history_df = self.lazy_df.join(
+            spot_ids_w_country_df,
+            on=['spotify_id','country'],
+            how='inner'
         )
+
         return top10_history_df
     
     def today_oldest_10_tracks(self):
@@ -72,7 +78,7 @@ class UTSS_Load(UTSS_ETL_Tools):
 
         self.top_10_track_today = self.todays_top10_tracks()
         self.top_10_track_history = self.today_top10_history()
-        self.top_10_artists = self.artist_rank_percentage(self.lazy_df)
+        self.top_10_artists = self.today_top10_artists_stats()
         self.top_10_oldest = self.today_oldest_10_tracks()
 
     def load_dataframe_to_DB(
@@ -84,7 +90,7 @@ class UTSS_Load(UTSS_ETL_Tools):
         polars_df.write_database(
             db_table,
             connection=db_obj.db_uri,
-            if_table_exists='append'
+            if_table_exists='replace'
         )
 
         print('saved!')
@@ -102,7 +108,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     csv_loc = "/home/flambuth/fredlambuthPUNTOcom/data/universal_top_spotify_songs.csv"
-    db_name = "global_TEST"
+    db_name = "global"
     UTSS_Load(
         csv_loc,
         db_name

@@ -294,4 +294,48 @@ def artist_history_stats_html(art_cat_data):
     return totem_div
 
 #######################
-#GLOBAl Charts
+
+def todays_table_div(today_top10_df, color_map):
+    '''
+    Creates the dash.html div that holds the top10 tracks for today
+    '''
+    # Apply function to create table rows with dotted borders and centered text
+    table_rows = today_top10_df.apply(
+        lambda row: html.Tr(
+            [
+                html.Td(f"{row['daily_rank']}.", style={'font-weight': 'bold', 'border': '1px dotted gray', 'text-align': 'center', 'vertical-align': 'middle'}),
+                html.Td(row['name'], style={'font-weight': 'bold', 'color': color_map[row['name']], 'border': '1px dotted gray', 'text-align': 'center', 'vertical-align': 'middle'}),
+                html.Td(row['primary_artist'], style={'border': '1px dotted gray', 'text-align': 'center', 'vertical-align': 'middle'}),
+                html.Td(
+                    f"{row['daily_movement']}" if row['daily_movement'] != 0 else "", 
+                    style={'color': 'green' if row['daily_movement'] > 0 else 'red' if row['daily_movement'] < 0 else 'black',
+                           'border': '1px dotted gray', 'text-align': 'center', 'vertical-align': 'middle', 'width': '40px'}  # Adjusted width
+                ),
+                html.Td(
+                    html.I(className="fas fa-exclamation-triangle", style={'color': 'yellow'}) if row['is_explicit'] else "",
+                    style={'border': '1px dotted gray', 'text-align': 'center', 'vertical-align': 'middle', 'width': '50px'}
+                ),
+            ],
+            style={'border': '1px dotted gray'}
+        ), 
+        axis=1
+    ).tolist()
+
+    # Return the table body with the dotted border and centered text
+    table_body = html.Tbody(table_rows)
+
+    # Return the full table (with header) as children, with tiny header text and narrow columns
+    return [
+        html.Thead(
+            html.Tr(
+                [
+                    html.Th("Position", style={'font-weight': 'bold', 'font-size': '12px', 'text-align': 'center'}),
+                    html.Th("Name", style={'font-weight': 'bold', 'font-size': '12px', 'text-align': 'center'}),
+                    html.Th("Artist", style={'font-weight': 'bold', 'font-size': '12px', 'text-align': 'center'}),
+                    html.Th("▲▼", style={'font-weight': 'bold', 'font-size': '12px', 'text-align': 'center', 'width': '40px'}),  # Narrow column
+                    html.Th("Explicit", style={'font-weight': 'bold', 'font-size': '12px', 'text-align': 'center', 'width': '50px'}),  # Narrow column
+                ]
+            ),
+        ),
+        table_body
+    ]

@@ -36,6 +36,19 @@ class UNIVERSAL_TOP_SPOTIFY_SONGS:
         '''
         spotify_ids = lazy_df.select('spotify_id').unique().collect().to_series().to_list()
         return spotify_ids
+    
+    @staticmethod
+    def spotify_ids_and_country_in_df(lazy_df):
+        '''
+        Returns lazy df of 720 unique pairds of 10 spotify_ids+country. 72 countries.
+        '''
+        latest_day_df = (
+            lazy_df.sort('snapshot_date', descending=True)
+            .group_by('country')
+            .agg(pl.col('spotify_id').head(10))  # Get top 10 tracks from latest day per country
+            .explode('spotify_id')
+        )
+        return latest_day_df
 
     @staticmethod
     def scan_csv_date_endpoints(lazy_df):
