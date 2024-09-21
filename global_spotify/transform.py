@@ -45,11 +45,29 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
         return top10_history_df
     
     def today_oldest_10_tracks(self):
-        df_olds = self.lazy_df.sort('snapshot_date').group_by('country').agg(
-            pl.all().slice(0,10)
-        ).explode(pl.exclude('country'))
+        # Select the row with the lowest daily rank for each unique spotify_id
+        df_unique = (
+            self.lazy_df
+            .groupby('spotify_id')
+            .agg([
+                pl.all().first().alias('first_row'),  # Keep the first occurrence of all columns
+                pl.col('daily_rank').min().alias('min_daily_rank')  # Get the minimum daily rank
+            ])
+            .sort('min_daily_rank')  # Sort by the lowest daily rank
+        )
+
+        # Now sort by album release date and get the oldest 10 tracks per country
+        df_olds = (
+            df_unique
+            .sort('album_release_date')  # Make sure to sort this after filtering
+            .groupby('country')
+            .agg(pl.all().slice(0, 10))  # Get the oldest 10 tracks per country
+            .explode(pl.exclude('country'))
+        )
+        
         return df_olds
-    
+
+
     def today_top10_artists_stats(self):
         '''
         Joins all stats about artists per country.

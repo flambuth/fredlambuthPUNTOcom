@@ -2,7 +2,11 @@ import pandas as pd
 import sqlite3
 import json
 
-with open('/home/flambuth/fredlambuthPUNTOcom/global_spotify/country_codes.json', 'r') as json_file:
+base_dir = '/home/flambuth/fredlambuthPUNTOcom/'
+db = 'data/global.db'
+use_this_db = base_dir + db
+
+with open(base_dir + 'global_spotify/country_codes.json', 'r') as json_file:
     country_dict = json.load(json_file)
 
 def get_country_string(country_code):
@@ -14,8 +18,11 @@ def get_country_string(country_code):
 
 def country_todays_tracks_stats(
         country_code,
-        database='/home/flambuth/fredlambuthPUNTOcom/data/global_TEST.db'
+        database
         ):
+    '''
+    
+    '''
     conn = sqlite3.connect(database)
     tables = [
     'top_10_artists',
@@ -31,6 +38,18 @@ def country_todays_tracks_stats(
     df_oldest_10_today = pd.read_sql(queries[3],conn)
 
     return df_artists, df_song_data, df_songs_today, df_oldest_10_today
+
+def country_todays_artist_stats(
+        country_code,
+        database
+        ):
+    '''
+    Just the artists
+    '''
+    conn = sqlite3.connect(database)
+    query = f"SELECT * from top_10_songs_data where country='{country_code}';"
+    df_artists = pd.read_sql(query,conn)
+    return df_artists
 
 
 class Country_Dash_Components:
