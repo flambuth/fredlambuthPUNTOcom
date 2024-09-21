@@ -94,7 +94,8 @@ def Add_Dash_today_tracks_in_country(flask_app):
             className="h-100",  # Make the row take up the full height
             style={'min-height': '80vh'}  # Ensures the row has a minimum height for centering
         ),
-        layouts.my_icon
+        layouts.my_icon,
+        dcc.Interval(id='interval-component', interval=3600000, n_intervals=0),  # 1 hour interval
     ])
 
 
@@ -106,9 +107,10 @@ def Add_Dash_today_tracks_in_country(flask_app):
     @dash_app.callback(
         [Output('top10-today-list', 'children'),
          Output('line-plot', 'figure')],
-        [Input('category-dropdown', 'value')]
+        [Input('category-dropdown', 'value'),
+        Input('interval-component', 'n_intervals')]
     )
-    def dropdown_change_all_output(selected_country):
+    def dropdown_change_all_output(selected_country, n_intervals):
         country_components = global_stats.Country_Dash_Components(
             selected_country,
             db
