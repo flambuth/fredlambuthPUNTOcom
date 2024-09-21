@@ -2,7 +2,7 @@ import pandas as pd
 import sqlite3
 import json
 
-with open('global_spotify/country_codes.json', 'r') as json_file:
+with open('/home/flambuth/fredlambuthPUNTOcom/global_spotify/country_codes.json', 'r') as json_file:
     country_dict = json.load(json_file)
 
 def get_country_string(country_code):
