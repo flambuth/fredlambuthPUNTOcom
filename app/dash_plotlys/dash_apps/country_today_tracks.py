@@ -45,7 +45,7 @@ def Add_Dash_today_tracks_in_country(flask_app):
             dbc.Row(
                 dbc.Col(
                     html.Div(
-                        "Top 10 Songs Today on Spotify in 73 Countries",
+                        "Top Ten Songs Today on Spotify in 73 Countries",
                         style={
                             'font-size': '36px',
                             'font-weight': 'bold',

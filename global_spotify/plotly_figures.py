@@ -5,6 +5,7 @@ def track_history_line_plot(track_history_df):
     Accepts a Polars dataframe.
     Returns a plotly figure
     '''
+    country_code = track_history_df.country.iloc[0]
 
     fig = px.line(
         track_history_df,
@@ -25,8 +26,8 @@ def track_history_line_plot(track_history_df):
         showlegend=False,
         
         title=dict(    
-            text=track_history_df.country.iloc[0],
-            font=dict(size=30),
+            text=f"90 Day History for Top Ten Songs Today: {country_code}",
+            font=dict(size=20),
             x=0.5,              # Horizontal centering (0.5 means center)
             xanchor='center',    # Align the title text to the center
             y=0.95,             # Adjust the vertical position (optional)
