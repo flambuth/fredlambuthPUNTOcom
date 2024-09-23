@@ -48,9 +48,10 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
         # Select the row with the lowest daily rank for each unique spotify_id
         df_unique = (
             self.lazy_df
-            .groupby('spotify_id')
+            .group_by('spotify_id')
             .agg([
-                pl.all().first().alias('first_row'),  # Keep the first occurrence of all columns
+                pl.col('album_release_date').first().alias('album_release_date'),  # Keep album release date
+                pl.col('country').first().alias('country'),  # Keep the country
                 pl.col('daily_rank').min().alias('min_daily_rank')  # Get the minimum daily rank
             ])
             .sort('min_daily_rank')  # Sort by the lowest daily rank
@@ -59,14 +60,18 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
         # Now sort by album release date and get the oldest 10 tracks per country
         df_olds = (
             df_unique
-            .sort('album_release_date')  # Make sure to sort this after filtering
-            .groupby('country')
+            .sort('album_release_date')  # Sort by album release date
+            .group_by('country')
             .agg(pl.all().slice(0, 10))  # Get the oldest 10 tracks per country
-            .explode(pl.exclude('country'))
+            .explode(pl.exclude('country'))  # Explode other columns (except country)
         )
         
-        return df_olds
+        # Drop the 'first_row' column if it is still present
+        if 'first_row' in df_olds.columns:
+            df_olds = df_olds.drop('first_row')
 
+        return df_olds
+    
 
     def today_top10_artists_stats(self):
         '''
