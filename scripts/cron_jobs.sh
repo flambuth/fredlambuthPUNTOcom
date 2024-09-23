@@ -10,7 +10,7 @@
 #global_csv_refresh
 50 13 * * *  ~/fredlambuthPUNTOcom/scripts/refresh_global_csv.sh >> /home/flambuth/archives/global_cron_errors.log 2>&1
 #global_db_refresh, takes about 100 seconds
-55 13 * * *  cd /home/flambuth/fredlambuthPUNTOcom && /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/global_spotify/etl.py >> /home/flambuth/fredlambuthPUNTOcom/scripts/global_etl_cron_errors.log 2>&1
+55 13 * * *  cd /home/flambuth/fredlambuthPUNTOcom && /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/global_spotify/transform.py >> /home/flambuth/fredlambuthPUNTOcom/scripts/global_etl_cron_errors.log 2>&1
 
 #shuffle RPs to archive
 0 0 1,11,21 * * cd /home/flambuth/fredlambuthPUNTOcom && /usr/bin/python3 /home/flambuth/fredlambuthPUNTOcom/scripts/backend_rps.py >> /home/flambuth/fredlambuthPUNTOcom/scripts/rp_shuffle_errors.log 2>&1
