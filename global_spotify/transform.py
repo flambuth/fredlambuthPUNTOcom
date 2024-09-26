@@ -52,7 +52,9 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
             .agg([
                 pl.col('album_release_date').first().alias('album_release_date'),  # Keep album release date
                 pl.col('country').first().alias('country'),  # Keep the country
-                pl.col('daily_rank').min().alias('min_daily_rank')  # Get the minimum daily rank
+                pl.col('daily_rank').min().alias('min_daily_rank'),  # Get the minimum daily rank
+                pl.col('primary_artist').first().alias('primary_artist'),  # Keep the first occurrence of primary_artist
+                pl.col('name').first().alias('name')  # Keep the first occurrence of the song name
             ])
             .sort('min_daily_rank')  # Sort by the lowest daily rank
         )
@@ -66,12 +68,8 @@ class UTSS_ETL_Tools(UNIVERSAL_TOP_SPOTIFY_SONGS):
             .explode(pl.exclude('country'))  # Explode other columns (except country)
         )
         
-        # Drop the 'first_row' column if it is still present
-        if 'first_row' in df_olds.columns:
-            df_olds = df_olds.drop('first_row')
-
         return df_olds
-    
+
 
     def today_top10_artists_stats(self):
         '''
