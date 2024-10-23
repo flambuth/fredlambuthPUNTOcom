@@ -1,28 +1,31 @@
-/.ipynb_checkpoints
-/GenreList.txt
-/GenreList.txt:Zone.Identifier
-/*.ipynb
-/__pycache__
-/charts.csv
-/charts200.csv
-/config.py
-/env_fred
-/fred.db
-/fredlambuth.db
-/genres.json
-/malaga.ipynb
-/my_spotipy.db
-/my_streams.csv
-/new_stuff.json
-/world_streams.csv
-/world_top200.csv
-/my_spotipy/config.py
-/my_spotipy/*.db
-/my_spotipy/*.ipynb
-/my_spotipy/*.json
-/my_spotipy/.cache-lambuth
-*.pyc 
-__pycache__
-*.jpg
+# Ignore all files in app/static/
+app/static/
+
+# Ignore all files in app/data/
+app/data/
+
+# Ignore all .csv, .json, and .db files
+*.csv
+*.json
 *.db
-/fredlambuth_env
+
+# Ignore fldotcom_dev_env directory
+fldotcom_dev_env/
+
+# Ignore Spotify Oauth Tokens
+my_spotipy/user_tokens/
+
+# Ignore Python cache files
+*.pyc
+__pycache__/
+
+# Ignore notebooks
+*.ipynb
+
+# Ignore List
+config.py
+scratch.py
+
+# Optional: Ignore virtual environments
+venv/
+.env/
