@@ -1,5 +1,5 @@
 import spotipy
-import datetime
+from datetime import datetime
 import json
 import csv
 from my_spotipy.spotify_token_refresh import refresh_token_for_user
@@ -51,18 +51,20 @@ class Song_Counter:
         
     def currently_playing_CSV_entry(self):
         # time info
-        timestamp = datetime.datetime.fromtimestamp(self.currently_playing['timestamp']/1000)
+        timestamp = datetime.fromtimestamp(self.currently_playing['timestamp']/1000)
         
         # song info is in item
         spot_item = self.currently_playing['item']
         spotify_id = spot_item['uri'][-22:]
         song_name = spot_item['name']
+        song_duration = spot_item['duration_ms']/1000
         
         artists = spot_item['artists'] # a list of dicts
         prim_artist = artists[0]['name']
         if len(artists) > 1:
             feat_artists = artists[1:]
             feat_art_names = [i['name'] for i in feat_artists]
+            feat_art_names = ', '.join(feat_art_names)
         else:
             feat_art_names = None
         
@@ -72,8 +74,10 @@ class Song_Counter:
         album_release_date = album['release_date']
         image_code = album['images'][0]['url'][24:]
         
-        keys = ['spotify_id', 'song_name', 'prim_artist', 'feat_artists', 'album_name', 'album_release_date', 'image_code', 'timestamp']
-        the_list = [spotify_id, song_name, prim_artist, feat_art_names, album_name, album_release_date, image_code, timestamp.isoformat()]
+        keys = ['spotify_id', 'song_name', 'prim_artist', 'feat_artists', 
+                'album_name', 'album_release_date', 'image_code', 'duration', 'timestamp']
+        the_list = [spotify_id, song_name, prim_artist, feat_art_names, 
+                    album_name, album_release_date, image_code, song_duration, timestamp.isoformat()]
         
         the_dict = {key:value for key,value in zip(keys,the_list)}
         return the_dict
@@ -90,3 +94,41 @@ class Song_Counter:
             # Write the row (values)
             writer.writerow([1] + list(initial_data.values()))
         print(f'CSV created in {self.db} directory for {self.spotify_username}')
+        
+    def latest_song_in_csv(self):
+        '''Returns a dictionary of the last row in the input db_path'''
+        with open(self.db, 'r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to get the rows as dictionaries
+            last_row = None
+            for row in reader:
+                last_row = row  # Iterate through all rows and store the last one
+        return last_row
+    
+    def should_currently_playing_save_to_csv(self):
+        '''Returns nothing if no conditions have been met'''
+        current_song = self.latest_song_in_csv()
+        in_the_csv = self.latest_song_in_csv()
+        
+        # If its a totally new spotify_id from the last
+        if current_song['spotify_id'] != in_the_csv['spotify_id']:
+            return True
+        
+        # If its been longer than the song length since the last time it was played
+        iso_dt = datetime.fromisoformat(in_the_csv['timestamp'])
+        time_diff = datetime.now() - iso_dt
+        time_diff_in_secs = time_diff.total_seconds()
+        if time_diff_in_secs > float(in_the_csv['duration']):
+            return True
+        
+    def add_currently_playing_to_csv(self):
+        
+        if self.should_currently_playing_save_to_csv():
+            last_id = self.latest_song_in_csv()['id']
+            new_id = int(last_id) + 1
+            new_song_data = self.currently_playing_CSV_entry()
+            with open(self.db, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow([new_id] + list(new_song_data.values()))
+                print(f"{new_song_data['song_name']} saved to the CSV")
+        else:
+            print('Did not meet new song criteria')
