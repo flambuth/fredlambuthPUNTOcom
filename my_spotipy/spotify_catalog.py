@@ -1,4 +1,4 @@
-from my_spotipy.spotify_object import sp_obj
+from my_spotipy.spotify_object import sp_obj, find_best_result_for_art_name
 from my_spotipy.genres import inspect_tri_genres
 from datetime import date
 
@@ -66,17 +66,19 @@ class ArtistCatalog:
     def __init__(            
             self,
             artist_id,
-            #app,#result of push_app_context()
             spotify_username='lambuth'):
         self.art_id = artist_id
 
         self.sp = sp_obj(spotify_username)
         self.app = push_app_context()
 
-
-    def art_id_to_art_cat(
-        self,
-        ):
+    @staticmethod
+    def art_name_to_art_cat(art_name):
+        spot_art_record = find_best_result_for_art_name(art_name)
+        art_cat_record = spot_json_to_list(spot_art_record)
+        return art_cat_record
+    
+    def art_id_to_art_cat(self):
         '''
         Calls spotify API for artist info. Then processes the JSON result into a list fitting the art_cat schema.
         '''
