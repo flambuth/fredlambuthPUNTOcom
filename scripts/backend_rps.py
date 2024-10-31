@@ -1,5 +1,6 @@
 import sqlite3
 import pandas as pd
+import polars as pl
 import config
 from scripts import rp_archives
 
@@ -11,6 +12,7 @@ class RP_Backend:
         """Creates and returns a new database connection."""
         return sqlite3.connect(self.db_path)
 
+    # PANDAS
     def fetch_current_rps_df(self) -> pd.DataFrame:
         """Fetches the recently played data from the SQLite database as a DataFrame."""
         query = "SELECT * FROM recently_played"
@@ -56,6 +58,52 @@ class RP_Backend:
         the_annals.append_to_csv(formatted)
         
         self.truncate_rps_older_than_n_days(100)
+        
+    # POLARS
+    def current_art_cat_polars(self):
+        '''
+        With a given path to a fredlambuth.com db, returns a polars dataframe
+        of the artist_catalog table where is_current=True
+        '''
+        db_uri = "sqlite:///" + self.db_path
+        query = 'select * from artist_catalog;'
+        art_cat_df = pl.read_database_uri(
+            query=query,
+            uri=db_uri
+        )
+        current_art_cat_df = art_cat_df.filter(
+            pl.col('is_current') == True
+        )
+        return current_art_cat_df
+
+    def archive_rps_not_in_art_cat(self):
+        '''Returns a list of art names or ids found in the RP archives'''
+        df_archive = rp_archives.fix_archive_csv_datetime()
+        
+        archive_with_art_cat_col = df_archive.with_columns(
+            pl.col('art_name').is_in(self.current_art_cat_polars().select('art_name')).alias('in_art_cat')
+        )
+        archive_not_in_art_cat = archive_with_art_cat_col.filter(
+            pl.col('in_art_cat') == False
+        )
+        return archive_not_in_art_cat
+    
+    def mia_from_art_cat_groups(self, threshold=20):
+        '''
+        Returns a Groupby polars lazyframe of the appearances and distinct songs for each art_name in
+        the MIA from RP models dataframe.
+        '''
+        archive_not_in_art_cat = self.archive_rps_not_in_art_cat()
+        mia_in_archives_groups = archive_not_in_art_cat.group_by('art_name').agg(
+            pl.len().alias('appearances'),
+            pl.col('song_name').unique(),
+            pl.col('song_name').n_unique().alias('distinct_songs')
+        ).sort("appearances", descending=True)
+        above_threshold = mia_in_archives_groups.filter(
+            pl.col('appearances') > threshold
+        )
+        return above_threshold
 
 if __name__ == '__main__':
-    RP_Backend().recently_played_shuffle()
+    usual_db_path = '/home/flambuth/fredlambuthPUNTOcom/data/fred.db'
+    RP_Backend(usual_db_path).recently_played_shuffle()

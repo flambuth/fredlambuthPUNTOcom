@@ -28,6 +28,18 @@ def sp_obj(
     )
     return sp
 
+def find_best_result_for_art_name(art_name):
+    '''
+    Given a string art_name, selects the first artist found by using the .search() method
+    of the Spotipy API
+    Returns a the JSON from the API request
+    '''
+    fred_sp_obj = sp_obj()
+    search_results = fred_sp_obj.search(art_name, type='artist')
+    # 0 index is the best result among the search results
+    best_result = search_results['artists']['items'][0]
+    return best_result
+
 def amys_last_five_songs_recently_played():
     '''returns a simple 5 item data structure of the last five songs Amy has listened to'''
     spotify_user = 'riggle.amy'
@@ -44,46 +56,54 @@ class Song_Counter:
         self.spotify_username = spotify_username
         self.db = db_path
         self.sp_obj = sp_obj(self.spotify_username)
+        self.not_playing_message = f'Nothing is playing on the {self.spotify_username} Spotify account.'
         if self.sp_obj.current_user_playing_track():
             self.currently_playing = self.sp_obj.current_user_playing_track()
         else:
-            self.currently_playing = f'Nothing Playing on {self.spotify_username}'
+            self.currently_playing = self.not_playing_message
         
     def currently_playing_CSV_entry(self):
-        # time info
-        timestamp = datetime.fromtimestamp(self.currently_playing['timestamp']/1000)
-        
-        # song info is in item
-        spot_item = self.currently_playing['item']
-        spotify_id = spot_item['uri'][-22:]
-        song_name = spot_item['name']
-        song_duration = spot_item['duration_ms']/1000
-        
-        artists = spot_item['artists'] # a list of dicts
-        prim_artist = artists[0]['name']
-        if len(artists) > 1:
-            feat_artists = artists[1:]
-            feat_art_names = [i['name'] for i in feat_artists]
-            feat_art_names = ', '.join(feat_art_names)
+        '''
+        Returns a dictionary that matches up with the column order of the CSV
+        '''
+        if self.sp_obj.current_user_playing_track():
+            # time info
+            timestamp = datetime.fromtimestamp(self.currently_playing['timestamp']/1000)
+            
+            # song info is in item
+            
+            spot_item = self.currently_playing['item']
+            spotify_id = spot_item['uri'][-22:]
+            song_name = spot_item['name']
+            song_duration = spot_item['duration_ms']/1000
+            
+            artists = spot_item['artists'] # a list of dicts
+            prim_artist = artists[0]['name']
+            if len(artists) > 1:
+                feat_artists = artists[1:]
+                feat_art_names = [i['name'] for i in feat_artists]
+                feat_art_names = ', '.join(feat_art_names)
+            else:
+                feat_art_names = None
+            
+            # album info
+            album = spot_item['album']
+            album_name = album['name']
+            album_release_date = album['release_date']
+            image_code = album['images'][0]['url'][24:]
+            
+            keys = ['spotify_id', 'song_name', 'prim_artist', 'feat_artists', 
+                    'album_name', 'album_release_date', 'image_code', 'duration', 'timestamp']
+            the_list = [spotify_id, song_name, prim_artist, feat_art_names, 
+                        album_name, album_release_date, image_code, song_duration, timestamp.isoformat()]
+            
+            the_dict = {key:value for key,value in zip(keys,the_list)}
+            return the_dict
         else:
-            feat_art_names = None
-        
-        # album info
-        album = spot_item['album']
-        album_name = album['name']
-        album_release_date = album['release_date']
-        image_code = album['images'][0]['url'][24:]
-        
-        keys = ['spotify_id', 'song_name', 'prim_artist', 'feat_artists', 
-                'album_name', 'album_release_date', 'image_code', 'duration', 'timestamp']
-        the_list = [spotify_id, song_name, prim_artist, feat_art_names, 
-                    album_name, album_release_date, image_code, song_duration, timestamp.isoformat()]
-        
-        the_dict = {key:value for key,value in zip(keys,the_list)}
-        return the_dict
+            return self.not_playing_message
     
     def initialize_csv(self):
-        '''Initializes the csv to start recording entries'''
+        '''Initializes the csv to start recording entries. Only works is a song is active on the Spotify account.'''
         with open(self.db, 'w', newline='') as csvfile:
             initial_data = self.currently_playing_CSV_entry()
             writer = csv.writer(csvfile)
