@@ -127,9 +127,17 @@ class Fred_Big_Dash_Stuff:
         return counts_imgs_tuples
     
     def known_genre_counts(self):
+        '''
+        Because of 'Los Ángeles Azules', this failed. That accent breaks the sql-alchemy query that uses art_name
+        '''
         known_acs = list(map(
             artist_catalog.name_to_art_cat,
             self.known
+        ))
+        # Cut out the Nones. Like Los Angeles Azules. The RP schema should have art_id 2024-12-04
+        known_acs = list(filter(
+            None,
+            known_acs
         ))
         known_master_genres = [i.master_genre for i in known_acs]
 
