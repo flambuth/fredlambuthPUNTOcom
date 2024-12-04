@@ -6,7 +6,9 @@
             </div>
             
             <div class="col-2">
-            <img src="https://i.scdn.co/image/{{ track.img_url_sml }}" title="Que culazo!" class="with-border image-container">
+            <a href="{{ url_for('spotify.art_cat_profile', art_id=track[0].art_id) }}">
+                <img src="https://i.scdn.co/image/{{ track.img_url_sml }}" title="Que culazo!" class="with-border image-container">
+            </a>
             </div>
             
             {% if track.master_genre == 'rock' %}
