@@ -122,8 +122,7 @@ def art_cat_landing_page():
     return render_template('spotify/art_cat/art_cat_landing.html', **context)
 
 
-######Adding COmments to artist
-###############################################
+# Adding Comments to artist
 @bp.route('/spotify/art_cat/artist/<string:art_id>', methods=('GET','POST'))
 def art_cat_profile(art_id):
     form = SearchForm()
