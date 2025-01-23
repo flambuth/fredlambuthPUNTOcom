@@ -1,9 +1,6 @@
 from app.extensions import db
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import func, or_, desc, and_
-#from .main import daily_tracks
-
-#from app.models.charts import daily_artists, daily_tracks
 
 Base = declarative_base()
 
@@ -101,8 +98,10 @@ class artist_catalog(db.Model):
     @classmethod
     def add_new_art_cat_to_db(cls, new_art_cat):
         '''
-        Takes a recently_played object as a parameter and add's it
+        Takes a art_cat object as a parameter and add's it
         to the database
+        
+        unless the art_id can be found in the art_cat
         '''
         if new_art_cat.art_id in cls.all_art_ids_in_cat():
             print('art_id already exists')

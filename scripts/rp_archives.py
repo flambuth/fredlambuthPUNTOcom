@@ -1,14 +1,13 @@
 import polars as pl
 import pandas as pd
-import config
+#import config
 
 # current_rp_db = config.basedir + '/data/' + config.database
 # archive_db = config.basedir + '/data/' + config.archive_database
-
-rp_archive_csv = config.basedir + '/data/archives/recently_played.csv'
+# rp_archive_csv = config.basedir + '/data/archives/recently_played.csv'
 
 class RP_Archive_CSV:
-    def __init__(self, csv_path=rp_archive_csv):
+    def __init__(self, csv_path):
         self.csv_path = csv_path
         #self.df = self.load_csv()
         self.last_date = self.get_last_date_in_csv()
@@ -52,46 +51,48 @@ class RP_Archive_CSV:
         self.append_to_csv(formatted_df)
 
 
-def fix_archive_csv_datetime():
-    big_lazy = (
-        pl.scan_csv(f"data/archives/recently_played.csv")
-    )
-    filtered_lf = big_lazy.filter(pl.col("last_played").str.len_chars() >= 19)
-    lf_with_datetime = filtered_lf.with_columns(
-        pl.col("last_played").str.strptime(pl.Datetime, format="%+", strict=False).alias("parsed_datetime")
-    )
+    def fix_archive_csv_datetime(
+        self
+    ):
+        big_lazy = (
+            pl.scan_csv(self.csv_path)
+        )
+        filtered_lf = big_lazy.filter(pl.col("last_played").str.len_chars() >= 19)
+        lf_with_datetime = filtered_lf.with_columns(
+            pl.col("last_played").str.strptime(pl.Datetime, format="%+", strict=False).alias("parsed_datetime")
+        )
 
-    easy_time = lf_with_datetime.filter(
-        ~pl.col('parsed_datetime').is_null()
-    )
-    bad_time = lf_with_datetime.filter(
-        pl.col('parsed_datetime').is_null()
-    )
-    bad_time_filtered_short = bad_time.filter(
-        pl.col("last_played").str.len_chars() == 19  # Strings SHORTER than 19 characters have milliseconds
-    )
-    bad_time_filtered_long = bad_time.filter(
-        pl.col("last_played").str.len_chars() > 19  # Strings longer than 19 characters have milliseconds
-    )
+        easy_time = lf_with_datetime.filter(
+            ~pl.col('parsed_datetime').is_null()
+        )
+        bad_time = lf_with_datetime.filter(
+            pl.col('parsed_datetime').is_null()
+        )
+        bad_time_filtered_short = bad_time.filter(
+            pl.col("last_played").str.len_chars() == 19  # Strings SHORTER than 19 characters have milliseconds
+        )
+        bad_time_filtered_long = bad_time.filter(
+            pl.col("last_played").str.len_chars() > 19  # Strings longer than 19 characters have milliseconds
+        )
 
 
-    lf_easy = easy_time.with_columns(
-        pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%S%.3fZ").alias('real_dt')
-    ).with_columns(
-        pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
-    )
+        lf_easy = easy_time.with_columns(
+            pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%S%.3fZ").alias('real_dt')
+        ).with_columns(
+            pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
+        )
 
-    lf_bad_short = bad_time_filtered_short.with_columns(
-        pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%S").alias('real_dt')
-    ).with_columns(
-        pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
-    )
+        lf_bad_short = bad_time_filtered_short.with_columns(
+            pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%dT%H:%M:%S").alias('real_dt')
+        ).with_columns(
+            pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
+        )
 
-    lf_bad_long = bad_time_filtered_long.with_columns(
-        pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%d %H:%M:%S%.6f").alias('real_dt')
-    ).with_columns(
-        pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
-    )
-    lf_union = pl.concat([lf_easy, lf_bad_short, lf_bad_long], how="vertical")
-    lf_switch = lf_union.drop('last_played', 'parsed_datetime')
-    return lf_switch
+        lf_bad_long = bad_time_filtered_long.with_columns(
+            pl.col("last_played").str.strptime(pl.Datetime, format="%Y-%m-%d %H:%M:%S%.6f").alias('real_dt')
+        ).with_columns(
+            pl.col('real_dt').dt.truncate('1s').cast(pl.Datetime("ms"))  # Truncate and cast to milliseconds
+        )
+        lf_union = pl.concat([lf_easy, lf_bad_short, lf_bad_long], how="vertical")
+        lf_switch = lf_union.drop('last_played', 'parsed_datetime')
+        return lf_switch

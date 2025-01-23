@@ -37,7 +37,10 @@ def find_best_result_for_art_name(art_name):
     fred_sp_obj = sp_obj()
     search_results = fred_sp_obj.search(art_name, type='artist')
     # 0 index is the best result among the search results
-    best_result = search_results['artists']['items'][0]
+    if search_results['artists']['items']:
+        best_result = search_results['artists']['items'][0]
+    else:
+        best_result = None
     return best_result
 
 def amys_last_five_songs_recently_played():
