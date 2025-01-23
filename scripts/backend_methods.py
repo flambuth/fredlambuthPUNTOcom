@@ -1,10 +1,13 @@
 import sqlite3
 import pandas as pd
 import polars as pl
+
 import config
 from scripts import rp_archives
+from my_spotipy.spotify_catalog import ArtistCatalog, list_to_art_cat_obj
 
 class RP_Backend:
+    '''Methods that use the table used by the recently_played Flask model'''
     def __init__(self, db_path=None):
         self.db_path = db_path or config.basedir + '/data/' + config.database
 
@@ -58,8 +61,14 @@ class RP_Backend:
         the_annals.append_to_csv(formatted)
         
         self.truncate_rps_older_than_n_days(100)
-        
-    # POLARS
+
+######## POLARS
+# artcat and rp_archive
+class ArtCat_Backend:
+    def __init__(self, db_path):
+        self.db_path = db_path
+    #   artist_catalog model
+    
     def current_art_cat_polars(self):
         '''
         With a given path to a fredlambuth.com db, returns a polars dataframe
@@ -76,9 +85,11 @@ class RP_Backend:
         )
         return current_art_cat_df
 
-    def archive_rps_not_in_art_cat(self):
+    #######
+    # rp_archives 
+    def archive_rps_not_in_art_cat(self, rp_archive_obj):
         '''Returns a list of art names or ids found in the RP archives'''
-        df_archive = rp_archives.fix_archive_csv_datetime()
+        df_archive = rp_archive_obj.fix_archive_csv_datetime()
         
         archive_with_art_cat_col = df_archive.with_columns(
             pl.col('art_name').is_in(self.current_art_cat_polars().select('art_name')).alias('in_art_cat')
@@ -88,12 +99,12 @@ class RP_Backend:
         )
         return archive_not_in_art_cat
     
-    def mia_from_art_cat_groups(self, threshold=20):
+    def mia_from_art_cat_groups(self, rp_archive_obj, threshold=25):
         '''
         Returns a Groupby polars lazyframe of the appearances and distinct songs for each art_name in
         the MIA from RP models dataframe.
         '''
-        archive_not_in_art_cat = self.archive_rps_not_in_art_cat()
+        archive_not_in_art_cat = self.archive_rps_not_in_art_cat(rp_archive_obj)
         mia_in_archives_groups = archive_not_in_art_cat.group_by('art_name').agg(
             pl.len().alias('appearances'),
             pl.col('song_name').unique(),
@@ -103,6 +114,52 @@ class RP_Backend:
             pl.col('appearances') > threshold
         )
         return above_threshold
+
+    def mia_list(self, rp_archive_obj, threshold=25):
+        '''
+        Uses rp_backen to compare rp_archives with the artist_catalog model
+        
+        returns list of names of artists that have song counts above threshold
+        but are not found in the artist_catalog model
+        '''
+        lazy_df_of_mias = self.mia_from_art_cat_groups(rp_archive_obj, threshold)
+        the_list = lazy_df_of_mias.select(pl.col("art_name")).collect().to_series().to_list()
+        return the_list
+    
+    #####
+    # SPOTIFY API Calls
+    @staticmethod
+    def art_names_to_ac_entries(art_name_list):
+        '''
+        Converts an art_name string to a art_cat object ready to be added to the model
+        '''
+        # maps spotify API calls to each art_name, making a list of JSONS
+        the_list_of_spots = list(map(
+            ArtistCatalog.art_name_to_art_cat,
+            art_name_list
+        ))
+        almost_ready = [ArtistCatalog.static_new_entry(artist_data) for artist_data in the_list_of_spots]
+        
+        ready_for_adding = list(map(
+            list_to_art_cat_obj,
+            almost_ready
+        ))
+        
+        return ready_for_adding
+    
+    # SPOTIFY API calls
+    def mias_ready_for_catalog(self, rp_archive_obj, threshold=25):
+        '''
+        threshold is how many song appearances in rp_archives are needed
+        to be declared MIA from the art_cat model
+        
+        Returns artist_catalog model objects that can be added via the artist_catalog.add_new_art_cat_to_db method
+        '''
+        # list of art_names found in rp_archives not found in the art_cat model
+        the_list = self.mia_list(rp_archive_obj, threshold)
+        # Maps Spotify API call >> List >>
+        art_cat_entries = self.art_names_to_ac_entries(the_list)
+        return art_cat_entries
 
 if __name__ == '__main__':
     usual_db_path = '/home/flambuth/fredlambuthPUNTOcom/data/fred.db'

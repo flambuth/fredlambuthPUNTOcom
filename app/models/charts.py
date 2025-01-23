@@ -374,5 +374,5 @@ class recently_played(db.Model):
 
 
     def __repr__(self):
-        return f'<recently_played for "{self.last_played}">'
+        return f'<recently_played for "{self.art_name}" listend to at "{self.last_played}">'
     

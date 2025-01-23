@@ -5,10 +5,6 @@ from app.utils import push_app_context
 from my_spotipy.spotify_catalog import ArtistCatalog, TrackCatalog
 from my_spotipy.spotify_daily import ids_missing_from_art_cat
 
-#what = ArtistCatalog(missing_in_both[0])
-
-
-
 def scan_and_add_missing_artists(
         app=push_app_context()
 ):

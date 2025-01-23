@@ -86,13 +86,36 @@ class ArtistCatalog:
         art_cat_record = spot_json_to_list(spot_art_record)
         return art_cat_record
     
+    @staticmethod
+    def static_new_entry(
+        artist_data,
+        corrected_entry=False,
+    ):
+        '''
+        Static method outside class that can work with data that was received from a previous
+        Spotify API call to sp.artist()
+        '''
+        today_date = date.today()
+        today_string = today_date.strftime('%Y-%m-%d')
+    
+    
+        tri_genres = artist_data[3:6]
+        artist_data.append(inspect_tri_genres(tri_genres))
+        artist_data.append(today_string)
+        if corrected_entry==True:
+            artist_data.append(False)
+        else:
+            artist_data.append(True)
+
+        return artist_data
+        
     def new_entry(
         self,
         corrected_entry=False,
         ):
         '''
         Returns a dictionary that has all the necessary fields to be an entry in the artist catalog
-        Makes a Spotify API each time. 
+        Makes a Spotify API artist endpoint call each time. 
         '''
         today_date = date.today()
         today_string = today_date.strftime('%Y-%m-%d')
@@ -149,3 +172,10 @@ class TrackCatalog:
             duration=self.spotify_result['duration_ms'],
             app_record_date=date.today().isoformat()
         )
+        
+    def missing_songs():
+        aver_estos = rp_obj.archive_rps_not_in_art_cat()
+        missing_ones = aver_estos.group_by('track_id','song_name','art_name').agg(
+            pl.len().alias('Song Appearances')
+        ).sort('Song Appearances', descending=True)
+        return missing_ones
