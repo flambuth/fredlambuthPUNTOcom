@@ -48,19 +48,21 @@ class RP_Backend:
             cursor.execute(query)
             conn.commit()
 
-    def recently_played_shuffle(self):
+    def recently_played_shuffle(self, rp_archives_obj):
         '''
         Appends rp_records not found in the CSV.
-        Truncates the rp model down to the last 100 days
+        Truncates the rp model down to the last 100 days only if appending succeeds.
         '''
-        the_annals = rp_archives.RP_Archive_CSV()
-
-        archive_df = the_annals.load_csv()
+        archive_df = rp_archives_obj.load_csv()
         missing_in_archives = self.current_rps_not_in_archive(archive_df)
-        formatted = the_annals.format_archive_df(missing_in_archives)
-        the_annals.append_to_csv(formatted)
+        formatted = rp_archives_obj.format_archive_df(missing_in_archives)
         
-        self.truncate_rps_older_than_n_days(100)
+        success = rp_archives_obj.append_to_csv(formatted)  # Ensure this method returns True on success
+        
+        if success:
+            self.truncate_rps_older_than_n_days(100)
+        else:
+            print("Append operation failed, truncation skipped.")
 
 ######## POLARS
 # artcat and rp_archive
@@ -99,6 +101,7 @@ class ArtCat_Backend:
         )
         return archive_not_in_art_cat
     
+    # artist appearances
     def mia_from_art_cat_groups(self, rp_archive_obj, threshold=25):
         '''
         Returns a Groupby polars lazyframe of the appearances and distinct songs for each art_name in
@@ -111,6 +114,17 @@ class ArtCat_Backend:
             pl.col('song_name').n_unique().alias('distinct_songs')
         ).sort("appearances", descending=True)
         above_threshold = mia_in_archives_groups.filter(
+            pl.col('appearances') > threshold
+        )
+        return above_threshold
+
+    # song appearances
+    def songs_missing_from_art_cat(self, rp_archive_obj, threshold=17):
+        new_df = self.archive_rps_not_in_art_cat(rp_archive_obj)
+        songs_not_in_track_cat = new_df.group_by('art_name','song_name', 'track_id').agg(
+            pl.len().alias('appearances'),
+        ).sort("appearances", descending=True)
+        above_threshold = songs_not_in_track_cat.filter(
             pl.col('appearances') > threshold
         )
         return above_threshold
@@ -162,5 +176,7 @@ class ArtCat_Backend:
         return art_cat_entries
 
 if __name__ == '__main__':
+    usal_csv_path = '/home/flambuth/fredlambuthPUNTOcom/data/archives/recently_played.csv'
     usual_db_path = '/home/flambuth/fredlambuthPUNTOcom/data/fred.db'
-    RP_Backend(usual_db_path).recently_played_shuffle()
+    archives_obj = rp_archives.RP_Archive_CSV(usal_csv_path)
+    RP_Backend(usual_db_path).recently_played_shuffle(archives_obj)
