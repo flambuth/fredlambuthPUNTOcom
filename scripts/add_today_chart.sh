@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the path to your virtual environment directory
-VENV_DIR="/home/flambuth/fredlambuthPUNTOcom/fredlambuth_env"
+VENV_DIR="/home/flambuth/fredlambuthPUNTOcom/fldotcom_dev_env"
 PROJECT_DIR="/home/flambuth/fredlambuthPUNTOcom"
 
 # Check if the virtual environment directory exists
