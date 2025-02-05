@@ -32,18 +32,29 @@ class RP_Archive_CSV:
         Changes a rp dataframe to one that matches the archive CSV's schema
         '''
         df['track_id'] = df['song_link'].str[-22:]
-        df['image_code'] = df['image'].str.split("https://i.scdn.co/image/", expand=True)[1]
+        
+        #df['image_code'] = df['image'].str.split("https://i.scdn.co/image/", expand=True)[1]
+        df['image_code'] = df['image'].str.extract(r"https://i\.scdn\.co/image/([a-fA-F0-9]+)")[0].fillna('missing')
         return df[['last_played', 'art_name', 'song_name', 'track_id', 'image_code']]
 
-    def append_to_csv(self, df:pd.DataFrame) -> None:
+    def append_to_csv(self, df: pd.DataFrame) -> bool:
         '''
         Accepts a pandas df formatted for the archive CSV,
-        appends this df to the csv
+        appends this df to the csv, and returns True if successful.
         '''
-        # Assert that all new records have dates later than the last date in the archive
-        assert df['last_played'].min() > self.last_date, "Attempting to append data older than the latest date in the archive."
-
-        df.to_csv(self.csv_path, mode='a', header=False, index=False)
+        try:
+            # Assert that all new records have dates later than the last date in the archive
+            assert df['last_played'].min() > self.last_date, \
+                "Attempting to append data older than the latest date in the archive."
+            
+            df.to_csv(self.csv_path, mode='a', header=False, index=False)
+            return True
+        except AssertionError as e:
+            print(f"Assertion Error: {e}")
+        except Exception as e:
+            print(f"Error appending to CSV: {e}")
+        
+        return False
 
     def archive_new_records(self, new_df):
         new_records = self.filter_new_records(new_df)
