@@ -2,14 +2,16 @@ import sqlite3
 import pandas as pd
 import polars as pl
 
-import config
+#import config
 from scripts import rp_archives
 from my_spotipy.spotify_catalog import ArtistCatalog, list_to_art_cat_obj
 
 class RP_Backend:
     '''Methods that use the table used by the recently_played Flask model'''
     def __init__(self, db_path=None):
-        self.db_path = db_path or config.basedir + '/data/' + config.database
+        #self.db_path = db_path or config.basedir + '/data/' + config.database
+        # embarassing hardcoded path to the db. We should use global variables for this.
+        self.db_path = db_path or '/home/flambuth/fredlambuthPUNTOcom/data/fred.db'
 
     def _create_connection(self):
         """Creates and returns a new database connection."""
